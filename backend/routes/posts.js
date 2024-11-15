@@ -17,9 +17,9 @@ router.get('/', async (req, res) => {
 // @route   POST /api/posts
 // @desc    Create a new post
 router.post('/', async (req, res) => {
-  const { title, content, author } = req.body;
+  const { title, content, author, community } = req.body;
   try {
-    const newPost = new Post({ title, content, author });
+    const newPost = new Post({ title, content, author, community });
     const savedPost = await newPost.save();
     res.status(201).json(savedPost);
   } catch (error) {
@@ -46,7 +46,7 @@ router.put('/:id', async (req, res) => {
   try {
     const post = await Post.findByIdAndUpdate(
       req.params.id,
-      { title, content, author },
+      { title, content, author, editDate: Date.now() },
       { new: true, runValidators: true }
     );
     if (!post) return res.status(404).json({ message: 'Post not found' });

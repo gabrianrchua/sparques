@@ -14,6 +14,10 @@ const postSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  community: {
+    type: String,
+    required: true,
+  },
   creationDate: {
     type: Date,
     default: Date.now,
