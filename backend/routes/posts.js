@@ -4,7 +4,7 @@ const Post = require('../models/Post');
 const router = express.Router();
 
 // @route   GET /api/posts
-// @desc    Get all posts
+// @desc    Get feed posts (for now, all posts)
 router.get('/', async (req, res) => {
   try {
     const posts = await Post.find();
