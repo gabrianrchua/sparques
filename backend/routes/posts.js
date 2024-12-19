@@ -10,7 +10,7 @@ router.get('/', async (req, res) => {
     const posts = await Post.find();
     res.json(posts);
   } catch (error) {
-    res.status(500).json({ message: 'Server error' });
+    res.status(500).json({ message: 'Server error', error: error });
   }
 });
 

@@ -23,9 +23,9 @@ connectDB();
 
 // define routes
 app.get('/', (req, res) => {
-  res.send('API is running...');
+  res.json({"status": "healthy"});
 });
 
-app.use('/api/posts', postsRoutes); // Placeholder for your future routes
+app.use('/api/posts', postsRoutes);
 
 module.exports = app;
