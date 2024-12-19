@@ -15,6 +15,11 @@ const theme = createTheme({
       main: '#f2cd60',
     },
   },
+  typography: {
+    button: {
+      textTransform: 'none',
+    }
+  }
 });
 
 const root = ReactDOM.createRoot(

@@ -3,3 +3,8 @@
   border: 1px solid #808080;
   border-radius: 30px;
 }
+
+.scoreLabel {
+  align-content: center;
+  padding-right: 15px;
+}

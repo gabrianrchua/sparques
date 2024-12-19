@@ -1,9 +1,10 @@
-import { Box, Button, ButtonProps, Card, CardActionArea, CardActions, CardContent, IconButton, styled, Typography } from "@mui/material";
+import { Box, Button, ButtonProps, Card, CardActionArea, CardActions, CardContent, styled, Typography } from "@mui/material";
 import Post from "../../../interfaces/Post";
-import { Comment, KeyboardArrowDown, KeyboardArrowUp } from "@mui/icons-material";
+import { Comment, KeyboardArrowDown, KeyboardArrowUp, Share } from "@mui/icons-material";
 import styles from "./FeedPost.module.css";
+import UtilitiesService from "../../../services/Utilities";
 
-const CommentButton = styled(Button)<ButtonProps>(() => ({
+const PillButton = styled(Button)<ButtonProps>(() => ({
   color: "white",
   backgroundColor: "#00000",
   '&:hover': {
@@ -11,7 +12,8 @@ const CommentButton = styled(Button)<ButtonProps>(() => ({
   },
   border: "1px solid #808080",
   borderRadius: "30px",
-  height: "36px"
+  height: "36px",
+  marginRight: "10px",
 }));
 
 export default function FeedPost(props: { post: Post }) {
@@ -22,24 +24,29 @@ export default function FeedPost(props: { post: Post }) {
           <Typography gutterBottom variant="h5" component="div">
             {props.post.title}
           </Typography>
+          <Typography variant="caption">c/{props.post.community} &bull; p/{props.post.author} &bull; {UtilitiesService.timeSince(props.post.editDate)}</Typography>
           <Typography variant="body2">
             {props.post.content}
           </Typography>
         </CardContent>
       </CardActionArea>
       <CardActions>
-        <Box className={styles.scoreBox}>
-          <IconButton size="small" onClick={() => { console.log("upvote"); }}>
-            <KeyboardArrowUp />
-          </IconButton>
-          <Typography variant="body2" sx={{ alignContent: "center" }}>123</Typography>
-          <IconButton size="small" onClick={() => { console.log("downvote"); }}>
-            <KeyboardArrowDown />
-          </IconButton>
+        <Box sx={{ display: "flex", width: "100%" }}>
+          <Box sx={{ flexGrow: 1 }}>
+            <PillButton variant="outlined" startIcon={<KeyboardArrowUp />} onClick={() => { console.log("upvote"); }}>
+              <Typography variant="body2">4.5k</Typography>
+            </PillButton>
+            <PillButton variant="outlined" startIcon={<KeyboardArrowDown />} onClick={() => { console.log("downvote"); }}>
+              <Typography variant="body2">42</Typography>
+            </PillButton>
+            <PillButton variant="outlined" startIcon={<Comment />} onClick={() => { console.log("comment"); }}>
+              <Typography variant="body2">321</Typography>
+            </PillButton>
+          </Box>
+          <PillButton variant="outlined" startIcon={<Share />} onClick={() => { console.log("share"); }}>
+            <Typography variant="body2">Share</Typography>
+          </PillButton>
         </Box>
-        <CommentButton variant="outlined" startIcon={<Comment />} onClick={() => { console.log("comment"); }}>
-          <Typography variant="body2">123</Typography>
-        </CommentButton>
       </CardActions>
     </Card>
   );
