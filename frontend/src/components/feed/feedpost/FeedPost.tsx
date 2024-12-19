@@ -1,4 +1,4 @@
-import { Button, ButtonProps, Card, CardActionArea, CardActions, CardContent, IconButton, styled, Typography } from "@mui/material";
+import { Box, Button, ButtonProps, Card, CardActionArea, CardActions, CardContent, IconButton, styled, Typography } from "@mui/material";
 import Post from "../../../interfaces/Post";
 import { Comment, KeyboardArrowDown, KeyboardArrowUp } from "@mui/icons-material";
 import styles from "./FeedPost.module.css";
@@ -28,7 +28,7 @@ export default function FeedPost(props: { post: Post }) {
         </CardContent>
       </CardActionArea>
       <CardActions>
-        <div className={styles.scoreBox}>
+        <Box className={styles.scoreBox}>
           <IconButton size="small" onClick={() => { console.log("upvote"); }}>
             <KeyboardArrowUp />
           </IconButton>
@@ -36,7 +36,7 @@ export default function FeedPost(props: { post: Post }) {
           <IconButton size="small" onClick={() => { console.log("downvote"); }}>
             <KeyboardArrowDown />
           </IconButton>
-        </div>
+        </Box>
         <CommentButton variant="outlined" startIcon={<Comment />} onClick={() => { console.log("comment"); }}>
           <Typography variant="body2">123</Typography>
         </CommentButton>

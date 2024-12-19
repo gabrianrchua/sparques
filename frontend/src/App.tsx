@@ -1,5 +1,5 @@
-import { AppBar, Box, Divider, Drawer, IconButton, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Toolbar, Typography } from '@mui/material';
-import { Inbox, Mail, Menu } from '@mui/icons-material';
+import { AppBar, Box, Divider, Drawer, IconButton, InputAdornment, List, ListItem, ListItemButton, ListItemIcon, ListItemText, TextField, Toolbar, Typography } from '@mui/material';
+import { AccountCircle, Inbox, Mail, Menu, Search } from '@mui/icons-material';
 import './App.css';
 import { useState } from 'react';
 import Feed from './components/feed/Feed';
@@ -50,29 +50,46 @@ function App() {
         position="fixed"
         sx={{
           width: { sm: `calc(100% - ${drawerWidth}px)` },
-          ml: { sm: `${drawerWidth}px` },
+          marginLeft: { sm: `${drawerWidth}px` },
         }}
       >
-        <Toolbar>
-          <IconButton
-            size="large"
-            edge="start"
-            color="inherit"
-            aria-label="menu"
-            onClick={handleDrawerToggle}
-            sx={{ marginRight: 2, display: { sm: 'none' } }}
-          >
-            <Menu />
+        <Toolbar sx={{ display: "flex" }}>
+          <Box sx={{ flexGrow: 1, display: "flex", alignItems: "center" }}>
+            <IconButton
+              size="large"
+              edge="start"
+              color="inherit"
+              aria-label="menu"
+              onClick={handleDrawerToggle}
+              sx={{ display: { sm: 'none' } }}
+            >
+              <Menu />
+            </IconButton>
+            <Typography variant="h6">
+              SPARQUES
+            </Typography>
+          </Box>
+          <TextField
+            slotProps={{
+              input: {
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <Search />
+                  </InputAdornment>
+                ),
+              },
+            }}
+            variant="outlined"
+            sx={{ display: { xs: "none", sm: "block" } }}
+          />
+          <IconButton size="large">
+            <AccountCircle />
           </IconButton>
-          <Typography variant="h6" component="div">
-            SPARQUES
-          </Typography>
         </Toolbar>
       </AppBar>
       <Box
         component="nav"
         sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
-        aria-label="mailbox folders"
       >
         {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
         <Drawer
