@@ -65,9 +65,7 @@ function App() {
             >
               <Menu />
             </IconButton>
-            <Typography variant="h6">
-              SPARQUES
-            </Typography>
+            <img src="/banner.png" height={42} />
           </Box>
           <TextField
             slotProps={{
