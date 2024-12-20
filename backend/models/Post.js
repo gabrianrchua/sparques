@@ -26,6 +26,18 @@ const postSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  numComments: {
+    type: Number,
+    default: 0,
+  },
+  numUpvotes: {
+    type: Number,
+    default: 0,
+  },
+  numDownvotes: {
+    type: Number,
+    default: 0,
+  },
 });
 
 module.exports = mongoose.model('Post', postSchema);

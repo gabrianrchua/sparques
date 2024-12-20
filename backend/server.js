@@ -23,7 +23,7 @@ connectDB();
 
 // define routes
 app.get('/', (req, res) => {
-  res.json({"status": "healthy"});
+  res.json({"message": "alive"});
 });
 
 app.use('/api/posts', postsRoutes);

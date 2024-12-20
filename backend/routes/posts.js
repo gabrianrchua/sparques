@@ -1,5 +1,6 @@
 const express = require('express');
 const Post = require('../models/Post');
+const Comment = require('../models/Comment');
 
 const router = express.Router();
 
@@ -18,41 +19,69 @@ router.get('/', async (req, res) => {
 // @desc    Create a new post
 router.post('/', async (req, res) => {
   const { title, content, author, community } = req.body;
+  if (!title || !content || !author || !community) return res.status(404).json({ message: "missing one or more of required fields: 'title', 'content', 'author', 'community'" });
   try {
     const newPost = new Post({ title, content, author, community });
     const savedPost = await newPost.save();
     res.status(201).json(savedPost);
   } catch (error) {
-    res.status(400).json({ message: 'Error creating post' });
+    res.status(400).json({ message: 'Error creating post', error: error });
+  }
+});
+
+// @route   POST /api/posts/:id/comment
+// @desc    Create a new comment under a post
+router.post('/:id/comment', async (req, res) => {
+  const { author, content } = req.body;
+  if (!author || !content) return res.status(400).json({ message: "missing one or more of required fields 'author', 'content'" });
+  try {
+    // update counter
+    const post = await Post.findByIdAndUpdate(
+      req.params.id,
+      { $inc: { numComments: 1 } },
+      { new: true, runValidators: true }
+    );
+    if (!post) return res.status(404).json({ message: 'Post not found' });
+
+    const newComment = new Comment({ post_id: req.params.id, author, content });
+    const savedComment = await newComment.save();
+    res.status(201).json(savedComment);
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error: error });
   }
 });
 
 // @route   GET /api/posts/:id
-// @desc    Get a single post by ID
+// @desc    Get a single post by ID with all details
 router.get('/:id', async (req, res) => {
   try {
     const post = await Post.findById(req.params.id);
     if (!post) return res.status(404).json({ message: 'Post not found' });
-    res.json(post);
+    const comments = await Comment.find({ post_id: req.params.id });
+    res.json({
+      ...post.toObject(),
+      comments
+    });
   } catch (error) {
-    res.status(500).json({ message: 'Server error' });
+    res.status(500).json({ message: 'Server error', error: error });
   }
 });
 
 // @route   PUT /api/posts/:id
 // @desc    Update a post by ID
 router.put('/:id', async (req, res) => {
-  const { title, content, author } = req.body;
+  const { title, content } = req.body;
+  if (!title || !content) return res.status(400).json({ message: "missing one or more of required fields 'title', 'content'" });
   try {
     const post = await Post.findByIdAndUpdate(
       req.params.id,
-      { title, content, author, editDate: Date.now() },
+      { title, content, editDate: Date.now() },
       { new: true, runValidators: true }
     );
     if (!post) return res.status(404).json({ message: 'Post not found' });
     res.json(post);
   } catch (error) {
-    res.status(400).json({ message: 'Error updating post' });
+    res.status(500).json({ message: 'Error updating post', error: error });
   }
 });
 
@@ -64,7 +93,7 @@ router.delete('/:id', async (req, res) => {
     if (!post) return res.status(404).json({ message: 'Post not found' });
     res.json({ message: 'Post deleted successfully' });
   } catch (error) {
-    res.status(500).json({ message: 'Server error' });
+    res.status(500).json({ message: 'Server error', error: error });
   }
 });
 
