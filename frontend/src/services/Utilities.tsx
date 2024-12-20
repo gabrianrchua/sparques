@@ -2,9 +2,8 @@ const UtilitiesService = {
   // https://stackoverflow.com/a/3177838
   timeSince: function(date: Date): string {
 
-    var seconds = Math.floor((Date.now() - date.getTime()) / 1000);
-  
-    var interval = seconds / 31536000;
+    const seconds = Math.floor((Date.now() - date.getTime()) / 1000);
+    let interval = seconds / 31536000;
   
     if (interval > 1) {
       return Math.floor(interval) + " years ago";
@@ -26,7 +25,13 @@ const UtilitiesService = {
       return Math.floor(interval) + " minutes ago";
     }
     return Math.floor(seconds) + " seconds ago";
-  }
+  },
+
+  // https://stackoverflow.com/a/60988355
+  formatNumber: function(num: number): string {
+    const formatter = Intl.NumberFormat("en", { notation: "compact" });
+    return formatter.format(num).toLowerCase();
+  },
 }
 
 export default UtilitiesService;

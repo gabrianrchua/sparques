@@ -5,5 +5,8 @@ export default interface Post {
   author: string,
   community: string,
   creationDate: Date,
-  editDate: Date
+  editDate: Date,
+  numComments: number,
+  numUpvotes: number,
+  numDownvotes: number
 }

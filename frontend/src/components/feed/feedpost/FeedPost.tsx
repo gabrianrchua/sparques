@@ -34,13 +34,13 @@ export default function FeedPost(props: { post: Post }) {
         <Box sx={{ display: "flex", width: "100%" }}>
           <Box sx={{ flexGrow: 1 }}>
             <PillButton variant="outlined" startIcon={<KeyboardArrowUp />} onClick={() => { console.log("upvote"); }}>
-              <Typography variant="body2">4.5k</Typography>
+              <Typography variant="body2">{UtilitiesService.formatNumber(props.post.numUpvotes)}</Typography>
             </PillButton>
             <PillButton variant="outlined" startIcon={<KeyboardArrowDown />} onClick={() => { console.log("downvote"); }}>
-              <Typography variant="body2">42</Typography>
+              <Typography variant="body2">{UtilitiesService.formatNumber(props.post.numDownvotes)}</Typography>
             </PillButton>
             <PillButton variant="outlined" startIcon={<Comment />} onClick={() => { console.log("comment"); }}>
-              <Typography variant="body2">321</Typography>
+              <Typography variant="body2">{UtilitiesService.formatNumber(props.post.numComments)}</Typography>
             </PillButton>
           </Box>
           <PillButton variant="outlined" startIcon={<Share />} onClick={() => { console.log("share"); }}>

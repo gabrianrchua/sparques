@@ -8,7 +8,10 @@ const SAMPLE_POST: Post = {
   author: "User123",
   community: "main",
   creationDate: new Date(2024, 11, 15, 4, 59, 0, 0),
-  editDate: new Date(2024, 11, 15, 4, 59, 0, 0)
+  editDate: new Date(2024, 11, 15, 4, 59, 0, 0),
+  numComments: 1234,
+  numUpvotes: 54321,
+  numDownvotes: 321
 }
 
 export default function Feed() {
