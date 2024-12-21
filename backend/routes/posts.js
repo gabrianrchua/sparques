@@ -2,12 +2,13 @@ const express = require('express');
 const Post = require('../models/Post');
 const Comment = require('../models/Comment');
 const Vote = require('../models/Vote');
+const requireAuth = require('../routes/auth').requireAuth;
 
 const router = express.Router();
 
 // @route   GET /api/posts
 // @desc    Get feed posts (for now, all posts)
-router.get('/', async (req, res) => {
+router.get('/', async (_, res) => {
   try {
     const posts = await Post.find();
     res.json(posts);
@@ -18,23 +19,23 @@ router.get('/', async (req, res) => {
 
 // @route   POST /api/posts
 // @desc    Create a new post
-router.post('/', async (req, res) => {
-  const { title, content, author, community } = req.body;
-  if (!title || !content || !author || !community) return res.status(404).json({ message: "Missing one or more of required fields: 'title', 'content', 'author', 'community'" });
+router.post('/', requireAuth, async (req, res) => {
+  const { title, content, community } = req.body;
+  if (!title || !content || !community) return res.status(400).json({ message: "Missing one or more of required fields: 'title', 'content', 'community'" });
   try {
-    const newPost = new Post({ title, content, author, community });
+    const newPost = new Post({ title, content, author: req.username, community });
     const savedPost = await newPost.save();
     res.status(201).json(savedPost);
   } catch (error) {
-    res.status(400).json({ message: 'Error creating post', error: error });
+    res.status(500).json({ message: 'Server error', error: error });
   }
 });
 
 // @route   POST /api/posts/:id/comment
 // @desc    Create a new comment under a post
-router.post('/:id/comment', async (req, res) => {
-  const { author, content } = req.body;
-  if (!author || !content) return res.status(400).json({ message: "Missing one or more of required fields 'author', 'content'" });
+router.post('/:id/comment', requireAuth, async (req, res) => {
+  const { content } = req.body;
+  if (!content) return res.status(400).json({ message: "Missing require field 'content'" });
   try {
     // update counter
     const post = await Post.findByIdAndUpdate(
@@ -44,7 +45,7 @@ router.post('/:id/comment', async (req, res) => {
     );
     if (!post) return res.status(404).json({ message: 'Post not found' });
 
-    const newComment = new Comment({ post_id: req.params.id, author, content });
+    const newComment = new Comment({ post_id: req.params.id, author: req.username, content });
     const savedComment = await newComment.save();
     res.status(201).json(savedComment);
   } catch (error) {
@@ -54,11 +55,11 @@ router.post('/:id/comment', async (req, res) => {
 
 // @route   POST /api/posts/:id/vote
 // @desc    Upvote or downvote a post
-router.post('/:id/vote', async (req, res) => {
-  const { author, isUpvote } = req.body;
-  if (!author || isUpvote === undefined ) return res.status(400).json({ message: "Missing one or more of required fields 'author', 'isUpvote'" });
+router.post('/:id/vote', requireAuth, async (req, res) => {
+  const { isUpvote } = req.body;
+  if (isUpvote === undefined) return res.status(400).json({ message: "Missing required field 'isUpvote'" });
   try {
-    const vote = await Vote.findOne({ post_id: req.params.id, author });
+    const vote = await Vote.findOne({ post_id: req.params.id, author: req.username });
     if (vote) {
       // change vote
       // update counters
@@ -99,7 +100,7 @@ router.post('/:id/vote', async (req, res) => {
       );
       if (!post) res.status(404).json({ message: 'Post not found' });
       // create vote
-      const newVote = new Vote({ post_id: req.params.id, author, isUpvote });
+      const newVote = new Vote({ post_id: req.params.id, author: req.username, isUpvote });
       const savedVote = await newVote.save();
       res.status(201).json(savedVote);
     }
@@ -126,28 +127,34 @@ router.get('/:id', async (req, res) => {
 
 // @route   PUT /api/posts/:id
 // @desc    Update a post by ID
-router.put('/:id', async (req, res) => {
+router.put('/:id', requireAuth, async (req, res) => {
   const { title, content } = req.body;
   if (!title || !content) return res.status(400).json({ message: "Missing one or more of required fields 'title', 'content'" });
   try {
-    const post = await Post.findByIdAndUpdate(
+    const post = await Post.findById(req.params.id);
+    if (!post) return res.status(404).json({ message: 'Post not found' });
+    if (post.author !== req.username) return res.status(403).json({ message: "User is forbidden to edit a post created by another user "});
+    
+    const editedPost = await Post.findByIdAndUpdate(
       req.params.id,
       { title, content, editDate: Date.now() },
       { new: true, runValidators: true }
     );
-    if (!post) return res.status(404).json({ message: 'Post not found' });
-    res.json(post);
+    res.json(editedPost);
   } catch (error) {
-    res.status(500).json({ message: 'Error updating post', error: error });
+    res.status(500).json({ message: 'Server error', error: error });
   }
 });
 
 // @route   DELETE /api/posts/:id
 // @desc    Delete a post by ID
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', requireAuth, async (req, res) => {
   try {
-    const post = await Post.findByIdAndDelete(req.params.id);
+    const post = await Post.findById(req.params.id);
     if (!post) return res.status(404).json({ message: 'Post not found' });
+    if (post.author !== req.username) return res.status(403).json({ message: "User is forbidden to delete a post created by another user "});
+    
+    await Post.findByIdAndDelete(req.params.id);
     res.json({ message: 'Post deleted successfully' });
   } catch (error) {
     res.status(500).json({ message: 'Server error', error: error });

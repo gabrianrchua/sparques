@@ -1,4 +1,4 @@
-import { AppBar, Box, Divider, Drawer, IconButton, InputAdornment, List, ListItem, ListItemButton, ListItemIcon, ListItemText, TextField, Toolbar, Typography } from '@mui/material';
+import { AppBar, Box, Divider, Drawer, IconButton, InputAdornment, List, ListItem, ListItemButton, ListItemIcon, ListItemText, TextField, Toolbar } from '@mui/material';
 import { AccountCircle, Inbox, Mail, Menu, Search } from '@mui/icons-material';
 import './App.css';
 import { useState } from 'react';
@@ -65,7 +65,7 @@ function App() {
             >
               <Menu />
             </IconButton>
-            <img src="/banner.png" height={42} />
+            <img src="/banner.png" alt="Sparques banner" height={42} />
           </Box>
           <TextField
             slotProps={{

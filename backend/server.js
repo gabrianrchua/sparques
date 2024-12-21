@@ -2,10 +2,12 @@ const express = require('express');
 const connectDB = require('./config/db');
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
+const cookieParser = require('cookie-parser');
 require('dotenv').config();
 
 // import routes
 const postsRoutes = require('./routes/posts');
+const authRoutes = require('./routes/auth').router;
 
 const PORT = process.env.PORT || 5000;
 
@@ -17,15 +19,17 @@ app.listen(PORT, () => {
 // middlewares
 app.use(bodyParser.json());
 app.use(morgan("combined"));
+app.use(cookieParser());
 
 // connect to mongo
 connectDB();
 
-// define routes
-app.get('/', (req, res) => {
-  res.json({"message": "alive"});
+// register routes
+app.get('/', (_, res) => {
+  res.json({ "message": "alive" });
 });
 
 app.use('/api/posts', postsRoutes);
+app.use('/api/auth', authRoutes);
 
 module.exports = app;
