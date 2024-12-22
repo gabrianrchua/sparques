@@ -5,6 +5,7 @@ import { useState } from 'react';
 import Feed from './pages/Feed';
 import { BrowserRouter, Link, Route, Routes } from 'react-router';
 import Login from './pages/Login';
+import Register from './pages/Register';
 
 const drawerWidth: number = 300;
 
@@ -138,6 +139,7 @@ function App() {
           <Routes>
             <Route path="/" element={<Feed />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
           </Routes>
         </Box>
       </Box>
