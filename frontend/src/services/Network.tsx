@@ -1,4 +1,5 @@
 import axios from "axios";
+import Post from "../interfaces/Post";
 
 const BASE_URL: string = "http://localhost:5000/api";
 
@@ -23,9 +24,19 @@ const NetworkService = {
     }
   },
 
-  getPosts: async function () {
+  getPosts: async function (): Promise<Post[]> {
     try {
       const result = await axios.get(BASE_URL + "/posts", { withCredentials: true });
+      return result.data;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  },
+
+  getPostDetail: async function (postid: string): Promise<Post> {
+    try {
+      const result = await axios.get(BASE_URL + "/posts/" + postid);
       return result.data;
     } catch (error) {
       console.error(error);

@@ -1,3 +1,5 @@
+import CommentDetail from "./CommentDetail";
+
 export default interface Post {
   _id: string,
   title: string,
@@ -8,5 +10,6 @@ export default interface Post {
   editDate: Date,
   numComments: number,
   numUpvotes: number,
-  numDownvotes: number
+  numDownvotes: number,
+  comments: CommentDetail[] | undefined,
 }

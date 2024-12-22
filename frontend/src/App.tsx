@@ -6,6 +6,7 @@ import Feed from './pages/Feed';
 import { BrowserRouter, Link, Route, Routes } from 'react-router';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import PostDetail from './pages/PostDetail';
 
 const drawerWidth: number = 300;
 
@@ -140,6 +141,7 @@ function App() {
             <Route index element={<Feed />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
+            <Route path="/post/:postid" element={<PostDetail />} />
           </Routes>
         </Box>
       </Box>

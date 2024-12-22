@@ -4,19 +4,6 @@ import { useLocation } from "react-router";
 import { useEffect, useState } from "react";
 import NetworkService from "../services/Network";
 
-const SAMPLE_POST: Post = {
-  _id: "123",
-  title: "Sample title",
-  content: "Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum ",
-  author: "User123",
-  community: "main",
-  creationDate: new Date(2024, 11, 15, 4, 59, 0, 0),
-  editDate: new Date(2024, 11, 15, 4, 59, 0, 0),
-  numComments: 1234,
-  numUpvotes: 54321,
-  numDownvotes: 321
-}
-
 export default function Feed() {
   const location = useLocation();
 
@@ -30,7 +17,7 @@ export default function Feed() {
         console.log(posts);
       });
     }
-  }, [location.pathname])
+  }, [location.pathname]);
 
   return (
     <>
