@@ -1,5 +1,8 @@
 import Post from "../interfaces/Post";
 import FeedPost from "../components/feedpost/FeedPost";
+import { useLocation } from "react-router";
+import { useEffect, useState } from "react";
+import NetworkService from "../services/Network";
 
 const SAMPLE_POST: Post = {
   _id: "123",
@@ -15,23 +18,26 @@ const SAMPLE_POST: Post = {
 }
 
 export default function Feed() {
+  const location = useLocation();
+
+  const [posts, setPosts] = useState<Post[]>([]);
+
+  useEffect(() => {
+    // only if this page became active
+    if (location.pathname === "/") {
+      NetworkService.getPosts().then(posts => {
+        setPosts(posts);
+        console.log(posts);
+      });
+    }
+    console.log("LOCATION = ", location.pathname);
+  }, [location.pathname])
+
   return (
     <>
-      <FeedPost post={SAMPLE_POST}/>
-      <FeedPost post={SAMPLE_POST}/>
-      <FeedPost post={SAMPLE_POST}/>
-      <FeedPost post={SAMPLE_POST}/>
-      <FeedPost post={SAMPLE_POST}/>
-      <FeedPost post={SAMPLE_POST}/>
-      <FeedPost post={SAMPLE_POST}/>
-      <FeedPost post={SAMPLE_POST}/>
-      <FeedPost post={SAMPLE_POST}/>
-      <FeedPost post={SAMPLE_POST}/>
-      <FeedPost post={SAMPLE_POST}/>
-      <FeedPost post={SAMPLE_POST}/>
-      <FeedPost post={SAMPLE_POST}/>
-      <FeedPost post={SAMPLE_POST}/>
-      <FeedPost post={SAMPLE_POST}/>
+      {posts.map((post, index) => (
+        <FeedPost key={index} post={post}/>
+      ))}
     </>
   );
 }

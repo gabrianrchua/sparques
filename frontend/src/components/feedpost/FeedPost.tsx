@@ -24,7 +24,7 @@ export default function FeedPost(props: { post: Post }) {
           <Typography gutterBottom variant="h5" component="div">
             {props.post.title}
           </Typography>
-          <Typography variant="caption">c/{props.post.community} &bull; p/{props.post.author} &bull; {UtilitiesService.timeSince(props.post.editDate)}</Typography>
+          <Typography variant="caption">c/{props.post.community} &bull; p/{props.post.author} &bull; {UtilitiesService.timeSince(new Date(props.post.editDate))}</Typography>
           <Typography variant="body2">
             {props.post.content}
           </Typography>

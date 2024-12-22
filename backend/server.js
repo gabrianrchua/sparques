@@ -3,6 +3,8 @@ const connectDB = require('./config/db');
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
 const cookieParser = require('cookie-parser');
+const cors = require('cors');
+
 require('dotenv').config();
 
 // import routes
@@ -20,6 +22,10 @@ app.listen(PORT, () => {
 app.use(bodyParser.json());
 app.use(morgan("combined"));
 app.use(cookieParser());
+app.use(cors({
+  origin: "http://localhost:3000",
+  credentials: true
+}));
 
 // connect to mongo
 connectDB();
