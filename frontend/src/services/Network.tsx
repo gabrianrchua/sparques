@@ -5,19 +5,21 @@ const BASE_URL: string = "http://localhost:5000/api";
 const NetworkService = {
   postRegister: async function (username: string, password: string) {
     try {
-      const result = await axios.post(BASE_URL + "/auth/register", { username, password });
+      const result = await axios.post(BASE_URL + "/auth/register", { username, password }, { withCredentials: true });
       return result.data;
     } catch (error) {
       console.error(error);
+      throw error;
     }
   },
 
   postLogin: async function (username: string, password: string) {
     try {
-      const result = await axios.post(BASE_URL + "/auth", { username, password });
+      const result = await axios.post(BASE_URL + "/auth", { username, password }, { withCredentials: true });
       return result.data;
     } catch (error) {
       console.error(error);
+      throw error;
     }
   },
 
@@ -27,6 +29,7 @@ const NetworkService = {
       return result.data;
     } catch (error) {
       console.error(error);
+      throw error;
     }
   }
 }

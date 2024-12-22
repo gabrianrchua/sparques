@@ -1,15 +1,23 @@
 import { Button, TextField, Typography } from "@mui/material";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import styles from "./Login.module.css";
 import NetworkService from "../services/Network";
 import { useState } from "react";
+import { useSnackbar } from "notistack";
 
 export default function Register() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const { enqueueSnackbar } = useSnackbar();
+  const navigate = useNavigate();
 
   function register() {
-    console.log(NetworkService.postRegister(username, password));
+    NetworkService.postRegister(username, password).then(() => {
+      enqueueSnackbar("Successfully registered! Please log in now.");
+      navigate("/login");
+    }).catch(err => {
+      enqueueSnackbar("Failed to log in: " + err.response.data.message);
+    });
   }
 
   return (
@@ -20,7 +28,7 @@ export default function Register() {
         variant="outlined"
         label="Username"
         required
-        className={styles.baselineSpacing}
+        sx={{ marginBottom: "12px "}}
         size="small"
         value={username}
         onChange={(event) => setUsername(event.target.value)}
@@ -30,14 +38,14 @@ export default function Register() {
         label="Password"
         required
         type="password"
-        className={styles.baselineSpacing}
+        sx={{ marginBottom: "12px "}}
         size="small"
         value={password}
         onChange={(event) => setPassword(event.target.value)}
       /><br />
       <Button
         variant="contained"
-        className={styles.baselineSpacing}
+        sx={{ marginBottom: "12px "}}
         onClick={register}
         disabled={!username || !password}
       >

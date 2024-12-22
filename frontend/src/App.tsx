@@ -137,7 +137,7 @@ function App() {
         >
           <Toolbar />
           <Routes>
-            <Route path="/" element={<Feed />} />
+            <Route index element={<Feed />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
           </Routes>

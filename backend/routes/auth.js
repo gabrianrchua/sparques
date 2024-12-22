@@ -34,7 +34,13 @@ router.post('/register', async (req, res) => {
     await user.save();
     res.status(201).json({ message: "Register success" });
   } catch (error) {
-    res.status(500).json({ message: 'Server error', error: error });
+    if (error.code === 11000) {
+      // user already exists
+      res.status(409).json({ message: "User already exists" });
+    } else {
+      // some other error
+      res.status(500).json({ message: 'Server error', error: error });
+    }
   }
 });
 

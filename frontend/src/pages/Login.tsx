@@ -1,15 +1,23 @@
 import { Button, TextField, Typography } from "@mui/material";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import styles from "./Login.module.css";
 import { useState } from "react";
 import NetworkService from "../services/Network";
+import { useSnackbar } from "notistack";
 
 export default function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const { enqueueSnackbar } = useSnackbar();
+  const navigate = useNavigate();
 
   function login() {
-    console.log(NetworkService.postLogin(username, password));
+    NetworkService.postLogin(username, password).then(() => {
+      enqueueSnackbar("Successfully logged in!");
+      navigate("/");
+    }).catch(err => {
+      enqueueSnackbar("Failed to log in: " + err.response.data.message);
+    });
   }
 
   return (
@@ -20,24 +28,24 @@ export default function Login() {
         variant="outlined"
         label="Username"
         required
-        className={styles.baselineSpacing}
         size="small"
         value={username}
         onChange={(event) => setUsername(event.target.value)}
+        sx={{ marginBottom: "12px "}}
       /><br />
       <TextField
         variant="outlined"
         label="Password"
         required
         type="password"
-        className={styles.baselineSpacing}
         size="small"
         value={password}
         onChange={(event) => setPassword(event.target.value)}
+        sx={{ marginBottom: "12px "}}
       /><br />
       <Button
         variant="contained"
-        className={styles.baselineSpacing}
+        sx={{ marginBottom: "12px "}}
         onClick={login}
         disabled={!username || !password}
       >

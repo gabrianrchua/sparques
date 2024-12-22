@@ -30,7 +30,6 @@ export default function Feed() {
         console.log(posts);
       });
     }
-    console.log("LOCATION = ", location.pathname);
   }, [location.pathname])
 
   return (
