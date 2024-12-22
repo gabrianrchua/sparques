@@ -34,7 +34,7 @@ router.post('/', requireAuth, async (req, res) => {
 // @route   POST /api/posts/:id/comment
 // @desc    Create a new comment under a post
 router.post('/:id/comment', requireAuth, async (req, res) => {
-  const { content } = req.body;
+  const { content, parentId } = req.body;
   if (!content) return res.status(400).json({ message: "Missing require field 'content'" });
   try {
     // update counter
@@ -45,10 +45,11 @@ router.post('/:id/comment', requireAuth, async (req, res) => {
     );
     if (!post) return res.status(404).json({ message: 'Post not found' });
 
-    const newComment = new Comment({ post_id: req.params.id, author: req.username, content });
+    const newComment = parentId ? new Comment({ postId: req.params.id, author: req.username, content, parentId }) : new Comment({ postId: req.params.id, author: req.username, content });
     const savedComment = await newComment.save();
     res.status(201).json(savedComment);
   } catch (error) {
+    console.error(error);
     res.status(500).json({ message: "Server error", error: error });
   }
 });
@@ -59,7 +60,7 @@ router.post('/:id/vote', requireAuth, async (req, res) => {
   const { isUpvote } = req.body;
   if (isUpvote === undefined) return res.status(400).json({ message: "Missing required field 'isUpvote'" });
   try {
-    const vote = await Vote.findOne({ post_id: req.params.id, author: req.username });
+    const vote = await Vote.findOne({ postId: req.params.id, author: req.username });
     if (vote) {
       // change vote
       // update counters
@@ -100,7 +101,7 @@ router.post('/:id/vote', requireAuth, async (req, res) => {
       );
       if (!post) res.status(404).json({ message: 'Post not found' });
       // create vote
-      const newVote = new Vote({ post_id: req.params.id, author: req.username, isUpvote });
+      const newVote = new Vote({ postId: req.params.id, author: req.username, isUpvote });
       const savedVote = await newVote.save();
       res.status(201).json(savedVote);
     }
@@ -115,7 +116,7 @@ router.get('/:id', async (req, res) => {
   try {
     const post = await Post.findById(req.params.id);
     if (!post) return res.status(404).json({ message: 'Post not found' });
-    const comments = await Comment.find({ post_id: req.params.id });
+    const comments = await Comment.find({ postId: req.params.id });
     res.json({
       ...post.toObject(),
       comments
@@ -133,8 +134,8 @@ router.put('/:id', requireAuth, async (req, res) => {
   try {
     const post = await Post.findById(req.params.id);
     if (!post) return res.status(404).json({ message: 'Post not found' });
-    if (post.author !== req.username) return res.status(403).json({ message: "User is forbidden to edit a post created by another user "});
-    
+    if (post.author !== req.username) return res.status(403).json({ message: "User is forbidden to edit a post created by another user " });
+
     const editedPost = await Post.findByIdAndUpdate(
       req.params.id,
       { title, content, editDate: Date.now() },
@@ -152,8 +153,8 @@ router.delete('/:id', requireAuth, async (req, res) => {
   try {
     const post = await Post.findById(req.params.id);
     if (!post) return res.status(404).json({ message: 'Post not found' });
-    if (post.author !== req.username) return res.status(403).json({ message: "User is forbidden to delete a post created by another user "});
-    
+    if (post.author !== req.username) return res.status(403).json({ message: "User is forbidden to delete a post created by another user " });
+
     await Post.findByIdAndDelete(req.params.id);
     res.json({ message: 'Post deleted successfully' });
   } catch (error) {

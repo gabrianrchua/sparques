@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const voteSchema = new mongoose.Schema({
-  post_id: {
+  postId: {
     type: mongoose.Types.ObjectId,
     required: true,
   },

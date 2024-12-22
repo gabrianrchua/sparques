@@ -16,7 +16,7 @@ export default function Register() {
       enqueueSnackbar("Successfully registered! Please log in now.");
       navigate("/login");
     }).catch(err => {
-      enqueueSnackbar("Failed to log in: " + err.response.data.message);
+      enqueueSnackbar("Failed to log in: " + err.response.data.message, { variant: "error" });
     });
   }
 

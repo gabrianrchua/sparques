@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const commentSchema = new mongoose.Schema({
-  post_id: {
+  postId: {
     type: mongoose.Types.ObjectId,
     required: true,
   },
@@ -21,6 +21,10 @@ const commentSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  parentId: {
+    type: mongoose.Types.ObjectId,
+    default: undefined,
+  }
 });
 
 module.exports = mongoose.model('Comment', commentSchema);

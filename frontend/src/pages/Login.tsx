@@ -16,7 +16,7 @@ export default function Login() {
       enqueueSnackbar("Successfully logged in!");
       navigate("/");
     }).catch(err => {
-      enqueueSnackbar("Failed to log in: " + err.response.data.message);
+      enqueueSnackbar("Failed to log in: " + err.response.data.message, { variant: "error" });
     });
   }
 
@@ -31,7 +31,7 @@ export default function Login() {
         size="small"
         value={username}
         onChange={(event) => setUsername(event.target.value)}
-        sx={{ marginBottom: "12px "}}
+        sx={{ marginBottom: "12px " }}
       /><br />
       <TextField
         variant="outlined"
@@ -41,11 +41,11 @@ export default function Login() {
         size="small"
         value={password}
         onChange={(event) => setPassword(event.target.value)}
-        sx={{ marginBottom: "12px "}}
+        sx={{ marginBottom: "12px " }}
       /><br />
       <Button
         variant="contained"
-        sx={{ marginBottom: "12px "}}
+        sx={{ marginBottom: "12px " }}
         onClick={login}
         disabled={!username || !password}
       >
