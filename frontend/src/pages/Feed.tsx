@@ -1,5 +1,5 @@
-import Post from "../../interfaces/Post";
-import FeedPost from "./feedpost/FeedPost";
+import Post from "../interfaces/Post";
+import FeedPost from "../components/feedpost/FeedPost";
 
 const SAMPLE_POST: Post = {
   _id: "123",

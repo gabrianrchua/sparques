@@ -1,8 +1,8 @@
 import { Box, Button, ButtonProps, Card, CardActionArea, CardActions, CardContent, styled, Typography } from "@mui/material";
-import Post from "../../../interfaces/Post";
+import Post from "../../interfaces/Post";
 import { Comment, KeyboardArrowDown, KeyboardArrowUp, Share } from "@mui/icons-material";
-import styles from "./FeedPost.module.css";
-import UtilitiesService from "../../../services/Utilities";
+//import styles from "./FeedPost.module.css";
+import UtilitiesService from "../../services/Utilities";
 
 const PillButton = styled(Button)<ButtonProps>(() => ({
   color: "white",
