@@ -10,7 +10,7 @@ const router = express.Router();
 // @desc    Get feed posts (for now, all posts)
 router.get('/', async (_, res) => {
   try {
-    const posts = await Post.find();
+    const posts = await Post.find().sort({ creationDate: "descending" });
     res.json(posts);
   } catch (error) {
     res.status(500).json({ message: 'Server error', error: error });
@@ -116,7 +116,7 @@ router.get('/:id', async (req, res) => {
   try {
     const post = await Post.findById(req.params.id);
     if (!post) return res.status(404).json({ message: 'Post not found' });
-    const comments = await Comment.find({ postId: req.params.id });
+    const comments = await Comment.find({ postId: req.params.id }).sort({ creationDate: "descending" });
     res.json({
       ...post.toObject(),
       comments

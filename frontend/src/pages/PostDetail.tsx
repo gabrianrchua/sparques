@@ -44,14 +44,14 @@ export default function FeedPost() {
   const location = useLocation();
   const [isCommentBoxShown, setIsCommentBoxShown] = useState(false);
   const [commentValue, setCommentValue] = useState("");
-  
+
   useEffect(() => {
     // only if this page became active
     if (postid && location.pathname === "/post/" + postid) {
       refreshPostDetails();
     }
   }, [location.pathname]);
-  
+
   function refreshPostDetails() {
     if (!postid) return;
 
@@ -72,6 +72,16 @@ export default function FeedPost() {
     }).catch(err => {
       enqueueSnackbar("Failed to post comment: " + err.response.data.message, { variant: "error" });
     });
+  }
+
+  function votePost(isUpvote: boolean) {
+    if (!postid) return;
+
+    NetworkService.postVotePost(postid, isUpvote).then(_ => {
+      refreshPostDetails();
+    }).catch(err => {
+      enqueueSnackbar("Failed to vote: " + err.response.data.message, { variant: "error" });
+    })
   }
 
   // if post hasn't loaded yet
@@ -106,10 +116,10 @@ export default function FeedPost() {
         <CardActions>
           <Box sx={{ display: "flex", width: "100%" }}>
             <Box sx={{ flexGrow: 1 }}>
-              <PillButton variant="outlined" startIcon={<KeyboardArrowUp />} onClick={() => { console.log("upvote"); }}>
+              <PillButton variant="outlined" startIcon={<KeyboardArrowUp />} onClick={() => votePost(true)}>
                 <Typography variant="body2">{UtilitiesService.formatNumber(post.numUpvotes)}</Typography>
               </PillButton>
-              <PillButton variant="outlined" startIcon={<KeyboardArrowDown />} onClick={() => { console.log("downvote"); }}>
+              <PillButton variant="outlined" startIcon={<KeyboardArrowDown />} onClick={() => votePost(false)}>
                 <Typography variant="body2">{UtilitiesService.formatNumber(post.numDownvotes)}</Typography>
               </PillButton>
               <PillButton variant="outlined" startIcon={<Comment />} onClick={() => setIsCommentBoxShown(true)}>
@@ -125,7 +135,7 @@ export default function FeedPost() {
       <PillButton variant="outlined" startIcon={<Add />} onClick={() => setIsCommentBoxShown(true)} sx={{ marginBottom: "12px" }}>
         <Typography variant="body2">Add a comment</Typography>
       </PillButton>
-      {isCommentBoxShown && 
+      {isCommentBoxShown &&
         <Box sx={{ marginBottom: "12px", width: "100%" }}>
           <CommentEditor value={commentValue} setValue={setCommentValue} onSubmit={onCommentSubmit} />
         </Box>

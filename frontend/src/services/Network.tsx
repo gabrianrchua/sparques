@@ -55,6 +55,19 @@ const NetworkService = {
       console.error(error);
       throw error;
     }
+  },
+
+  postVotePost: async function (postId: string, isUpvote: boolean) {
+    try {
+      const result = await axios.post(BASE_URL + "/posts/" + postId + "/vote",
+        { isUpvote },
+        { withCredentials: true }
+      );
+      return result.data;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
   }
 }
 

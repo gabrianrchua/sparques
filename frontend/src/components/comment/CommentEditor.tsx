@@ -12,7 +12,7 @@ export default function CommentEditor(props: { value: string, setValue: Function
         onChange={event => props.setValue(event.target.value)}
         size="small"
         sx={{ flexGrow: 1, marginRight: "6px" }}
-        inputRef={input => input && input.focus()}
+        inputRef={input => input && input.focus()} // https://stackoverflow.com/a/56066985
       />
       <Button color="primary" variant="contained" sx={{ height: "fit-content", borderRadius: "18px" }} onClick={() => props.onSubmit(props.value)}>Comment</Button>
     </Box>
