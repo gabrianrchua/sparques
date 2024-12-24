@@ -35,7 +35,7 @@ router.post('/', requireAuth, async (req, res) => {
 // @desc    Create a new comment under a post
 router.post('/:id/comment', requireAuth, async (req, res) => {
   const { content, parentId } = req.body;
-  if (!content) return res.status(400).json({ message: "Missing require field 'content'" });
+  if (!content) return res.status(400).json({ message: "Missing required field 'content'" });
   try {
     // update counter
     const post = await Post.findByIdAndUpdate(

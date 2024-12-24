@@ -13,7 +13,7 @@ export default function CommentDisplay(props: {comment: CommentDetail, depth: nu
       <Card sx={{ marginBottom: '12px', flexGrow: 1 }}>
         <CardContent>
           <Typography variant="caption">p/{props.comment.author} &bull; {UtilitiesService.timeSince(new Date(props.comment.editDate))}</Typography>
-          <Typography variant="body2">
+          <Typography variant="body2" component="pre">
             {props.comment.content}
           </Typography>
         </CardContent>

@@ -21,8 +21,8 @@ export default function FeedPost(props: { post: Post }) {
             {props.post.title}
           </Typography>
           <Typography variant="caption">c/{props.post.community} &bull; p/{props.post.author} &bull; {UtilitiesService.timeSince(new Date(props.post.editDate))}</Typography>
-          <Typography variant="body2">
-            {props.post.content}
+          <Typography variant="body2" component="pre">
+            {props.post.content.length > 300 ? props.post.content.slice(0, 300) + "..." : props.post.content}
           </Typography>
         </CardContent>
       </CardActionArea>

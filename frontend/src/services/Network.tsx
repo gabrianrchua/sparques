@@ -42,6 +42,19 @@ const NetworkService = {
       console.error(error);
       throw error;
     }
+  },
+
+  postComment: async function (postId: string, content: string, parentId: string | undefined) {
+    try {
+      const result = await axios.post(BASE_URL + "/posts/" + postId + "/comment",
+        parentId ? { content, parentId } : { content },
+        { withCredentials: true }
+      );
+      return result.data;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
   }
 }
 

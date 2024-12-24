@@ -1,6 +1,6 @@
 import { Box, Card, CardActions, CardContent, IconButton, Skeleton, Typography } from "@mui/material";
 import Post from "../interfaces/Post";
-import { ArrowBack, Comment, KeyboardArrowDown, KeyboardArrowUp, Share } from "@mui/icons-material";
+import { Add, ArrowBack, Comment, KeyboardArrowDown, KeyboardArrowUp, Share } from "@mui/icons-material";
 import UtilitiesService from "../services/Utilities";
 import PillButton from "../components/pillbutton/PillButton";
 import { Link, useLocation, useParams } from "react-router";
@@ -8,6 +8,8 @@ import { useEffect, useState } from "react";
 import NetworkService from "../services/Network";
 import CommentDisplay from "../components/comment/CommentDisplay";
 import CommentDetail from "../interfaces/CommentDetail";
+import CommentEditor from "../components/comment/CommentEditor";
+import { enqueueSnackbar } from "notistack";
 
 // helper functions
 function organizeComments(comments: CommentDetail[]): JSX.Element[] {
@@ -40,17 +42,39 @@ export default function FeedPost() {
   const { postid } = useParams();
   const [post, setPost] = useState<Post | undefined>(undefined);
   const location = useLocation();
-
+  const [isCommentBoxShown, setIsCommentBoxShown] = useState(false);
+  const [commentValue, setCommentValue] = useState("");
+  
   useEffect(() => {
     // only if this page became active
     if (postid && location.pathname === "/post/" + postid) {
-      NetworkService.getPostDetail(postid).then(post => {
-        setPost(post);
-        console.log(post);
-      });
+      refreshPostDetails();
     }
   }, [location.pathname]);
+  
+  function refreshPostDetails() {
+    if (!postid) return;
 
+    NetworkService.getPostDetail(postid).then(post => {
+      setPost(post);
+      console.log(post);
+    });
+  }
+
+  function onCommentSubmit(value: string) {
+    if (!postid) return;
+
+    NetworkService.postComment(postid, value, undefined).then(_ => {
+      enqueueSnackbar("Comment posted!");
+      setCommentValue("");
+      setIsCommentBoxShown(false);
+      refreshPostDetails();
+    }).catch(err => {
+      enqueueSnackbar("Failed to post comment: " + err.response.data.message, { variant: "error" });
+    });
+  }
+
+  // if post hasn't loaded yet
   if (!post) {
     return (
       <>
@@ -75,7 +99,7 @@ export default function FeedPost() {
             <Typography gutterBottom variant="h5">{post.title}</Typography>
           </Box>
           <Typography variant="caption">c/{post.community} &bull; p/{post.author} &bull; {UtilitiesService.timeSince(new Date(post.editDate))}</Typography>
-          <Typography variant="body2">
+          <Typography variant="body2" component="pre">
             {post.content}
           </Typography>
         </CardContent>
@@ -88,7 +112,7 @@ export default function FeedPost() {
               <PillButton variant="outlined" startIcon={<KeyboardArrowDown />} onClick={() => { console.log("downvote"); }}>
                 <Typography variant="body2">{UtilitiesService.formatNumber(post.numDownvotes)}</Typography>
               </PillButton>
-              <PillButton variant="outlined" startIcon={<Comment />} onClick={() => { console.log("comment"); }}>
+              <PillButton variant="outlined" startIcon={<Comment />} onClick={() => setIsCommentBoxShown(true)}>
                 <Typography variant="body2">{UtilitiesService.formatNumber(post.numComments)}</Typography>
               </PillButton>
             </Box>
@@ -98,6 +122,14 @@ export default function FeedPost() {
           </Box>
         </CardActions>
       </Card>
+      <PillButton variant="outlined" startIcon={<Add />} onClick={() => setIsCommentBoxShown(true)} sx={{ marginBottom: "12px" }}>
+        <Typography variant="body2">Add a comment</Typography>
+      </PillButton>
+      {isCommentBoxShown && 
+        <Box sx={{ marginBottom: "12px", width: "100%" }}>
+          <CommentEditor value={commentValue} setValue={setCommentValue} onSubmit={onCommentSubmit} />
+        </Box>
+      }
       {post.comments && organizeComments(post.comments)}
     </>
   );
