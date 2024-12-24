@@ -5,4 +5,5 @@ export default interface CommentDetail {
   content: string,
   creationDate: Date,
   editDate: Date,
+  parentId: string | undefined,
 }

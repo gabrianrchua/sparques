@@ -3,6 +3,7 @@ import FeedPost from "../components/feedpost/FeedPost";
 import { useLocation } from "react-router";
 import { useEffect, useState } from "react";
 import NetworkService from "../services/Network";
+import { Skeleton } from "@mui/material";
 
 export default function Feed() {
   const location = useLocation();
@@ -19,11 +20,19 @@ export default function Feed() {
     }
   }, [location.pathname]);
 
-  return (
+  return posts.length > 0 ? (
     <>
       {posts.map((post, index) => (
         <FeedPost key={index} post={post}/>
       ))}
+    </>
+  ) : (
+    <>
+      <Skeleton variant="rounded" height={100} sx={{ marginBottom: "20px" }} />
+      <Skeleton variant="rounded" height={100} sx={{ marginBottom: "20px" }} />
+      <Skeleton variant="rounded" height={100} sx={{ marginBottom: "20px" }} />
+      <Skeleton variant="rounded" height={100} sx={{ marginBottom: "20px" }} />
+      <Skeleton variant="rounded" height={100} sx={{ marginBottom: "20px" }} />
     </>
   );
 }

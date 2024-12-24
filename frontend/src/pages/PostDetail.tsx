@@ -1,13 +1,40 @@
-import { Box, Card, CardActionArea, CardActions, CardContent, Skeleton, Typography } from "@mui/material";
+import { Box, Card, CardActions, CardContent, Skeleton, Typography } from "@mui/material";
 import Post from "../interfaces/Post";
-import { Comment, KeyboardArrowDown, KeyboardArrowUp, PropaneSharp, Share } from "@mui/icons-material";
-//import styles from "./FeedPost.module.css";
+import { Comment, KeyboardArrowDown, KeyboardArrowUp, Share } from "@mui/icons-material";
 import UtilitiesService from "../services/Utilities";
 import PillButton from "../components/pillbutton/PillButton";
 import { useLocation, useParams } from "react-router";
 import { useEffect, useState } from "react";
 import NetworkService from "../services/Network";
 import CommentDisplay from "../components/comment/CommentDisplay";
+import CommentDetail from "../interfaces/CommentDetail";
+
+// helper functions
+function organizeComments(comments: CommentDetail[]): JSX.Element[] {
+  // map to group comments by parentId
+  const commentMap: Map<string | undefined, CommentDetail[]> = new Map();
+
+  // populate map with keys
+  for (const comment of comments) {
+    const parentId = comment.parentId;
+
+    if (!commentMap.has(parentId)) {
+      commentMap.set(parentId, []);
+    }
+    commentMap.get(parentId)!.push(comment);
+  }
+
+  // recursive function to organize comments
+  function buildCommentTree(parentId: string | undefined, depth: number): JSX.Element[] {
+    const childComments = commentMap.get(parentId) || [];
+    return childComments.flatMap(child => [
+      <CommentDisplay key={child._id} comment={child} depth={depth} />,
+      ...buildCommentTree(child._id, depth + 1),
+    ]);
+  }
+
+  return buildCommentTree(undefined, 0);
+}
 
 export default function FeedPost() {
   const { postid } = useParams();
@@ -24,8 +51,18 @@ export default function FeedPost() {
     }
   }, [location.pathname]);
 
-  return post ?
-  (
+  if (!post) {
+    return (
+      <>
+        <Skeleton variant="rounded" height={100} />
+        <Skeleton variant="text" sx={{ fontSize: '1rem' }} />
+        <Skeleton variant="text" sx={{ fontSize: '1rem' }} />
+        <Skeleton variant="text" sx={{ fontSize: '1rem' }} />
+      </>
+    );
+  }
+
+  return (
     <>
       <Card sx={{ marginBottom: '12px' }}>
         <CardContent>
@@ -56,16 +93,7 @@ export default function FeedPost() {
           </Box>
         </CardActions>
       </Card>
-      {post.comments && post.comments.map((comment, index) => 
-        <CommentDisplay comment={comment} key={index} />
-      )}
-    </>
-  ) : (
-    <>
-      <Skeleton variant="rounded" />
-      <Skeleton variant="text" sx={{ fontSize: '1rem' }} />
-      <Skeleton variant="text" sx={{ fontSize: '1rem' }} />
-      <Skeleton variant="text" sx={{ fontSize: '1rem' }} />
+      {post.comments && organizeComments(post.comments)}
     </>
   );
 }

@@ -81,7 +81,9 @@ function App() {
               >
                 <Menu />
               </IconButton>
-              <img src="/banner.png" alt="Sparques banner" height={42} />
+              <Link to="/" style={{ height: "42px" }}>
+                <img src="/banner.png" alt="Sparques banner" height={42} />
+              </Link>
             </Box>
             <TextField
               slotProps={{
