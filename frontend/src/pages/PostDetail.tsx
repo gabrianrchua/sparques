@@ -1,9 +1,9 @@
-import { Box, Card, CardActions, CardContent, Skeleton, Typography } from "@mui/material";
+import { Box, Card, CardActions, CardContent, IconButton, Skeleton, Typography } from "@mui/material";
 import Post from "../interfaces/Post";
-import { Comment, KeyboardArrowDown, KeyboardArrowUp, Share } from "@mui/icons-material";
+import { ArrowBack, Comment, KeyboardArrowDown, KeyboardArrowUp, Share } from "@mui/icons-material";
 import UtilitiesService from "../services/Utilities";
 import PillButton from "../components/pillbutton/PillButton";
-import { useLocation, useParams } from "react-router";
+import { Link, useLocation, useParams } from "react-router";
 import { useEffect, useState } from "react";
 import NetworkService from "../services/Network";
 import CommentDisplay from "../components/comment/CommentDisplay";
@@ -66,9 +66,14 @@ export default function FeedPost() {
     <>
       <Card sx={{ marginBottom: '12px' }}>
         <CardContent>
-          <Typography gutterBottom variant="h5" component="div">
-            {post.title}
-          </Typography>
+          <Box sx={{ display: "flex" }}>
+            <Link to="/" style={{ marginRight: "18px" }}>
+              <IconButton size="small">
+                <ArrowBack />
+              </IconButton>
+            </Link>
+            <Typography gutterBottom variant="h5">{post.title}</Typography>
+          </Box>
           <Typography variant="caption">c/{post.community} &bull; p/{post.author} &bull; {UtilitiesService.timeSince(new Date(post.editDate))}</Typography>
           <Typography variant="body2">
             {post.content}
