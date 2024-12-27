@@ -3,7 +3,7 @@ import Post from "../interfaces/Post";
 import { Add, ArrowBack, Comment, KeyboardArrowDown, KeyboardArrowUp, Share } from "@mui/icons-material";
 import UtilitiesService from "../services/Utilities";
 import PillButton from "../components/pillbutton/PillButton";
-import { Link, useLocation, useParams } from "react-router";
+import { Link, useLocation, useNavigate, useParams } from "react-router";
 import { useEffect, useState } from "react";
 import NetworkService from "../services/Network";
 import CommentDisplay from "../components/comment/CommentDisplay";
@@ -18,6 +18,7 @@ export default function FeedPost() {
   const [isCommentBoxShown, setIsCommentBoxShown] = useState(false);
   const [commentValue, setCommentValue] = useState("");
   const theme = useTheme();
+  const navigate = useNavigate();
 
   useEffect(() => {
     // only if this page became active
@@ -102,11 +103,9 @@ export default function FeedPost() {
       <Card sx={{ marginBottom: '12px' }}>
         <CardContent>
           <Box sx={{ display: "flex" }}>
-            <Link to="/" style={{ marginRight: "18px" }}>
-              <IconButton size="small">
-                <ArrowBack />
-              </IconButton>
-            </Link>
+            <IconButton size="small" sx={{ marginRight: "18px" }} onClick={() => navigate(-1)}>
+              <ArrowBack />
+            </IconButton>
             <Typography gutterBottom variant="h5">{post.title}</Typography>
           </Box>
           <Typography variant="caption">c/{post.community} &bull; p/{post.author} &bull; {UtilitiesService.timeSince(new Date(post.editDate))}</Typography>

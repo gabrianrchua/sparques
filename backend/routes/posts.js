@@ -13,12 +13,25 @@ router.get('/', optionalAuth, async (req, res) => {
     if (req.username) {
       // if user is logged in, join with vote status (up, down, none)
       const posts = await Post.aggregate([
-        {$lookup: {
-          from: "votes",
-          localField: "_id",
-          foreignField: "postId",
-          as: "votes"
-        }}
+        {
+          $lookup: {
+            from: "votes",
+            let: { postId: "$_id" },
+            pipeline: [
+              {
+                $match: {
+                  $expr: {
+                    $and: [
+                      { $eq: ["$postId", "$$postId"] },
+                      { $eq: ["$author", req.username] }
+                    ]
+                  }
+                }
+              }
+            ],
+            as: "votes"
+          }
+        }
       ]).sort({ creationDate: "descending" });
       res.json(posts);
     } else {
@@ -86,7 +99,7 @@ router.post('/:id/vote', requireAuth, async (req, res) => {
           { new: true, runValidators: true }
         );
         if (!post) res.status(404).json({ message: 'Post not found' });
-        
+
         // update vote
         const newVote = await Vote.findByIdAndUpdate(
           vote._id,
@@ -161,10 +174,10 @@ router.get('/:id', optionalAuth, async (req, res) => {
   try {
     const post = await Post.findById(req.params.id);
     if (!post) return res.status(404).json({ message: 'Post not found' });
-    
+
     // get comments
     const comments = await Comment.find({ postId: req.params.id }).sort({ creationDate: "descending" });
-    
+
     // if logged in, get upvote status
     if (req.username) {
       const vote = await Vote.find({ postId: req.params.id, author: req.username });

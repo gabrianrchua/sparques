@@ -1,5 +1,5 @@
-import { AppBar, Box, Divider, Drawer, IconButton, InputAdornment, List, ListItem, ListItemButton, ListItemIcon, ListItemText, TextField, Toolbar } from '@mui/material';
-import { AccountCircle, Home, LoginRounded, Menu, Search } from '@mui/icons-material';
+import { AppBar, Box, Button, Divider, Drawer, IconButton, InputAdornment, List, ListItem, ListItemButton, ListItemIcon, ListItemText, TextField, Toolbar } from '@mui/material';
+import { AccountCircle, Add, Home, LoginRounded, Menu, Search } from '@mui/icons-material';
 import styles from './App.module.css';
 import { useState } from 'react';
 import Feed from './pages/Feed';
@@ -7,6 +7,7 @@ import { BrowserRouter, Link, Route, Routes } from 'react-router';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import PostDetail from './pages/PostDetail';
+import NewPost from './pages/NewPost';
 
 const drawerWidth: number = 300;
 
@@ -60,7 +61,6 @@ function App() {
 
   return (
     <BrowserRouter>
-    
       <Box sx={{ display: 'flex' }}>
         <AppBar
           position="fixed"
@@ -85,6 +85,9 @@ function App() {
                 <img src="/banner.png" alt="Sparques banner" height={42} />
               </Link>
             </Box>
+            <Link to="/newpost" style={{ marginRight: "12px" }}>
+              <Button startIcon={<Add />} variant="outlined" color="info">Create</Button>
+            </Link>
             <TextField
               slotProps={{
                 input: {
@@ -97,6 +100,7 @@ function App() {
               }}
               variant="outlined"
               sx={{ display: { xs: "none", sm: "block" } }}
+              size="small"
             />
             <IconButton size="large">
               <AccountCircle />
@@ -144,6 +148,7 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/post/:postid" element={<PostDetail />} />
+            <Route path="/newpost" element={<NewPost />} />
           </Routes>
         </Box>
       </Box>
