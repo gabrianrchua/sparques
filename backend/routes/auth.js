@@ -24,6 +24,22 @@ const requireAuth = function (req, res, next) {
   }
 }
 
+const optionalAuth = function (req, res, next) {
+  const token = req.cookies.token;
+  if (!token) {
+    next();
+  } else {
+    jwt.verify(token, JWT_SECRET, (err, decoded) => {
+      if (err) {
+        next();
+      } else {
+        req.username = decoded.username;
+        next();
+      }
+    });
+  }
+}
+
 // @route   POST /api/auth/register
 // @desc    Register a new user
 router.post('/register', async (req, res) => {
@@ -82,3 +98,4 @@ router.get('/checkToken', requireAuth, function (req, res) {
 
 exports.router = router;
 exports.requireAuth = requireAuth;
+exports.optionalAuth = optionalAuth;

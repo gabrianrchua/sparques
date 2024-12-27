@@ -2,17 +2,31 @@ const express = require('express');
 const Post = require('../models/Post');
 const Comment = require('../models/Comment');
 const Vote = require('../models/Vote');
-const requireAuth = require('../routes/auth').requireAuth;
+const { requireAuth, optionalAuth } = require('../routes/auth');
 
 const router = express.Router();
 
 // @route   GET /api/posts
 // @desc    Get feed posts (for now, all posts)
-router.get('/', async (_, res) => {
+router.get('/', optionalAuth, async (req, res) => {
   try {
-    const posts = await Post.find().sort({ creationDate: "descending" });
-    res.json(posts);
+    if (req.username) {
+      // if user is logged in, join with vote status (up, down, none)
+      const posts = await Post.aggregate([
+        {$lookup: {
+          from: "votes",
+          localField: "_id",
+          foreignField: "postId",
+          as: "votes"
+        }}
+      ]).sort({ creationDate: "descending" });
+      res.json(posts);
+    } else {
+      const posts = await Post.find().sort({ creationDate: "descending" });
+      res.json(posts);
+    }
   } catch (error) {
+    console.error(error);
     res.status(500).json({ message: 'Server error', error: error });
   }
 });
@@ -112,15 +126,28 @@ router.post('/:id/vote', requireAuth, async (req, res) => {
 
 // @route   GET /api/posts/:id
 // @desc    Get a single post by ID with all details
-router.get('/:id', async (req, res) => {
+router.get('/:id', optionalAuth, async (req, res) => {
   try {
     const post = await Post.findById(req.params.id);
     if (!post) return res.status(404).json({ message: 'Post not found' });
+    
+    // get comments
     const comments = await Comment.find({ postId: req.params.id }).sort({ creationDate: "descending" });
-    res.json({
-      ...post.toObject(),
-      comments
-    });
+    
+    // if logged in, get upvote status
+    if (req.username) {
+      const vote = await Vote.find({ postId: req.params.id, author: req.username });
+      res.json({
+        ...post.toObject(),
+        comments,
+        votes: vote
+      });
+    } else {
+      res.json({
+        ...post.toObject(),
+        comments
+      });
+    }
   } catch (error) {
     res.status(500).json({ message: 'Server error', error: error });
   }

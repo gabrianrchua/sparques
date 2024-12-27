@@ -36,7 +36,7 @@ const NetworkService = {
 
   getPostDetail: async function (postid: string): Promise<Post> {
     try {
-      const result = await axios.get(BASE_URL + "/posts/" + postid);
+      const result = await axios.get(BASE_URL + "/posts/" + postid, { withCredentials: true });
       return result.data;
     } catch (error) {
       console.error(error);

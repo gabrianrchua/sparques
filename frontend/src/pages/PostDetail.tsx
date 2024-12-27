@@ -1,4 +1,4 @@
-import { Box, Card, CardActions, CardContent, IconButton, Skeleton, Typography } from "@mui/material";
+import { Box, Card, CardActions, CardContent, IconButton, Skeleton, Typography, useTheme } from "@mui/material";
 import Post from "../interfaces/Post";
 import { Add, ArrowBack, Comment, KeyboardArrowDown, KeyboardArrowUp, Share } from "@mui/icons-material";
 import UtilitiesService from "../services/Utilities";
@@ -44,12 +44,14 @@ export default function FeedPost() {
   const location = useLocation();
   const [isCommentBoxShown, setIsCommentBoxShown] = useState(false);
   const [commentValue, setCommentValue] = useState("");
+  const theme = useTheme();
 
   useEffect(() => {
     // only if this page became active
     if (postid && location.pathname === "/post/" + postid) {
       refreshPostDetails();
     }
+    // eslint-disable-next-line
   }, [location.pathname]);
 
   function refreshPostDetails() {
@@ -116,12 +118,42 @@ export default function FeedPost() {
         <CardActions>
           <Box sx={{ display: "flex", width: "100%" }}>
             <Box sx={{ flexGrow: 1 }}>
-              <PillButton variant="outlined" startIcon={<KeyboardArrowUp />} onClick={() => votePost(true)}>
-                <Typography variant="body2">{UtilitiesService.formatNumber(post.numUpvotes)}</Typography>
-              </PillButton>
-              <PillButton variant="outlined" startIcon={<KeyboardArrowDown />} onClick={() => votePost(false)}>
-                <Typography variant="body2">{UtilitiesService.formatNumber(post.numDownvotes)}</Typography>
-              </PillButton>
+              {post.votes && post.votes[0] && post.votes[0].isUpvote ? (
+                <PillButton
+                  variant="outlined"
+                  startIcon={<KeyboardArrowUp />}
+                  onClick={() => votePost(true)}
+                  sx={{ backgroundColor: theme.palette.primary.dark }}
+                >
+                  <Typography variant="body2">{UtilitiesService.formatNumber(post.numUpvotes)}</Typography>
+                </PillButton>
+              ) : (
+                <PillButton
+                  variant="outlined"
+                  startIcon={<KeyboardArrowUp />}
+                  onClick={() => votePost(true)}
+                >
+                  <Typography variant="body2">{UtilitiesService.formatNumber(post.numUpvotes)}</Typography>
+                </PillButton>
+              )}
+              {post.votes && post.votes[0] && !post.votes[0].isUpvote ? (
+                <PillButton
+                  variant="outlined"
+                  startIcon={<KeyboardArrowDown />}
+                  onClick={() => votePost(false)}
+                  sx={{ backgroundColor: theme.palette.error.dark }}
+                >
+                  <Typography variant="body2">{UtilitiesService.formatNumber(post.numDownvotes)}</Typography>
+                </PillButton>
+              ) : (
+                <PillButton
+                  variant="outlined"
+                  startIcon={<KeyboardArrowDown />}
+                  onClick={() => votePost(false)}
+                >
+                  <Typography variant="body2">{UtilitiesService.formatNumber(post.numDownvotes)}</Typography>
+                </PillButton>
+              )}
               <PillButton variant="outlined" startIcon={<Comment />} onClick={() => setIsCommentBoxShown(true)}>
                 <Typography variant="body2">{UtilitiesService.formatNumber(post.numComments)}</Typography>
               </PillButton>

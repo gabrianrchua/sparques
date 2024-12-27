@@ -1,4 +1,5 @@
 import CommentDetail from "./CommentDetail";
+import Vote from "./Vote";
 
 export default interface Post {
   _id: string,
@@ -12,4 +13,5 @@ export default interface Post {
   numUpvotes: number,
   numDownvotes: number,
   comments: CommentDetail[] | undefined,
+  votes: Vote[] | undefined,
 }
