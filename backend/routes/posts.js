@@ -86,6 +86,14 @@ router.post('/:id/vote', requireAuth, async (req, res) => {
           { new: true, runValidators: true }
         );
         if (!post) res.status(404).json({ message: 'Post not found' });
+        
+        // update vote
+        const newVote = await Vote.findByIdAndUpdate(
+          vote._id,
+          { isUpvote },
+          { new: true, runValidators: true }
+        );
+        return res.json(newVote);
       } else if (!vote.isUpvote && isUpvote) {
         // downvote --> upvote
         const post = await Post.findByIdAndUpdate(
@@ -94,16 +102,39 @@ router.post('/:id/vote', requireAuth, async (req, res) => {
           { new: true, runValidators: true }
         );
         if (!post) res.status(404).json({ message: 'Post not found' });
+
+        // update vote
+        const newVote = await Vote.findByIdAndUpdate(
+          vote._id,
+          { isUpvote },
+          { new: true, runValidators: true }
+        );
+        return res.json(newVote);
+      } else if (vote.isUpvote && isUpvote) {
+        // remove upvote
+        const post = await Post.findByIdAndUpdate(
+          req.params.id,
+          { $inc: { numUpvotes: -1 } },
+          { new: true, runValidators: true }
+        );
+        if (!post) res.status(404).json({ message: 'Post not found' });
+
+        // delete vote
+        const deletedVote = await Vote.findByIdAndDelete(vote._id);
+        return res.json(deletedVote);
       } else {
-        return res.json({ message: "No change required" });
+        // remove downvote
+        const post = await Post.findByIdAndUpdate(
+          req.params.id,
+          { $inc: { numDownvotes: -1 } },
+          { new: true, runValidators: true }
+        );
+        if (!post) res.status(404).json({ message: 'Post not found' });
+
+        // delete vote
+        const deletedVote = await Vote.findByIdAndDelete(vote._id);
+        return res.json(deletedVote);
       }
-      // update vote
-      const newVote = await Vote.findByIdAndUpdate(
-        vote._id,
-        { isUpvote },
-        { new: true, runValidators: true }
-      );
-      return res.json(newVote);
     } else {
       // add vote
       // update counters
