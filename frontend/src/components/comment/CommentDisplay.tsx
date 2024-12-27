@@ -1,10 +1,32 @@
-import { KeyboardArrowUp, KeyboardArrowDown, Share } from "@mui/icons-material";
+import { KeyboardArrowUp, KeyboardArrowDown, Share, Comment } from "@mui/icons-material";
 import { Card, CardContent, Typography, CardActions, Box, Divider } from "@mui/material";
 import CommentDetail from "../../interfaces/CommentDetail";
 import UtilitiesService from "../../services/Utilities";
 import PillButton from "../pillbutton/PillButton";
+import { useState } from "react";
+import CommentEditor from "./CommentEditor";
+import { useParams } from "react-router";
+import { enqueueSnackbar } from "notistack";
+import NetworkService from "../../services/Network";
 
-export default function CommentDisplay(props: {comment: CommentDetail, depth: number}) {
+export default function CommentDisplay(props: {comment: CommentDetail, depth: number, refreshParentPost: Function }) {
+  const [isCommentBoxShown, setIsCommentBoxShown] = useState(false);
+  const [commentValue, setCommentValue] = useState("");
+  const { postid } = useParams();
+
+  function onCommentSubmit(value: string) {
+    if (!postid) return;
+
+    NetworkService.postComment(postid, value, props.comment._id).then(_ => {
+      enqueueSnackbar("Comment posted!");
+      setCommentValue("");
+      setIsCommentBoxShown(false);
+      props.refreshParentPost();
+    }).catch(err => {
+      enqueueSnackbar("Failed to post comment: " + err.response.data.message, { variant: "error" });
+    });
+  }
+
   return (
     <Box sx={{ display: "flex" }}>
       {Array.from({ length: props.depth }, (_, index) => 
@@ -17,25 +39,30 @@ export default function CommentDisplay(props: {comment: CommentDetail, depth: nu
             {props.comment.content}
           </Typography>
         </CardContent>
-        {/*<CardActions>
-          <Box sx={{ display: "flex", width: "100%" }}>
+        <CardActions>
+          <Box sx={{ display: "flex", width: "100%", flexWrap: "wrap" }}>
             <Box sx={{ flexGrow: 1 }}>
-              <PillButton variant="outlined" startIcon={<KeyboardArrowUp />} onClick={() => { console.log("upvote"); }}>
+              {/*<PillButton variant="outlined" startIcon={<KeyboardArrowUp />} onClick={() => { console.log("upvote"); }}>
                 <Typography variant="body2">{UtilitiesService.formatNumber(post.numUpvotes)}</Typography>
               </PillButton>
               <PillButton variant="outlined" startIcon={<KeyboardArrowDown />} onClick={() => { console.log("downvote"); }}>
                 <Typography variant="body2">{UtilitiesService.formatNumber(post.numDownvotes)}</Typography>
-              </PillButton>
-              <PillButton variant="outlined" startIcon={<Comment />} onClick={() => { console.log("comment"); }}>
-                <Typography variant="body2">{UtilitiesService.formatNumber(post.numComments)}</Typography>
+              </PillButton>*/}
+              <PillButton variant="outlined" startIcon={<Comment />} onClick={() => setIsCommentBoxShown(true)}>
+                <Typography variant="body2">Reply</Typography>
               </PillButton>
             </Box>
             <PillButton variant="outlined" startIcon={<Share />} onClick={() => { console.log("share"); }}>
               <Typography variant="body2">Share</Typography>
             </PillButton>
           </Box>
-        </CardActions>*/}
+        </CardActions>
       </Card>
+      {isCommentBoxShown &&
+        <Box sx={{ marginBottom: "12px", width: "100%" }}>
+          <CommentEditor value={commentValue} setValue={setCommentValue} onSubmit={onCommentSubmit} submitText="Reply" />
+        </Box>
+      }
     </Box>
   );
 }

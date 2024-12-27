@@ -11,33 +11,6 @@ import CommentDetail from "../interfaces/CommentDetail";
 import CommentEditor from "../components/comment/CommentEditor";
 import { enqueueSnackbar } from "notistack";
 
-// helper functions
-function organizeComments(comments: CommentDetail[]): JSX.Element[] {
-  // map to group comments by parentId
-  const commentMap: Map<string | undefined, CommentDetail[]> = new Map();
-
-  // populate map with keys
-  for (const comment of comments) {
-    const parentId = comment.parentId;
-
-    if (!commentMap.has(parentId)) {
-      commentMap.set(parentId, []);
-    }
-    commentMap.get(parentId)!.push(comment);
-  }
-
-  // recursive function to organize comments
-  function buildCommentTree(parentId: string | undefined, depth: number): JSX.Element[] {
-    const childComments = commentMap.get(parentId) || [];
-    return childComments.flatMap(child => [
-      <CommentDisplay key={child._id} comment={child} depth={depth} />,
-      ...buildCommentTree(child._id, depth + 1),
-    ]);
-  }
-
-  return buildCommentTree(undefined, 0);
-}
-
 export default function FeedPost() {
   const { postid } = useParams();
   const [post, setPost] = useState<Post | undefined>(undefined);
@@ -53,6 +26,32 @@ export default function FeedPost() {
     }
     // eslint-disable-next-line
   }, [location.pathname]);
+
+  function organizeComments(comments: CommentDetail[]): JSX.Element[] {
+    // map to group comments by parentId
+    const commentMap: Map<string | undefined, CommentDetail[]> = new Map();
+  
+    // populate map with keys
+    for (const comment of comments) {
+      const parentId = comment.parentId;
+  
+      if (!commentMap.has(parentId)) {
+        commentMap.set(parentId, []);
+      }
+      commentMap.get(parentId)!.push(comment);
+    }
+  
+    // recursive function to organize comments
+    function buildCommentTree(parentId: string | undefined, depth: number): JSX.Element[] {
+      const childComments = commentMap.get(parentId) || [];
+      return childComments.flatMap(child => [
+        <CommentDisplay key={child._id} comment={child} depth={depth} refreshParentPost={refreshPostDetails} />,
+        ...buildCommentTree(child._id, depth + 1),
+      ]);
+    }
+  
+    return buildCommentTree(undefined, 0);
+  }
 
   function refreshPostDetails() {
     if (!postid) return;
