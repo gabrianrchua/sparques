@@ -1,6 +1,8 @@
 import { Button, FormControl, InputLabel, MenuItem, Select, TextField, Typography } from "@mui/material";
 import { useState } from "react";
 import { useNavigate } from "react-router";
+import NetworkService from "../services/Network";
+import { enqueueSnackbar } from "notistack";
 
 const SAMPLE_COMMUNITIES: string[] = [ "main", "funny", "memes", "gaming", "pics" ]; // TODO: fetch from server
 
@@ -11,14 +13,22 @@ export default function NewPost() {
   const [content, setContent] = useState("");
   const navigate = useNavigate();
 
+  function onSubmit() {
+    if (!title || !content || !community) return;
+    NetworkService.postNewPost(title, content, community).then(result => {
+      enqueueSnackbar("Post created!");
+      navigate("/post/" + result._id);
+    }).catch(err => {
+      enqueueSnackbar("Failed to post: " + err.response.data.message, { variant: "error" });
+    });
+  }
+
   return (
     <>
       <Typography variant="h4" sx={{ marginBottom: "18px" }}>New Post</Typography>
       <FormControl fullWidth sx={{ marginBottom: "12px" }}>
         <InputLabel>Community</InputLabel>
         <Select
-          labelId="demo-simple-select-label"
-          id="demo-simple-select"
           value={community}
           label="Community"
           onChange={event => setCommunity(event.target.value)}
@@ -44,8 +54,21 @@ export default function NewPost() {
         sx={{ marginBottom: "12px" }}
         fullWidth
       /><br />
-      <Button variant="contained" onClick={() => console.log("post")} sx={{ marginRight: "12px" }}>Post</Button>
-      <Button variant="outlined" color="info" onClick={() => navigate(-1)}>Discard</Button>
+      <Button
+        variant="contained"
+        sx={{ marginRight: "12px" }}
+        onClick={onSubmit}
+        disabled={!content || !title || !community}
+      >
+        Post
+      </Button>
+      <Button
+        variant="outlined"
+        color="info"
+        onClick={() => navigate(-1)}
+      >
+        Discard
+      </Button>
     </>
   );
 }

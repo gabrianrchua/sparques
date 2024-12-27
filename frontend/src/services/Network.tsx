@@ -68,6 +68,19 @@ const NetworkService = {
       console.error(error);
       throw error;
     }
+  },
+
+  postNewPost: async function (title: string, content: string, community: string) {
+    try {
+      const result = await axios.post(BASE_URL + "/posts",
+        { title, content, community },
+        { withCredentials: true }
+      );
+      return result.data;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
   }
 }
 
