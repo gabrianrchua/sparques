@@ -28,7 +28,7 @@ export default function CommentDisplay(props: {comment: CommentDetail, depth: nu
   }
 
   return (
-    <Box sx={{ display: "flex" }}>
+    <Box sx={{ display: "flex", flexWrap: "wrap" }}>
       {Array.from({ length: props.depth }, (_, index) => 
         <Divider orientation="vertical" flexItem key={index} sx={{ marginRight: "30px" }} />
       )}
@@ -40,7 +40,7 @@ export default function CommentDisplay(props: {comment: CommentDetail, depth: nu
           </Typography>
         </CardContent>
         <CardActions>
-          <Box sx={{ display: "flex", width: "100%", flexWrap: "wrap" }}>
+          <Box sx={{ display: "flex", width: "100%" }}>
             <Box sx={{ flexGrow: 1 }}>
               {/*<PillButton variant="outlined" startIcon={<KeyboardArrowUp />} onClick={() => { console.log("upvote"); }}>
                 <Typography variant="body2">{UtilitiesService.formatNumber(post.numUpvotes)}</Typography>
