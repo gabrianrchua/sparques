@@ -79,7 +79,7 @@ router.post('/', async (req, res) => {
           const token = jwt.sign(payload, JWT_SECRET, {
             expiresIn: '24h'
           });
-          res.cookie('token', token, { httpOnly: true }).json({ message: "Sign in successful" });
+          res.cookie('token', token, { httpOnly: true }).json({ message: "Sign in successful", username });
         }
       });
     } else {

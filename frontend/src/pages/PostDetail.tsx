@@ -86,6 +86,11 @@ export default function FeedPost() {
     })
   }
 
+  function handleBack() {
+    // TODO: save previous community viewed and then navigate there
+    navigate("/");
+  }
+
   // if post hasn't loaded yet
   if (!post) {
     return (
@@ -103,7 +108,7 @@ export default function FeedPost() {
       <Card sx={{ marginBottom: '12px' }}>
         <CardContent>
           <Box sx={{ display: "flex" }}>
-            <IconButton size="small" sx={{ marginRight: "18px" }} onClick={() => navigate(-1)}>
+            <IconButton size="small" sx={{ marginRight: "18px" }} onClick={handleBack}>
               <ArrowBack />
             </IconButton>
             <Typography gutterBottom variant="h5">{post.title}</Typography>

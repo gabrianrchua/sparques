@@ -4,6 +4,7 @@ import styles from "./Login.module.css";
 import { useState } from "react";
 import NetworkService from "../services/Network";
 import { useSnackbar } from "notistack";
+import UtilitiesService from "../services/Utilities";
 
 export default function Login() {
   const [username, setUsername] = useState("");
@@ -12,8 +13,9 @@ export default function Login() {
   const navigate = useNavigate();
 
   function login() {
-    NetworkService.postLogin(username, password).then(() => {
+    NetworkService.postLogin(username, password).then((result) => {
       enqueueSnackbar("Successfully logged in!");
+      UtilitiesService.saveUserInfo(result.username);
       navigate("/");
     }).catch(err => {
       enqueueSnackbar("Failed to log in: " + err.response.data.message, { variant: "error" });

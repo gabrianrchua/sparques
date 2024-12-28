@@ -32,6 +32,16 @@ const UtilitiesService = {
     const formatter = Intl.NumberFormat("en", { notation: "compact" });
     return formatter.format(num).toLowerCase();
   },
+
+  saveUserInfo: function(username: string) {
+    localStorage.setItem("userInfo", JSON.stringify({username}));
+  },
+
+  getUserInfo: function(): {username: string} | undefined {
+    const userInfo = localStorage.getItem("userInfo");
+    if (!userInfo) return undefined;
+    return JSON.parse(userInfo);
+  },
 }
 
 export default UtilitiesService;
