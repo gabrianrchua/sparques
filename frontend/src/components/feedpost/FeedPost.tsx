@@ -1,7 +1,7 @@
-import { Box, Button, ButtonProps, Card, CardActionArea, CardActions, CardContent, styled, Typography, useTheme } from "@mui/material";
+import { Box, Card, CardActionArea, CardActions, CardContent, Typography, useTheme } from "@mui/material";
 import Post from "../../interfaces/Post";
 import { Comment, KeyboardArrowDown, KeyboardArrowUp, Share } from "@mui/icons-material";
-//import styles from "./FeedPost.module.css";
+import styles from "./FeedPost.module.css";
 import UtilitiesService from "../../services/Utilities";
 import PillButton from "../pillbutton/PillButton";
 import { useNavigate } from "react-router";
@@ -45,8 +45,8 @@ export default function FeedPost(props: { post: Post }) {
             {post.title}
           </Typography>
           <Typography variant="caption">c/{post.community} &bull; p/{post.author} &bull; {UtilitiesService.timeSince(new Date(post.editDate))}</Typography>
-          <Typography variant="body2" component="pre">
-            {post.content.length > 300 ? post.content.slice(0, 300) + "..." : post.content}
+          <Typography variant="body2" component="pre" className={styles.contentText}>
+            {post.content}
           </Typography>
         </CardContent>
       </CardActionArea>

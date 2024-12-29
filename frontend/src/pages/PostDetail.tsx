@@ -114,7 +114,7 @@ export default function FeedPost() {
             <Typography gutterBottom variant="h5">{post.title}</Typography>
           </Box>
           <Typography variant="caption">c/{post.community} &bull; p/{post.author} &bull; {UtilitiesService.timeSince(new Date(post.editDate))}</Typography>
-          <Typography variant="body2" component="pre">
+          <Typography variant="body2" component="pre" sx={{ whiteSpace: "pre-wrap", wordWrap: "break-word" }}>
             {post.content}
           </Typography>
         </CardContent>
