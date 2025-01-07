@@ -7,36 +7,73 @@ const { requireAuth, optionalAuth } = require('../routes/auth');
 const router = express.Router();
 
 // @route   GET /api/posts
-// @desc    Get feed posts (for now, all posts)
+// @desc    Get feed posts with optional filter by community
 router.get('/', optionalAuth, async (req, res) => {
+  const community = req.query.community; // optional filter by community
+
   try {
     if (req.username) {
       // if user is logged in, join with vote status (up, down, none)
-      const posts = await Post.aggregate([
-        {
-          $lookup: {
-            from: "votes",
-            let: { postId: "$_id" },
-            pipeline: [
-              {
-                $match: {
-                  $expr: {
-                    $and: [
-                      { $eq: ["$postId", "$$postId"] },
-                      { $eq: ["$author", req.username] }
-                    ]
+      if (community) {
+        // filter by community too
+        const posts = await Post.find({ community }).aggregate([
+          {
+            $lookup: {
+              from: "votes",
+              let: { postId: "$_id" },
+              pipeline: [
+                {
+                  $match: {
+                    $expr: {
+                      $and: [
+                        { $eq: ["$postId", "$$postId"] },
+                        { $eq: ["$author", req.username] }
+                      ]
+                    }
                   }
                 }
-              }
-            ],
-            as: "votes"
+              ],
+              as: "votes"
+            }
           }
-        }
-      ]).sort({ creationDate: "descending" });
-      res.json(posts);
+        ]).sort({ creationDate: "descending" });
+        res.json(posts);
+      } else {
+        // no filter by community
+        const posts = await Post.aggregate([
+          {
+            $lookup: {
+              from: "votes",
+              let: { postId: "$_id" },
+              pipeline: [
+                {
+                  $match: {
+                    $expr: {
+                      $and: [
+                        { $eq: ["$postId", "$$postId"] },
+                        { $eq: ["$author", req.username] }
+                      ]
+                    }
+                  }
+                }
+              ],
+              as: "votes"
+            }
+          }
+        ]).sort({ creationDate: "descending" });
+        res.json(posts);
+      }
     } else {
-      const posts = await Post.find().sort({ creationDate: "descending" });
-      res.json(posts);
+      // user not logged in
+      if (community) {
+        // filter by community
+        const posts = await Post.find({ community }).sort({ creationDate: "descending" });
+        res.json(posts);
+      } else {
+        // no filter by community
+        const posts = await Post.find().sort({ creationDate: "descending" });
+        res.json(posts);
+      }
     }
   } catch (error) {
     console.error(error);

@@ -1,19 +1,22 @@
 import Post from "../interfaces/Post";
 import FeedPost from "../components/feedpost/FeedPost";
-import { useLocation } from "react-router";
+import { useLocation, useParams } from "react-router";
 import { useEffect, useState } from "react";
 import NetworkService from "../services/Network";
 import { Skeleton } from "@mui/material";
 
-export default function Feed() {
+export default function CommunityFeed() {
   const location = useLocation();
+  const { community } = useParams();
 
   const [posts, setPosts] = useState<Post[]>([]);
 
   useEffect(() => {
     // only if this page became active
-    if (location.pathname === "/") {
-      NetworkService.getPosts().then(posts => {
+    if (!community) return;
+    
+    if (location.pathname === "/c/" + community) {
+      NetworkService.getCommunityPosts(community).then(posts => {
         setPosts(posts);
         console.log(posts);
       });

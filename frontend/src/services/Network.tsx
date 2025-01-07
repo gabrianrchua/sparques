@@ -34,6 +34,16 @@ const NetworkService = {
     }
   },
 
+  getCommunityPosts: async function (community: string): Promise<Post[]> {
+    try {
+      const result = await axios.get(BASE_URL + "/posts?community=" + community, { withCredentials: true });
+      return result.data;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  },
+
   getPostDetail: async function (postid: string): Promise<Post> {
     try {
       const result = await axios.get(BASE_URL + "/posts/" + postid, { withCredentials: true });

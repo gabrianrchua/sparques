@@ -8,6 +8,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import PostDetail from './pages/PostDetail';
 import NewPost from './pages/NewPost';
+import CommunityFeed from './pages/CommunityFeed';
 
 const drawerWidth: number = 300;
 
@@ -149,6 +150,7 @@ function App() {
             <Route path="/register" element={<Register />} />
             <Route path="/post/:postid" element={<PostDetail />} />
             <Route path="/newpost" element={<NewPost />} />
+            <Route path="/c/:community" element={<CommunityFeed />} />
           </Routes>
         </Box>
       </Box>
