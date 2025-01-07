@@ -16,7 +16,8 @@ router.get('/', optionalAuth, async (req, res) => {
       // if user is logged in, join with vote status (up, down, none)
       if (community) {
         // filter by community too
-        const posts = await Post.find({ community }).aggregate([
+        const posts = await Post.aggregate([
+          { $match: { community } },
           {
             $lookup: {
               from: "votes",
