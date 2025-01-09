@@ -15,7 +15,7 @@ export default function Login() {
   function login() {
     NetworkService.postLogin(username, password).then((result) => {
       enqueueSnackbar("Successfully logged in!");
-      UtilitiesService.saveUserInfo(result.username);
+      UtilitiesService.saveUserInfo(result.username, new Date(result.expireDate));
       navigate("/");
     }).catch(err => {
       enqueueSnackbar("Failed to log in: " + err.response.data.message, { variant: "error" });

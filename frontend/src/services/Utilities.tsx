@@ -33,11 +33,11 @@ const UtilitiesService = {
     return formatter.format(num).toLowerCase();
   },
 
-  saveUserInfo: function(username: string) {
-    localStorage.setItem("userInfo", JSON.stringify({username}));
+  saveUserInfo: function(username: string, expireDate: Date) {
+    localStorage.setItem("userInfo", JSON.stringify({username, expireDate}));
   },
 
-  getUserInfo: function(): {username: string} | undefined {
+  getUserInfo: function(): {username: string, expireDate: Date} | undefined {
     const userInfo = localStorage.getItem("userInfo");
     if (!userInfo) return undefined;
     return JSON.parse(userInfo);
