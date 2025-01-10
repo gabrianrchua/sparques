@@ -9,6 +9,7 @@ const router = express.Router();
 // @route   GET /api/posts
 // @desc    Get feed posts with optional filter by community
 router.get('/', optionalAuth, async (req, res) => {
+  // TODO: also filter by author
   const community = req.query.community; // optional filter by community
 
   try {

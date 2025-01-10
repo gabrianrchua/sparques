@@ -10,6 +10,7 @@ require('dotenv').config();
 // import routes
 const postsRoutes = require('./routes/posts');
 const authRoutes = require('./routes/auth').router;
+const communitiesRoutes = require('./routes/communities');
 
 const PORT = process.env.PORT || 5000;
 
@@ -19,7 +20,7 @@ app.listen(PORT, () => {
 });
 
 // middlewares
-app.use(bodyParser.json());
+app.use(bodyParser.json({ limit: '2mb' }));
 app.use(morgan("combined"));
 app.use(cookieParser());
 app.use(cors({
@@ -37,5 +38,6 @@ app.get('/', (_, res) => {
 
 app.use('/api/posts', postsRoutes);
 app.use('/api/auth', authRoutes);
+app.use('/api/community', communitiesRoutes);
 
 module.exports = app;
