@@ -1,5 +1,6 @@
 import axios from "axios";
 import Post from "../interfaces/Post";
+import Community from "../interfaces/Community";
 
 const BASE_URL: string = "http://localhost:5000/api";
 
@@ -91,7 +92,29 @@ const NetworkService = {
       console.error(error);
       throw error;
     }
-  }
+  },
+
+  getCommunities: async function (): Promise<Community[]> {
+    try {
+      const result = await axios.get(BASE_URL + "/community");
+      return result.data;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  },
+
+  getCommunityInfo: async function (title: string): Promise<Community> {
+    try {
+      const result = await axios.get(BASE_URL + "/community?title=" + title);
+      return result.data;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  },
+
+  //postNewCommunity: async function (title: string)
 }
 
 export default NetworkService;

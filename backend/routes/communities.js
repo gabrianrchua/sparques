@@ -5,10 +5,33 @@ const router = express.Router();
 
 // @route   GET /api/community
 // @desc    Get list of communities
-router.get('/', async (_, res) => {
+router.get('/', async (req, res) => {
+  const title = req.query.title; // alternative to GET /api/community/:id
+  if (title) {
+    // get community info
+    const community = await Community.findOne({ title });
+    if (!community) return res.status(404).json({ message: "Community not found" });
+    res.json(community);
+  } else {
+    // get full list of communities
+    try {
+      const communities = await Community.find().select("-bannerImage");
+      res.json(communities);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Server error', error: error });
+    }
+  }
+
+});
+
+// @route   GET /api/community/:id
+// @desc    Get full community info by ID or name (title)
+router.get('/:id', async (req, res) => {
   try {
-    const communities = await Community.find();
-    res.json(communities);
+    let community = await Community.findById(req.params.id);
+    if (!community) return res.status(404).json({ message: "Community not found" });
+    res.json(community);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Server error', error: error });
@@ -43,7 +66,7 @@ router.post('/', async (req, res) => {
 router.put('/:id', async (req, res) => {
   // title cannot be modified later
   const { bannerImage, iconImage } = req.body;
-  
+
   if (!bannerImage || !bannerImage.mime || !bannerImage.data) bannerImage = undefined;
   if (!iconImage || !iconImage.mime || !iconImage.data) iconImage = undefined;
 

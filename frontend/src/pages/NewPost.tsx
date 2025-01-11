@@ -1,8 +1,9 @@
-import { Button, FormControl, InputLabel, MenuItem, Select, TextField, Typography } from "@mui/material";
-import { useState } from "react";
-import { useNavigate } from "react-router";
+import { Button, FormControl, InputLabel, MenuItem, Select, Skeleton, TextField, Typography } from "@mui/material";
+import { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router";
 import NetworkService from "../services/Network";
 import { enqueueSnackbar } from "notistack";
+import Community from "../interfaces/Community";
 
 const SAMPLE_COMMUNITIES: string[] = [ "main", "funny", "memes", "gaming", "pics" ]; // TODO: fetch from server
 
@@ -11,7 +12,19 @@ export default function NewPost() {
   const [community, setCommunity] = useState("main");
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
+  const [communities, setCommunities] = useState<Community[]>([]);
   const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    // only if this page became active
+    if (location.pathname === "/newpost") {
+      NetworkService.getCommunities().then(result => {
+        setCommunities(result);
+        console.log("Get community list", result);
+      });
+    }
+  }, [location.pathname]);
 
   function onSubmit() {
     if (!title || !content || !community) return;
@@ -23,7 +36,7 @@ export default function NewPost() {
     });
   }
 
-  return (
+  return communities.length > 0 ? (
     <>
       <Typography variant="h4" sx={{ marginBottom: "18px" }}>New Post</Typography>
       <FormControl fullWidth sx={{ marginBottom: "12px" }}>
@@ -33,8 +46,8 @@ export default function NewPost() {
           label="Community"
           onChange={event => setCommunity(event.target.value)}
         >
-          {SAMPLE_COMMUNITIES.map(value =>
-            <MenuItem value={value} key={value}>{value}</MenuItem>
+          {communities.map(value =>
+            <MenuItem value={value.title} key={value.title}>{value.title}</MenuItem>
           )}
         </Select>
       </FormControl>
@@ -69,6 +82,14 @@ export default function NewPost() {
       >
         Discard
       </Button>
+    </>
+  ) : (
+    <>
+      <Skeleton variant="rounded" height={100} sx={{ marginBottom: "20px" }} />
+      <Skeleton variant="rounded" height={100} sx={{ marginBottom: "20px" }} />
+      <Skeleton variant="rounded" height={100} sx={{ marginBottom: "20px" }} />
+      <Skeleton variant="rounded" height={100} sx={{ marginBottom: "20px" }} />
+      <Skeleton variant="rounded" height={100} sx={{ marginBottom: "20px" }} />
     </>
   );
 }

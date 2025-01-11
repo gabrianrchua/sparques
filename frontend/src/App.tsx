@@ -1,7 +1,7 @@
 import { AppBar, Box, Button, Divider, Drawer, IconButton, InputAdornment, List, ListItem, ListItemButton, ListItemIcon, ListItemText, TextField, Toolbar } from '@mui/material';
 import { AccountCircle, Add, Home, LoginRounded, Menu, Search } from '@mui/icons-material';
 import styles from './App.module.css';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Feed from './pages/Feed';
 import { BrowserRouter, Link, Route, Routes } from 'react-router';
 import Login from './pages/Login';
@@ -9,12 +9,22 @@ import Register from './pages/Register';
 import PostDetail from './pages/PostDetail';
 import NewPost from './pages/NewPost';
 import CommunityFeed from './pages/CommunityFeed';
+import Community from './interfaces/Community';
+import NetworkService from './services/Network';
 
 const drawerWidth: number = 300;
 
-function App() {
+export default function App() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
+  const [communities, setCommunities] = useState<Community[]>([]);
+
+  useEffect(() => {
+    NetworkService.getCommunities().then(result => {
+      setCommunities(result);
+      console.log("Get community list", result);
+    });
+  }, []);
 
   const handleDrawerClose = () => {
     setIsClosing(true);
@@ -56,6 +66,26 @@ function App() {
             </ListItemButton>
           </Link>
         </ListItem>
+        <Divider />
+        {communities.length > 0 && communities.map(community =>
+          <ListItem key={community.title} disablePadding>
+            <Link to={`/c/${community.title}`} className={styles.navLink}>
+              <ListItemButton>
+                <ListItemIcon>
+                  {community.iconImage ? (
+                    <img
+                      src={`data:${community.iconImage.mime};base64,${community.iconImage.data}`}
+                      style={{ width: "30px", borderRadius: "15px" }}
+                    />
+                  ) : (
+                    <Box sx={{ width: "30px", height: "30px", borderRadius: "15px", backgroundColor: "#808080" }} />
+                  )}
+                </ListItemIcon>
+                <ListItemText primary={`c/${community.title}`} />
+              </ListItemButton>
+            </Link>
+          </ListItem>
+        )}
       </List>
     </div>
   );
@@ -157,5 +187,3 @@ function App() {
     </BrowserRouter>
   );
 }
-
-export default App;
