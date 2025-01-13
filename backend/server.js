@@ -11,6 +11,7 @@ require('dotenv').config();
 const postsRoutes = require('./routes/posts');
 const authRoutes = require('./routes/auth').router;
 const communitiesRoutes = require('./routes/communities');
+const canvasRoutes = require('./routes/canvas');
 
 const PORT = process.env.PORT || 5000;
 
@@ -39,5 +40,6 @@ app.get('/', (_, res) => {
 app.use('/api/posts', postsRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/community', communitiesRoutes);
+app.use('/api/canvas', canvasRoutes);
 
 module.exports = app;
