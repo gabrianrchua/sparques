@@ -1,14 +1,6 @@
 const mongoose = require('mongoose');
 
-/**
- * base schema for all strokes
- * - brush: color, width, list of coordinates
- * - circle: color, width, center, radius,
- * - rectangle: color, width, top left coords, bottom right coords
- * - polygon: color, width, number of sides, center, side length
- * - text: color, font size, top left coordinates, text
- * - fill: color, coordinates
-*/
+// base schema for all strokes
 const strokeSchema = new mongoose.Schema({
   type: {
     type: String,
@@ -17,44 +9,66 @@ const strokeSchema = new mongoose.Schema({
   }
 }, { discriminatorKey: "type" });
 
+// coordinate schema (helper)
+const coordinateSchema = new mongoose.Schema({
+  x: {
+    type: Number,
+    required: true,
+  },
+  y: {
+    type: Number,
+    required: true,
+  },
+})
+
+/**
+ * discriminator schemas
+ * - brush: color, width, list of coordinates
+ * - circle: color, width, center, radius,
+ * - rectangle: color, width, top left coords, bottom right coords
+ * - polygon: color, width, number of sides, center, side length
+ * - text: color, font size, top left coordinates, text
+ * - fill: color, coordinates
+*/
+
 const brushSchema = new mongoose.Schema({
   color: { type: String, required: true },
   width: { type: Number, required: true },
-  coordinates: [{ x: Number, y: Number }],
+  coordinates: { type: [coordinateSchema], required: true },
 });
 
 const circleSchema = new mongoose.Schema({
   color: { type: String, required: true },
   width: { type: Number, required: true },
-  center: { x: Number, y: Number },
+  center: { type: coordinateSchema, required: true },
   radius: { type: Number, required: true },
 });
 
 const rectangleSchema = new mongoose.Schema({
   color: { type: String, required: true },
   width: { type: Number, required: true },
-  topLeftCoordinates: { x: Number, y: Number },
-  bottomRightCoordinates: { x: Number, y: Number },
+  topLeftCoordinates: { type: coordinateSchema, required: true },
+  bottomRightCoordinates: { type: coordinateSchema, required: true },
 });
 
 const polygonSchema = new mongoose.Schema({
   color: { type: String, required: true },
   width: { type: Number, required: true },
   numSides: { type: Number, required: true },
-  center: { x: Number, y: Number },
+  center: { type: coordinateSchema, required: true },
   sideLength: { type: Number, required: true },
 });
 
 const textSchema = new mongoose.Schema({
   color: { type: String, required: true },
   fontSize: { type: Number, required: true },
-  topLeftCoordindates: { x: Number, y: Number },
+  topLeftCoordindates: { type: coordinateSchema, required: true },
   text: { type: String, required: true },
 });
 
 const fillSchema = new mongoose.Schema({
   color: { type: String, required: true },
-  coordinates: { x: Number, y: Number },
+  coordinates: { type: coordinateSchema, required: true },
 });
 
 const Stroke = mongoose.model("Stroke", strokeSchema);

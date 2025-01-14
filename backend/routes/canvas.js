@@ -67,27 +67,27 @@ router.post("/:canvas", requireAuth, async (req, res) => {
         break;
       case "circle":
         strokeModel = Circle;
-        if (!toolData.color || !toolData.width || !toolData.center || !toolData.radius) return res.status(400).json({ message: "Missing one or more of required fields 'color', 'width', 'coordinates', 'radius'" });
+        if (!toolData.color || !toolData.width || !toolData.center || !toolData.center.x || !toolData.center.y || !toolData.radius) return res.status(400).json({ message: "Missing one or more of required fields 'color', 'width', 'center', 'radius'" });
         parameters = { type: "Circle", color: toolData.color, width: toolData.width, center: toolData.center, radius: toolData.radius };
         break;
       case "rectangle":
         strokeModel = Rectangle;
-        if (!toolData.color || !toolData.width || !toolData.topLeftCoordinates || !toolData.bottomRightCoordinates) return res.status(400).json({ message: "Missing one or more of required fields 'color', 'width', 'topLeftCoordinates', 'bottomRightCoordinates'" });
+        if (!toolData.color || !toolData.width || !toolData.topLeftCoordinates || !toolData.topLeftCoordinates.x || !toolData.topLeftCoordinates.y || !toolData.bottomRightCoordinates || !toolData.bottomRightCoordinates.x || !toolData.bottomRightCoordinates.y) return res.status(400).json({ message: "Missing one or more of required fields 'color', 'width', 'topLeftCoordinates', 'bottomRightCoordinates'" });
         parameters = { type: "Rectangle", color: toolData.color, width: toolData.width, topLeftCoordinates: toolData.topLeftCoordinates, bottomRightCoordinates: toolData.bottomRightCoordinates };
         break;
       case "polygon":
         strokeModel = Polygon;
-        if (!toolData.color || !toolData.width || !toolData.numSides || !toolData.center || !toolData.sideLength) return res.status(400).json({ message: "Missing one or more of required fields 'color', 'width', 'numSides', 'center', 'sideLength'" });
+        if (!toolData.color || !toolData.width || !toolData.numSides || !toolData.center || !toolData.center.x || !toolData.center.y || !toolData.sideLength) return res.status(400).json({ message: "Missing one or more of required fields 'color', 'width', 'numSides', 'center', 'sideLength'" });
         parameters = { type: "Polygon", color: toolData.color, width: toolData.width, numSides: toolData.numSides, center: toolData.center, sideLength: toolData.sideLength };
         break;
       case "text":
         strokeModel = Text;
-        if (!toolData.color || !toolData.fontSize || !toolData.topLeftCoordinates || !toolData.text) return res.status(400).json({ message: "Missing one or more of required fields 'color', 'fontSize', 'topLeftCoordinates', 'text'" });
+        if (!toolData.color || !toolData.fontSize || !toolData.topLeftCoordinates || !toolData.topLeftCoordinates.x || !toolData.topLeftCoordinates.y || !toolData.text) return res.status(400).json({ message: "Missing one or more of required fields 'color', 'fontSize', 'topLeftCoordinates', 'text'" });
         parameters = { type: "Text", color: toolData.color, fontSize: toolData.fontSize, topLeftCoordinates: toolData.topLeftCoordinates, text: toolData.text };
         break;
       case "fill":
         strokeModel = Fill;
-        if (!toolData.color || !toolData.coordinates) return res.status(400).json({ message: "Missing one or more of required fields 'color', 'coordinates'" });
+        if (!toolData.color || !toolData.coordinates || !toolData.coordinates.x || !toolData.coordinates.y) return res.status(400).json({ message: "Missing one or more of required fields 'color', 'coordinates'" });
         parameters = { type: "Fill", color: toolData.color, coordinates: toolData.coordinates };
         break;
       default:
