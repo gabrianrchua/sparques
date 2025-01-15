@@ -6,7 +6,11 @@ const strokeSchema = new mongoose.Schema({
     type: String,
     enum: ["Brush", "Circle", "Rectangle", "Polygon", "Text", "Line", "Fill"],
     required: true,
-  }
+  },
+  timestamp: {
+    type: Date,
+    default: Date.now,
+  },
 }, { discriminatorKey: "type" });
 
 // coordinate schema (helper)
