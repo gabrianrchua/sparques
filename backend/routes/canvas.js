@@ -1,10 +1,12 @@
 const express = require('express');
 const { requireAuth } = require('../routes/auth');
-const { Stroke, Brush, Circle, Rectangle, Polygon, Text, Fill } = require('../models/Stroke');
+const { Brush, Circle, Rectangle, Polygon, Text, Fill } = require('../models/Stroke');
+const { render } = require('../canvas/canvas');
 const Canvas = require('../models/Canvas');
 const Community = require('../models/Community');
 
 const router = express.Router();
+const MAX_STROKES = 5; // how many strokes before flushing to base image
 
 // @route   GET /api/canvas/
 // @desc    Get list of the names of all canvases
@@ -97,7 +99,17 @@ router.post("/:canvas", requireAuth, async (req, res) => {
     const newStroke = new strokeModel(parameters);
     //const savedStroke = await newStroke.save();
     await Canvas.findByIdAndUpdate(fetchedCanvas._id, { $push: { strokes: newStroke } });
-    return res.status(201).json(newStroke);
+    res.status(201).json(newStroke); // send response now and then flush strokes to base image next if necessary
+    
+    if (fetchedCanvas.strokes.length + 1 > MAX_STROKES) {
+      try {
+        fetchedCanvas = await Canvas.findOne({ title: canvas }); // re-fetch canvas after new stroke
+        newBaseImage = await render(fetchedCanvas.strokes, fetchedCanvas.baseImage);
+        await Canvas.findByIdAndUpdate(fetchedCanvas._id, { baseImage: newBaseImage, strokes: [] });
+      } catch (error) {
+        console.error(`Error while rendering out canvas "${canvas}"`, error);
+      }
+    }
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Server error', error: error });

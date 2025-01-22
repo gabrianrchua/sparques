@@ -16,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/gabrianrchua/sparques/issues"
   },
-  "homepage": "https://github.com/gabrianrchua/sparques#readme"
+  "homepage": "https://github.com/gabrianrchua/sparques#readme",
+  "dependencies": {
+    "canvas": "^3.0.1"
+  }
 }

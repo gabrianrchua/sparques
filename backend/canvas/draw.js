@@ -1,7 +1,3 @@
-/*
-  !!!! DO NOT USE THIS FILE !!!!!!!!!!!
-*/
-
 const { loadImage, Image } = require('canvas');
 
 /**
@@ -216,40 +212,36 @@ async function drawStrokes(ctx, strokes, baseImage) {
 
   const img = await loadImage(`data:image/png;base64,${baseImage}`);
 
-  console.log(img instanceof Image, ctx, img);
-
   ctx.drawImage(img, 0, 0, 512, 512);
 
-  for (const stroke of strokes) {
-    const { type, ...toolData } = stroke;
-
-    console.log("DRAW", type, toolData);
+  for (let i = 0; i < strokes.length; i++) {
+    const stroke = strokes[i].toObject();
 
     try {
-      switch (type) {
+      switch (stroke.type) {
         case "Brush":
-          brush(ctx, toolData);
+          brush(ctx, stroke);
           break;
         case "Circle":
-          circle(ctx, toolData);
+          circle(ctx, stroke);
           break;
         case "Rectangle":
-          rectangle(ctx, toolData);
+          rectangle(ctx, stroke);
           break;
         case "Polygon":
-          polygon(ctx, toolData);
+          polygon(ctx, stroke);
           break;
         case "Text":
-          text(ctx, toolData);
+          text(ctx, stroke);
           break;
         case "Fill":
-          fill(ctx, toolData);
+          fill(ctx, stroke);
           break;
         default:
-          console.error(`Invalid drawing stroke of type "${type}"`, toolData, err);
+          console.error(`Invalid drawing stroke of type "${stroke.type}"`, stroke, err);
       }
     } catch (err) {
-      console.error(`Error drawing stroke of type "${type}"`, toolData, err);
+      console.error(`Error drawing stroke of type "${stroke.type}"`, stroke, err);
     }
   }
 }
