@@ -40,8 +40,20 @@ const UtilitiesService = {
   getUserInfo: function(): {username: string, expireDate: Date} | undefined {
     const userInfo = localStorage.getItem("userInfo");
     if (!userInfo) return undefined;
-    return JSON.parse(userInfo);
+    let info = JSON.parse(userInfo);
+    info.expireDate = new Date(info.expireDate);
+    return info;
   },
+
+  isLoggedIn: function(): boolean {
+    const info = this.getUserInfo();
+
+    if (!info) return false;
+
+    if (info.expireDate && info.expireDate > new Date()) return true;
+
+    return false;
+  }
 }
 
 export default UtilitiesService;
