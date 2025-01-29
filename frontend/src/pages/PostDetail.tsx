@@ -3,7 +3,7 @@ import Post from "../interfaces/Post";
 import { Add, ArrowBack, Comment, KeyboardArrowDown, KeyboardArrowUp, Share } from "@mui/icons-material";
 import UtilitiesService from "../services/Utilities";
 import PillButton from "../components/pillbutton/PillButton";
-import { Link, useLocation, useNavigate, useParams } from "react-router";
+import { useLocation, useNavigate, useParams } from "react-router";
 import { useEffect, useState } from "react";
 import NetworkService from "../services/Network";
 import CommentDisplay from "../components/comment/CommentDisplay";

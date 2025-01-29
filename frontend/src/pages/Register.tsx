@@ -27,6 +27,7 @@ export default function Register() {
    */
   function validatePassword(): [boolean, string] {
     // https://stackoverflow.com/a/21456918
+    // eslint-disable-next-line
     const passwordRegex = /(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*\(\)])[A-Za-z\d!@#$%^&*\(\)]{8,}/;
     if (!password.match(passwordRegex)) return [true, "Password must be at least 8 characters and contain at least one symbol, uppercase letter, and number."];
     if (password !== confirmPassword) return [true, "Passwords do not match."];

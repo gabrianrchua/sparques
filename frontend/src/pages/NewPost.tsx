@@ -5,8 +5,6 @@ import NetworkService from "../services/Network";
 import { enqueueSnackbar } from "notistack";
 import Community from "../interfaces/Community";
 
-const SAMPLE_COMMUNITIES: string[] = [ "main", "funny", "memes", "gaming", "pics" ]; // TODO: fetch from server
-
 // create a new post
 export default function NewPost() {
   const [community, setCommunity] = useState("main");

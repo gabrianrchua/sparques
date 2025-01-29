@@ -11,6 +11,7 @@ import NewPost from './pages/NewPost';
 import CommunityFeed from './pages/CommunityFeed';
 import Community from './interfaces/Community';
 import NetworkService from './services/Network';
+import Canvas from './pages/Canvas';
 
 const drawerWidth: number = 300;
 
@@ -76,6 +77,7 @@ export default function App() {
                     <img
                       src={`data:${community.iconImage.mime};base64,${community.iconImage.data}`}
                       style={{ width: "30px", borderRadius: "15px" }}
+                      alt={`${community.title} community icon`}
                     />
                   ) : (
                     <Box sx={{ width: "30px", height: "30px", borderRadius: "15px", backgroundColor: "#808080" }} />
@@ -181,6 +183,7 @@ export default function App() {
             <Route path="/post/:postid" element={<PostDetail />} />
             <Route path="/newpost" element={<NewPost />} />
             <Route path="/c/:community" element={<CommunityFeed />} />
+            <Route path="/c/:community/canvas" element={<Canvas />} />
           </Routes>
         </Box>
       </Box>

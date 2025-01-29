@@ -28,6 +28,7 @@ export default function CommunityFeed() {
         console.log(info);
       });
     }
+  // eslint-disable-next-line
   }, [location.pathname]);
 
   return (posts.length > 0 && communityInfo) ? (
@@ -36,6 +37,7 @@ export default function CommunityFeed() {
         <img
           src={`data:${communityInfo.bannerImage.mime};base64,${communityInfo.bannerImage.data}`}
           style={{ width: "100%", marginBottom: "10px" }}
+          alt={`${communityInfo.title} community banner`}
         />
       )}
       <Box sx={{ display: "flex", marginBottom: "10px" }}>
@@ -43,6 +45,7 @@ export default function CommunityFeed() {
           <img
             src={`data:${communityInfo.iconImage.mime};base64,${communityInfo.iconImage.data}`}
             style={{ height: "40px", borderRadius: "20px", marginRight: "10px" }}
+            alt={`${communityInfo.title} community icon`}
           />
         )}
         <Typography variant="h4">c/{communityInfo.title}</Typography>

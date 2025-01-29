@@ -1,4 +1,4 @@
-import { KeyboardArrowUp, KeyboardArrowDown, Share, Comment } from "@mui/icons-material";
+import { Share, Comment } from "@mui/icons-material";
 import { Card, CardContent, Typography, CardActions, Box, Divider } from "@mui/material";
 import CommentDetail from "../../interfaces/CommentDetail";
 import UtilitiesService from "../../services/Utilities";
