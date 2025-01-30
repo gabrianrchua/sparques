@@ -2,6 +2,8 @@
   !!!! DO NOT USE THIS FILE !!!!!!!!!!!
 */
 
+// TODO: refactor to allow reuse of drawing functions in front and back end
+
 const { loadImage, Image } = require('canvas');
 
 /**

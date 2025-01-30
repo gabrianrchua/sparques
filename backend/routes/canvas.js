@@ -10,7 +10,7 @@ const MAX_STROKES = 5; // how many strokes before flushing to base image
 
 // @route   GET /api/canvas/
 // @desc    Get list of the names of all canvases
-router.get("/", async (req, res) => {
+router.get("/", async (_, res) => {
   try {
     const titles = await Canvas.find().select("title");
     res.json(titles);

@@ -1,6 +1,7 @@
 import axios from "axios";
 import Post from "../interfaces/Post";
 import Community from "../interfaces/Community";
+import CanvasDetails from "../interfaces/CanvasDetails";
 
 const BASE_URL: string = "http://localhost:5000/api";
 
@@ -114,7 +115,17 @@ const NetworkService = {
     }
   },
 
-  //postNewCommunity: async function (title: string)
+  //postNewCommunity: async function (title: string) // TODO: allow creation of new community
+
+  getCanvas: async function (community: string): Promise<CanvasDetails> {
+    try {
+      const result = await axios.get(BASE_URL + "/canvas/" + community);
+      return result.data;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  }
 }
 
 export default NetworkService;
