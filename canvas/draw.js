@@ -1,11 +1,3 @@
-/*
-  !!!! DO NOT USE THIS FILE !!!!!!!!!!!
-*/
-
-// TODO: refactor to allow reuse of drawing functions in front and back end
-
-const { loadImage, Image } = require('canvas');
-
 /**
  * Draw a brush stroke with an array of coordinates
  * @param {CanvasRenderingContext2D} ctx Canvas context 2d
@@ -207,53 +199,4 @@ function getPixel(pixelData, x, y) {
   }
 }
 
-/**
- * Clear canvas, apply base image, and draw all strokes
- * @param {CanvasRenderingContext2D} ctx Canvas context 2d
- * @param {Array} strokes List of stroke objects to draw onto the canvas
- * @param {string} baseImage base64 encoded `image/png`
- */
-async function drawStrokes(ctx, strokes, baseImage) {
-  if (!ctx || !strokes) throw new Error("Invalid arguments");
-
-  const img = await loadImage(`data:image/png;base64,${baseImage}`);
-
-  console.log(img instanceof Image, ctx, img);
-
-  ctx.drawImage(img, 0, 0, 512, 512);
-
-  for (const stroke of strokes) {
-    const { type, ...toolData } = stroke;
-
-    console.log("DRAW", type, toolData);
-
-    try {
-      switch (type) {
-        case "Brush":
-          brush(ctx, toolData);
-          break;
-        case "Circle":
-          circle(ctx, toolData);
-          break;
-        case "Rectangle":
-          rectangle(ctx, toolData);
-          break;
-        case "Polygon":
-          polygon(ctx, toolData);
-          break;
-        case "Text":
-          text(ctx, toolData);
-          break;
-        case "Fill":
-          fill(ctx, toolData);
-          break;
-        default:
-          console.error(`Invalid drawing stroke of type "${type}"`, toolData, err);
-      }
-    } catch (err) {
-      console.error(`Error drawing stroke of type "${type}"`, toolData, err);
-    }
-  }
-}
-
-module.exports = { brush, circle, rectangle, polygon, text, fill, drawStrokes };
+module.exports = { brush, circle, rectangle, polygon, text, fill };
