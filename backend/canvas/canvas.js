@@ -1,5 +1,5 @@
 const { loadImage, createCanvas } = require('canvas');
-const { brush, circle, rectangle, polygon, text, fill } = require("../../canvas/draw");
+const { brush, circle, rectangle, polygon, text, fill } = require("../../sparques-canvas/draw");
 
 /**
  * Clear canvas, apply base image, and draw all strokes
@@ -38,7 +38,7 @@ async function drawStrokes(ctx, strokes, baseImage) {
           fill(ctx, stroke);
           break;
         default:
-          console.error(`Invalid drawing stroke of type "${stroke.type}"`, stroke, err);
+          console.error(`Invalid drawing stroke of type "${stroke.type}"`, stroke);
       }
     } catch (err) {
       console.error(`Error drawing stroke of type "${stroke.type}"`, stroke, err);
