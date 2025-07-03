@@ -2,7 +2,7 @@
  * Draw a brush stroke with an array of coordinates
  * @param {CanvasRenderingContext2D} ctx Canvas context 2d
  */
-function brush(ctx, { color, width, coordinates }) {
+export function brush(ctx, { color, width, coordinates }) {
   if (!ctx || !color || !width || !coordinates || coordinates.length == 0) throw new Error("Invalid arguments");
 
   ctx.strokeStyle = color;
@@ -25,7 +25,7 @@ function brush(ctx, { color, width, coordinates }) {
  * Draw a circle
  * @param {CanvasRenderingContext2D} ctx Canvas context 2d
  */
-function circle(ctx, { color, width, center, radius }) {
+export function circle(ctx, { color, width, center, radius }) {
   if (!ctx || !color || !width || !center || !center.x || !center.y || !radius) throw new Error("Invalid arguments");
 
   ctx.strokeStyle = color;
@@ -40,7 +40,7 @@ function circle(ctx, { color, width, center, radius }) {
  * Draw a rectangle
  * @param {CanvasRenderingContext2D} ctx Canvas context 2d
  */
-function rectangle(ctx, { color, width, topLeftCoordinates, bottomRightCoordinates }) {
+export function rectangle(ctx, { color, width, topLeftCoordinates, bottomRightCoordinates }) {
   if (!ctx || !color || !width || !topLeftCoordinates || !topLeftCoordinates.x || !topLeftCoordinates.y || !bottomRightCoordinates || !bottomRightCoordinates.x || !bottomRightCoordinates.y) throw new Error("Invalid arguments");
 
   ctx.strokeStyle = color;
@@ -53,7 +53,7 @@ function rectangle(ctx, { color, width, topLeftCoordinates, bottomRightCoordinat
  * Draw an n-sided regular polygon
  * @param {CanvasRenderingContext2D} ctx Canvas context 2d
  */
-function polygon(ctx, { color, width, numSides, center, sideLength }) {
+export function polygon(ctx, { color, width, numSides, center, sideLength }) {
   if (!color || !width || !numSides || numSides < 3 || !center || !center.x || !center.y || !sideLength) throw new Error("Invalid arguments");
 
   ctx.strokeStyle = color;
@@ -74,7 +74,7 @@ function polygon(ctx, { color, width, numSides, center, sideLength }) {
  * Write text
  * @param {CanvasRenderingContext2D} ctx Canvas context 2d
  */
-function text(ctx, { color, fontSize, topLeftCoordinates, text }) {
+export function text(ctx, { color, fontSize, topLeftCoordinates, text }) {
   if (!color || !fontSize || !topLeftCoordinates || !topLeftCoordinates.x || !topLeftCoordinates.y || !text) throw new Error("Invalid arguments");
 
   ctx.font = `${fontSize}px sans-serif`;
@@ -91,7 +91,7 @@ function text(ctx, { color, fontSize, topLeftCoordinates, text }) {
  * Flood (bucket) fill at a section of the canvas
  * @param {CanvasRenderingContext2D} ctx Canvas context 2d
  */
-function fill(ctx, { color, coordinates }) {
+export function fill(ctx, { color, coordinates }) {
   if (!color || !coordinates || !coordinates.x || !coordinates.y) throw new Error("Invalid arguments");
 
   const x = coordinates.x;
@@ -191,12 +191,10 @@ function fill(ctx, { color, coordinates }) {
   }
 }
 
-function getPixel(pixelData, x, y) {
+export function getPixel(pixelData, x, y) {
   if (x < 0 || y < 0 || x >= pixelData.width || y >= pixelData.height) {
     return -1;  // impossible color
   } else {
     return pixelData.data[y * pixelData.width + x];
   }
 }
-
-module.exports = { brush, circle, rectangle, polygon, text, fill };
