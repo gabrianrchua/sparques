@@ -1,4 +1,0 @@
-declare module 'draw' {
-  import * as Draw from './draw';
-  export default Draw;
-}

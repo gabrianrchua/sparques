@@ -1,5 +1,5 @@
-const mongoose = require('mongoose');
-const { strokeSchema } = require('./Stroke');
+import mongoose from 'mongoose';
+import { strokeSchema } from './Stroke';
 
 const canvasSchema = new mongoose.Schema({
   title: { type: String, required: true, unique: true },
@@ -7,4 +7,4 @@ const canvasSchema = new mongoose.Schema({
   baseImage: { type: String, required: true }, // image/png 512x512
 });
 
-module.exports = mongoose.model("Canvas", canvasSchema);
+export default mongoose.model('Canvas', canvasSchema);

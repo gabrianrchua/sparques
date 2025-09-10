@@ -1,17 +1,20 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 // base schema for all strokes
-const strokeSchema = new mongoose.Schema({
-  type: {
-    type: String,
-    enum: ["Brush", "Circle", "Rectangle", "Polygon", "Text", "Line", "Fill"],
-    required: true,
+const strokeSchema = new mongoose.Schema(
+  {
+    type: {
+      type: String,
+      enum: ['Brush', 'Circle', 'Rectangle', 'Polygon', 'Text', 'Line', 'Fill'],
+      required: true,
+    },
+    timestamp: {
+      type: Date,
+      default: Date.now,
+    },
   },
-  timestamp: {
-    type: Date,
-    default: Date.now,
-  },
-}, { discriminatorKey: "type" });
+  { discriminatorKey: 'type' },
+);
 
 // coordinate schema (helper)
 const coordinateSchema = new mongoose.Schema({
@@ -23,7 +26,7 @@ const coordinateSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
-})
+});
 
 /**
  * discriminator schemas
@@ -33,7 +36,7 @@ const coordinateSchema = new mongoose.Schema({
  * - polygon: color, width, number of sides, center, side length
  * - text: color, font size, top left coordinates, text
  * - fill: color, coordinates
-*/
+ */
 
 const brushSchema = new mongoose.Schema({
   color: { type: String, required: true },
@@ -75,12 +78,12 @@ const fillSchema = new mongoose.Schema({
   coordinates: { type: coordinateSchema, required: true },
 });
 
-const Stroke = mongoose.model("Stroke", strokeSchema);
-const Brush = Stroke.discriminator("Brush", brushSchema);
-const Circle = Stroke.discriminator("Circle", circleSchema);
-const Rectangle = Stroke.discriminator("Rectangle", rectangleSchema);
-const Polygon = Stroke.discriminator("Polygon", polygonSchema);
-const Text = Stroke.discriminator("Text", textSchema);
-const Fill = Stroke.discriminator("Fill", fillSchema);
+const Stroke = mongoose.model('Stroke', strokeSchema);
+const Brush = Stroke.discriminator('Brush', brushSchema);
+const Circle = Stroke.discriminator('Circle', circleSchema);
+const Rectangle = Stroke.discriminator('Rectangle', rectangleSchema);
+const Polygon = Stroke.discriminator('Polygon', polygonSchema);
+const Text = Stroke.discriminator('Text', textSchema);
+const Fill = Stroke.discriminator('Fill', fillSchema);
 
-module.exports = { Stroke, Brush, Circle, Rectangle, Polygon, Text, Fill, strokeSchema }
+export { Stroke, Brush, Circle, Rectangle, Polygon, Text, Fill, strokeSchema };

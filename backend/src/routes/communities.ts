@@ -1,5 +1,5 @@
-const express = require('express');
-const Community = require('../models/Community');
+import express from 'express';
+import Community from '../models/Community';
 
 const router = express.Router();
 
@@ -10,27 +10,28 @@ router.get('/', async (req, res) => {
   if (title) {
     // get community info
     const community = await Community.findOne({ title });
-    if (!community) return res.status(404).json({ message: "Community not found" });
+    if (!community)
+      return res.status(404).json({ message: 'Community not found' });
     res.json(community);
   } else {
     // get full list of communities
     try {
-      const communities = await Community.find().select("-bannerImage");
+      const communities = await Community.find().select('-bannerImage');
       res.json(communities);
     } catch (error) {
       console.error(error);
       res.status(500).json({ message: 'Server error', error: error });
     }
   }
-
 });
 
 // @route   GET /api/community/:id
 // @desc    Get full community info by ID or name (title)
 router.get('/:id', async (req, res) => {
   try {
-    let community = await Community.findById(req.params.id);
-    if (!community) return res.status(404).json({ message: "Community not found" });
+    const community = await Community.findById(req.params.id);
+    if (!community)
+      return res.status(404).json({ message: 'Community not found' });
     res.json(community);
   } catch (error) {
     console.error(error);
@@ -41,10 +42,14 @@ router.get('/:id', async (req, res) => {
 // @route   POST /api/community
 // @desc    Create a new community
 router.post('/', async (req, res) => {
-  let { title, bannerImage, iconImage } = req.body;
-  if (!title) return res.status(400).json({ message: "Missing required field 'title'" });
+  let { bannerImage, iconImage } = req.body;
+  const title = req.body.title;
 
-  if (!bannerImage || !bannerImage.mime || !bannerImage.data) bannerImage = undefined;
+  if (!title)
+    return res.status(400).json({ message: "Missing required field 'title'" });
+
+  if (!bannerImage || !bannerImage.mime || !bannerImage.data)
+    bannerImage = undefined;
   if (!iconImage || !iconImage.mime || !iconImage.data) iconImage = undefined;
 
   try {
@@ -53,7 +58,7 @@ router.post('/', async (req, res) => {
     res.status(201).json(savedCommunity);
   } catch (error) {
     if (error.code == 11000) {
-      res.status(409).json({ message: "Community already exists" });
+      res.status(409).json({ message: 'Community already exists' });
     } else {
       console.error(error);
       res.status(500).json({ message: 'Server error', error: error });
@@ -65,19 +70,24 @@ router.post('/', async (req, res) => {
 // @desc    Update a community by ID
 router.put('/:id', async (req, res) => {
   // title cannot be modified later
-  const { bannerImage, iconImage } = req.body;
+  let { bannerImage, iconImage } = req.body;
 
-  if (!bannerImage || !bannerImage.mime || !bannerImage.data) bannerImage = undefined;
-  if (!iconImage || !iconImage.mime || !iconImage.data) iconImage = undefined;
+  if (!bannerImage || !bannerImage.mime || !bannerImage.data) {
+    bannerImage = undefined;
+  }
+  if (!iconImage || !iconImage.mime || !iconImage.data) {
+    iconImage = undefined;
+  }
 
   try {
     const community = await Community.findById(req.params.id);
-    if (!community) return res.status(404).json({ message: 'Community not found' });
+    if (!community)
+      return res.status(404).json({ message: 'Community not found' });
 
     const editedCommunity = await Community.findByIdAndUpdate(
       req.params.id,
       { bannerImage, iconImage },
-      { new: true, runValidators: true }
+      { new: true, runValidators: true },
     );
     res.json(editedCommunity);
   } catch (error) {
@@ -85,4 +95,4 @@ router.put('/:id', async (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;

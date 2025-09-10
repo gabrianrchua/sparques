@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const imageSchema = new mongoose.Schema({
   mime: {
@@ -8,7 +8,7 @@ const imageSchema = new mongoose.Schema({
   data: {
     type: String,
     required: true,
-  }
+  },
 });
 
 const communitySchema = new mongoose.Schema({
@@ -22,7 +22,7 @@ const communitySchema = new mongoose.Schema({
   },
   iconImage: {
     type: imageSchema,
-  }
+  },
 });
 
-module.exports = mongoose.model('Community', communitySchema);
+export default mongoose.model('Community', communitySchema);

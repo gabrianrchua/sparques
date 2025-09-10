@@ -1,8 +1,9 @@
-const express = require('express');
-const Post = require('../models/Post');
-const Comment = require('../models/Comment');
-const Vote = require('../models/Vote');
-const { requireAuth, optionalAuth } = require('../routes/auth');
+import express from 'express';
+import Post from '../models/Post';
+import Comment from '../models/Comment';
+import Vote from '../models/Vote';
+import { optionalAuth } from '../middleware/optional-auth';
+import { requireAuth } from '../middleware/require-auth';
 
 const router = express.Router();
 
@@ -21,59 +22,61 @@ router.get('/', optionalAuth, async (req, res) => {
           { $match: { community } },
           {
             $lookup: {
-              from: "votes",
-              let: { postId: "$_id" },
+              from: 'votes',
+              let: { postId: '$_id' },
               pipeline: [
                 {
                   $match: {
                     $expr: {
                       $and: [
-                        { $eq: ["$postId", "$$postId"] },
-                        { $eq: ["$author", req.username] }
-                      ]
-                    }
-                  }
-                }
+                        { $eq: ['$postId', '$$postId'] },
+                        { $eq: ['$author', req.username] },
+                      ],
+                    },
+                  },
+                },
               ],
-              as: "votes"
-            }
-          }
-        ]).sort({ creationDate: "descending" });
+              as: 'votes',
+            },
+          },
+        ]).sort({ creationDate: 'descending' });
         res.json(posts);
       } else {
         // no filter by community
         const posts = await Post.aggregate([
           {
             $lookup: {
-              from: "votes",
-              let: { postId: "$_id" },
+              from: 'votes',
+              let: { postId: '$_id' },
               pipeline: [
                 {
                   $match: {
                     $expr: {
                       $and: [
-                        { $eq: ["$postId", "$$postId"] },
-                        { $eq: ["$author", req.username] }
-                      ]
-                    }
-                  }
-                }
+                        { $eq: ['$postId', '$$postId'] },
+                        { $eq: ['$author', req.username] },
+                      ],
+                    },
+                  },
+                },
               ],
-              as: "votes"
-            }
-          }
-        ]).sort({ creationDate: "descending" });
+              as: 'votes',
+            },
+          },
+        ]).sort({ creationDate: 'descending' });
         res.json(posts);
       }
     } else {
       // user not logged in
       if (community) {
         // filter by community
-        const posts = await Post.find({ community }).sort({ creationDate: "descending" });
+        const posts = await Post.find({ community }).sort({
+          creationDate: 'descending',
+        });
         res.json(posts);
       } else {
         // no filter by community
-        const posts = await Post.find().sort({ creationDate: "descending" });
+        const posts = await Post.find().sort({ creationDate: 'descending' });
         res.json(posts);
       }
     }
@@ -87,9 +90,18 @@ router.get('/', optionalAuth, async (req, res) => {
 // @desc    Create a new post
 router.post('/', requireAuth, async (req, res) => {
   const { title, content, community } = req.body;
-  if (!title || !content || !community) return res.status(400).json({ message: "Missing one or more of required fields: 'title', 'content', 'community'" });
+  if (!title || !content || !community)
+    return res.status(400).json({
+      message:
+        "Missing one or more of required fields: 'title', 'content', 'community'",
+    });
   try {
-    const newPost = new Post({ title, content, author: req.username, community });
+    const newPost = new Post({
+      title,
+      content,
+      author: req.username,
+      community,
+    });
     const savedPost = await newPost.save();
     res.status(201).json(savedPost);
   } catch (error) {
@@ -101,22 +113,32 @@ router.post('/', requireAuth, async (req, res) => {
 // @desc    Create a new comment under a post
 router.post('/:id/comment', requireAuth, async (req, res) => {
   const { content, parentId } = req.body;
-  if (!content) return res.status(400).json({ message: "Missing required field 'content'" });
+  if (!content)
+    return res
+      .status(400)
+      .json({ message: "Missing required field 'content'" });
   try {
     // update counter
     const post = await Post.findByIdAndUpdate(
       req.params.id,
       { $inc: { numComments: 1 } },
-      { new: true, runValidators: true }
+      { new: true, runValidators: true },
     );
     if (!post) return res.status(404).json({ message: 'Post not found' });
 
-    const newComment = parentId ? new Comment({ postId: req.params.id, author: req.username, content, parentId }) : new Comment({ postId: req.params.id, author: req.username, content });
+    const newComment = parentId
+      ? new Comment({
+          postId: req.params.id,
+          author: req.username,
+          content,
+          parentId,
+        })
+      : new Comment({ postId: req.params.id, author: req.username, content });
     const savedComment = await newComment.save();
     res.status(201).json(savedComment);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Server error", error: error });
+    res.status(500).json({ message: 'Server error', error: error });
   }
 });
 
@@ -124,9 +146,15 @@ router.post('/:id/comment', requireAuth, async (req, res) => {
 // @desc    Upvote or downvote a post
 router.post('/:id/vote', requireAuth, async (req, res) => {
   const { isUpvote } = req.body;
-  if (isUpvote === undefined) return res.status(400).json({ message: "Missing required field 'isUpvote'" });
+  if (isUpvote === undefined)
+    return res
+      .status(400)
+      .json({ message: "Missing required field 'isUpvote'" });
   try {
-    const vote = await Vote.findOne({ postId: req.params.id, author: req.username });
+    const vote = await Vote.findOne({
+      postId: req.params.id,
+      author: req.username,
+    });
     if (vote) {
       // change vote
       // update counters
@@ -135,7 +163,7 @@ router.post('/:id/vote', requireAuth, async (req, res) => {
         const post = await Post.findByIdAndUpdate(
           req.params.id,
           { $inc: { numUpvotes: -1, numDownvotes: 1 } },
-          { new: true, runValidators: true }
+          { new: true, runValidators: true },
         );
         if (!post) res.status(404).json({ message: 'Post not found' });
 
@@ -143,7 +171,7 @@ router.post('/:id/vote', requireAuth, async (req, res) => {
         const newVote = await Vote.findByIdAndUpdate(
           vote._id,
           { isUpvote },
-          { new: true, runValidators: true }
+          { new: true, runValidators: true },
         );
         return res.json(newVote);
       } else if (!vote.isUpvote && isUpvote) {
@@ -151,7 +179,7 @@ router.post('/:id/vote', requireAuth, async (req, res) => {
         const post = await Post.findByIdAndUpdate(
           req.params.id,
           { $inc: { numUpvotes: 1, numDownvotes: -1 } },
-          { new: true, runValidators: true }
+          { new: true, runValidators: true },
         );
         if (!post) res.status(404).json({ message: 'Post not found' });
 
@@ -159,7 +187,7 @@ router.post('/:id/vote', requireAuth, async (req, res) => {
         const newVote = await Vote.findByIdAndUpdate(
           vote._id,
           { isUpvote },
-          { new: true, runValidators: true }
+          { new: true, runValidators: true },
         );
         return res.json(newVote);
       } else if (vote.isUpvote && isUpvote) {
@@ -167,7 +195,7 @@ router.post('/:id/vote', requireAuth, async (req, res) => {
         const post = await Post.findByIdAndUpdate(
           req.params.id,
           { $inc: { numUpvotes: -1 } },
-          { new: true, runValidators: true }
+          { new: true, runValidators: true },
         );
         if (!post) res.status(404).json({ message: 'Post not found' });
 
@@ -179,7 +207,7 @@ router.post('/:id/vote', requireAuth, async (req, res) => {
         const post = await Post.findByIdAndUpdate(
           req.params.id,
           { $inc: { numDownvotes: -1 } },
-          { new: true, runValidators: true }
+          { new: true, runValidators: true },
         );
         if (!post) res.status(404).json({ message: 'Post not found' });
 
@@ -194,16 +222,20 @@ router.post('/:id/vote', requireAuth, async (req, res) => {
       const post = await Post.findByIdAndUpdate(
         req.params.id,
         { $inc: edit },
-        { new: true, runValidators: true }
+        { new: true, runValidators: true },
       );
       if (!post) res.status(404).json({ message: 'Post not found' });
       // create vote
-      const newVote = new Vote({ postId: req.params.id, author: req.username, isUpvote });
+      const newVote = new Vote({
+        postId: req.params.id,
+        author: req.username,
+        isUpvote,
+      });
       const savedVote = await newVote.save();
       res.status(201).json(savedVote);
     }
   } catch (error) {
-    res.status(500).json({ message: "Server error", error: error });
+    res.status(500).json({ message: 'Server error', error: error });
   }
 });
 
@@ -215,20 +247,25 @@ router.get('/:id', optionalAuth, async (req, res) => {
     if (!post) return res.status(404).json({ message: 'Post not found' });
 
     // get comments
-    const comments = await Comment.find({ postId: req.params.id }).sort({ creationDate: "descending" });
+    const comments = await Comment.find({ postId: req.params.id }).sort({
+      creationDate: 'descending',
+    });
 
     // if logged in, get upvote status
     if (req.username) {
-      const vote = await Vote.find({ postId: req.params.id, author: req.username });
+      const vote = await Vote.find({
+        postId: req.params.id,
+        author: req.username,
+      });
       res.json({
         ...post.toObject(),
         comments,
-        votes: vote
+        votes: vote,
       });
     } else {
       res.json({
         ...post.toObject(),
-        comments
+        comments,
       });
     }
   } catch (error) {
@@ -240,16 +277,22 @@ router.get('/:id', optionalAuth, async (req, res) => {
 // @desc    Update a post by ID
 router.put('/:id', requireAuth, async (req, res) => {
   const { title, content } = req.body;
-  if (!title || !content) return res.status(400).json({ message: "Missing one or more of required fields 'title', 'content'" });
+  if (!title || !content)
+    return res.status(400).json({
+      message: "Missing one or more of required fields 'title', 'content'",
+    });
   try {
     const post = await Post.findById(req.params.id);
     if (!post) return res.status(404).json({ message: 'Post not found' });
-    if (post.author !== req.username) return res.status(403).json({ message: "User is forbidden to edit a post created by another user " });
+    if (post.author !== req.username)
+      return res.status(403).json({
+        message: 'User is forbidden to edit a post created by another user ',
+      });
 
     const editedPost = await Post.findByIdAndUpdate(
       req.params.id,
       { title, content, editDate: Date.now() },
-      { new: true, runValidators: true }
+      { new: true, runValidators: true },
     );
     res.json(editedPost);
   } catch (error) {
@@ -263,7 +306,10 @@ router.delete('/:id', requireAuth, async (req, res) => {
   try {
     const post = await Post.findById(req.params.id);
     if (!post) return res.status(404).json({ message: 'Post not found' });
-    if (post.author !== req.username) return res.status(403).json({ message: "User is forbidden to delete a post created by another user " });
+    if (post.author !== req.username)
+      return res.status(403).json({
+        message: 'User is forbidden to delete a post created by another user ',
+      });
 
     await Post.findByIdAndDelete(req.params.id);
     res.json({ message: 'Post deleted successfully' });
@@ -272,4 +318,4 @@ router.delete('/:id', requireAuth, async (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;

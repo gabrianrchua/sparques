@@ -1,9 +1,24 @@
+import {
+  BrushStroke,
+  CircleStroke,
+  FillStroke,
+  PolygonStroke,
+  RectangleStroke,
+  TextStroke,
+} from './types';
+import { CanvasRenderingContext2D } from 'canvas';
+
 /**
  * Draw a brush stroke with an array of coordinates
- * @param {CanvasRenderingContext2D} ctx Canvas context 2d
+ * @param ctx Canvas context 2d
  */
-export function brush(ctx, { color, width, coordinates }) {
-  if (!ctx || !color || !width || !coordinates || coordinates.length == 0) throw new Error("Invalid arguments");
+export function brush(
+  ctx: CanvasRenderingContext2D,
+  { color, width, coordinates }: BrushStroke
+) {
+  if (!ctx || !color || !width || !coordinates || coordinates.length == 0) {
+    throw new Error('Invalid arguments');
+  }
 
   ctx.strokeStyle = color;
   ctx.lineWidth = width;
@@ -23,10 +38,14 @@ export function brush(ctx, { color, width, coordinates }) {
 
 /**
  * Draw a circle
- * @param {CanvasRenderingContext2D} ctx Canvas context 2d
+ * @param ctx Canvas context 2d
  */
-export function circle(ctx, { color, width, center, radius }) {
-  if (!ctx || !color || !width || !center || !center.x || !center.y || !radius) throw new Error("Invalid arguments");
+export function circle(
+  ctx: CanvasRenderingContext2D,
+  { color, width, center, radius }: CircleStroke
+) {
+  if (!ctx || !color || !width || !center || !center.x || !center.y || !radius)
+    throw new Error('Invalid arguments');
 
   ctx.strokeStyle = color;
   ctx.lineWidth = width;
@@ -38,33 +57,71 @@ export function circle(ctx, { color, width, center, radius }) {
 
 /**
  * Draw a rectangle
- * @param {CanvasRenderingContext2D} ctx Canvas context 2d
+ * @param ctx Canvas context 2d
  */
-export function rectangle(ctx, { color, width, topLeftCoordinates, bottomRightCoordinates }) {
-  if (!ctx || !color || !width || !topLeftCoordinates || !topLeftCoordinates.x || !topLeftCoordinates.y || !bottomRightCoordinates || !bottomRightCoordinates.x || !bottomRightCoordinates.y) throw new Error("Invalid arguments");
+export function rectangle(
+  ctx: CanvasRenderingContext2D,
+  { color, width, topLeftCoordinates, bottomRightCoordinates }: RectangleStroke
+) {
+  if (
+    !ctx ||
+    !color ||
+    !width ||
+    !topLeftCoordinates ||
+    !topLeftCoordinates.x ||
+    !topLeftCoordinates.y ||
+    !bottomRightCoordinates ||
+    !bottomRightCoordinates.x ||
+    !bottomRightCoordinates.y
+  )
+    throw new Error('Invalid arguments');
 
   ctx.strokeStyle = color;
   ctx.lineWidth = width;
 
-  ctx.strokeRect(topLeftCoordinates.x, topLeftCoordinates.y, Math.abs(topLeftCoordinates.x - bottomRightCoordinates.x), Math.abs(topLeftCoordinates.y - bottomRightCoordinates.y));
+  ctx.strokeRect(
+    topLeftCoordinates.x,
+    topLeftCoordinates.y,
+    Math.abs(topLeftCoordinates.x - bottomRightCoordinates.x),
+    Math.abs(topLeftCoordinates.y - bottomRightCoordinates.y)
+  );
 }
 
 /**
  * Draw an n-sided regular polygon
- * @param {CanvasRenderingContext2D} ctx Canvas context 2d
+ * @param ctx Canvas context 2d
  */
-export function polygon(ctx, { color, width, numSides, center, sideLength }) {
-  if (!color || !width || !numSides || numSides < 3 || !center || !center.x || !center.y || !sideLength) throw new Error("Invalid arguments");
+export function polygon(
+  ctx: CanvasRenderingContext2D,
+  { color, width, numSides, center, sideLength }: PolygonStroke
+) {
+  if (
+    !color ||
+    !width ||
+    !numSides ||
+    numSides < 3 ||
+    !center ||
+    !center.x ||
+    !center.y ||
+    !sideLength
+  )
+    throw new Error('Invalid arguments');
 
   ctx.strokeStyle = color;
   ctx.lineWidth = width;
 
   // https://stackoverflow.com/a/11354824
   ctx.beginPath();
-  ctx.moveTo(center.x + sideLength * Math.cos(0), center.y + sideLength * Math.sin(0));
+  ctx.moveTo(
+    center.x + sideLength * Math.cos(0),
+    center.y + sideLength * Math.sin(0)
+  );
 
   for (let i = 1; i <= numSides; i++) {
-    ctx.lineTo(center.x + sideLength * Math.cos(i * 2 * Math.PI / numSides), center.y + sideLength * Math.sin(i * 2 * Math.PI / numSides));
+    ctx.lineTo(
+      center.x + sideLength * Math.cos((i * 2 * Math.PI) / numSides),
+      center.y + sideLength * Math.sin((i * 2 * Math.PI) / numSides)
+    );
   }
 
   ctx.stroke();
@@ -72,15 +129,31 @@ export function polygon(ctx, { color, width, numSides, center, sideLength }) {
 
 /**
  * Write text
- * @param {CanvasRenderingContext2D} ctx Canvas context 2d
+ * @param ctx Canvas context 2d
  */
-export function text(ctx, { color, fontSize, topLeftCoordinates, text }) {
-  if (!color || !fontSize || !topLeftCoordinates || !topLeftCoordinates.x || !topLeftCoordinates.y || !text) throw new Error("Invalid arguments");
+export function text(
+  ctx: CanvasRenderingContext2D,
+  { color, fontSize, topLeftCoordinates, text }: TextStroke
+) {
+  if (
+    !color ||
+    !fontSize ||
+    !topLeftCoordinates ||
+    !topLeftCoordinates.x ||
+    !topLeftCoordinates.y ||
+    !text
+  )
+    throw new Error('Invalid arguments');
 
   ctx.font = `${fontSize}px sans-serif`;
   ctx.fillStyle = color;
 
-  ctx.fillText(text, topLeftCoordinates.x, topLeftCoordinates.y, Math.abs(topLeftCoordinates.x - 512));
+  ctx.fillText(
+    text,
+    topLeftCoordinates.x,
+    topLeftCoordinates.y,
+    Math.abs(topLeftCoordinates.x - 512)
+  );
 }
 
 /*
@@ -89,14 +162,18 @@ export function text(ctx, { color, fontSize, topLeftCoordinates, text }) {
 
 /**
  * Flood (bucket) fill at a section of the canvas
- * @param {CanvasRenderingContext2D} ctx Canvas context 2d
+ * @param ctx Canvas context 2d
  */
-export function fill(ctx, { color, coordinates }) {
-  if (!color || !coordinates || !coordinates.x || !coordinates.y) throw new Error("Invalid arguments");
+export function fill(
+  ctx: CanvasRenderingContext2D,
+  { color, coordinates }: FillStroke
+) {
+  if (!color || !coordinates || !coordinates.x || !coordinates.y)
+    throw new Error('Invalid arguments');
 
   const x = coordinates.x;
   const y = coordinates.y;
-  color = parseInt("0xFF" + color.replace("#", ""), 16);
+  const intColor = parseInt('0xFF' + color.replace('#', ''), 16);
 
   // read the pixels in the canvas
   const imageData = ctx.getImageData(0, 0, ctx.canvas.width, ctx.canvas.height);
@@ -113,13 +190,15 @@ export function fill(ctx, { color, coordinates }) {
   const targetColor = getPixel(pixelData, x, y);
 
   // check we are actually filling a different color
-  if (targetColor !== color) {
+  if (targetColor !== intColor) {
     const spansToCheck = [];
 
+    // @ts-expect-error
     function addSpan(left, right, y, direction) {
       spansToCheck.push({ left, right, y, direction });
     }
 
+    // @ts-expect-error
     function checkSpan(left, right, y, direction) {
       let inSpan = false;
       let start;
@@ -151,17 +230,17 @@ export function fill(ctx, { color, coordinates }) {
 
       // do left until we hit something, while we do this check above and below and add
       let l = left;
-      for (; ;) {
+      for (;;) {
         --l;
         const color = getPixel(pixelData, l, y);
         if (color !== targetColor) {
           break;
         }
       }
-      ++l
+      ++l;
 
       let r = right;
-      for (; ;) {
+      for (;;) {
         ++r;
         const color = getPixel(pixelData, r, y);
         if (color !== targetColor) {
@@ -170,7 +249,7 @@ export function fill(ctx, { color, coordinates }) {
       }
 
       const lineOffset = y * pixelData.width;
-      pixelData.data.fill(color, lineOffset + l, lineOffset + r);
+      pixelData.data.fill(intColor, lineOffset + l, lineOffset + r);
 
       if (direction <= 0) {
         checkSpan(l, r, y - 1, -1);
@@ -193,7 +272,7 @@ export function fill(ctx, { color, coordinates }) {
 
 export function getPixel(pixelData, x, y) {
   if (x < 0 || y < 0 || x >= pixelData.width || y >= pixelData.height) {
-    return -1;  // impossible color
+    return -1; // impossible color
   } else {
     return pixelData.data[y * pixelData.width + x];
   }
