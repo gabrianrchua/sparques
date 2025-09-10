@@ -19,7 +19,10 @@ const userSchema = new mongoose.Schema(
   },
   {
     methods: {
-      isCorrectPassword(password, callback) {
+      isCorrectPassword(
+        password: string,
+        callback: (err: Error | undefined, same?: boolean) => void,
+      ) {
         bcrypt.compare(password, this.password, (err, same) => {
           if (err) {
             callback(err);

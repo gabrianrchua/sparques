@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import { JWT_SECRET } from '../config/env';
+import { SparquesJwtPayload } from '../types/sparques-jwt-payload';
 
 export const optionalAuth = (
   req: Request,
@@ -11,13 +12,12 @@ export const optionalAuth = (
   if (!token) {
     next();
   } else {
-    jwt.verify(token, JWT_SECRET, (err, decoded) => {
-      if (err) {
-        next();
-      } else {
-        req.username = decoded.username;
-        next();
-      }
-    });
+    try {
+      const decoded = jwt.verify(token, JWT_SECRET) as SparquesJwtPayload;
+      res.locals.username = decoded.username;
+      next();
+    } catch {
+      next();
+    }
   }
 };

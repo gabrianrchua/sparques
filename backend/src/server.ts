@@ -1,9 +1,9 @@
 import express from 'express';
-import { connectDB } from './config/db';
 import bodyParser from 'body-parser';
 import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
+import { connectDB } from './config/db';
 
 // import routes
 import postsRoutes from './routes/posts';

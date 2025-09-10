@@ -14,7 +14,7 @@ router.get('/', optionalAuth, async (req, res) => {
   const community = req.query.community; // optional filter by community
 
   try {
-    if (req.username) {
+    if (res.locals.username) {
       // if user is logged in, join with vote status (up, down, none)
       if (community) {
         // filter by community too
@@ -30,7 +30,7 @@ router.get('/', optionalAuth, async (req, res) => {
                     $expr: {
                       $and: [
                         { $eq: ['$postId', '$$postId'] },
-                        { $eq: ['$author', req.username] },
+                        { $eq: ['$author', res.locals.username] },
                       ],
                     },
                   },
@@ -54,7 +54,7 @@ router.get('/', optionalAuth, async (req, res) => {
                     $expr: {
                       $and: [
                         { $eq: ['$postId', '$$postId'] },
-                        { $eq: ['$author', req.username] },
+                        { $eq: ['$author', res.locals.username] },
                       ],
                     },
                   },
@@ -99,7 +99,7 @@ router.post('/', requireAuth, async (req, res) => {
     const newPost = new Post({
       title,
       content,
-      author: req.username,
+      author: res.locals.username,
       community,
     });
     const savedPost = await newPost.save();
@@ -129,11 +129,15 @@ router.post('/:id/comment', requireAuth, async (req, res) => {
     const newComment = parentId
       ? new Comment({
           postId: req.params.id,
-          author: req.username,
+          author: res.locals.username,
           content,
           parentId,
         })
-      : new Comment({ postId: req.params.id, author: req.username, content });
+      : new Comment({
+          postId: req.params.id,
+          author: res.locals.username,
+          content,
+        });
     const savedComment = await newComment.save();
     res.status(201).json(savedComment);
   } catch (error) {
@@ -153,7 +157,7 @@ router.post('/:id/vote', requireAuth, async (req, res) => {
   try {
     const vote = await Vote.findOne({
       postId: req.params.id,
-      author: req.username,
+      author: res.locals.username,
     });
     if (vote) {
       // change vote
@@ -228,7 +232,7 @@ router.post('/:id/vote', requireAuth, async (req, res) => {
       // create vote
       const newVote = new Vote({
         postId: req.params.id,
-        author: req.username,
+        author: res.locals.username,
         isUpvote,
       });
       const savedVote = await newVote.save();
@@ -252,10 +256,10 @@ router.get('/:id', optionalAuth, async (req, res) => {
     });
 
     // if logged in, get upvote status
-    if (req.username) {
+    if (res.locals.username) {
       const vote = await Vote.find({
         postId: req.params.id,
-        author: req.username,
+        author: res.locals.username,
       });
       res.json({
         ...post.toObject(),
@@ -284,7 +288,7 @@ router.put('/:id', requireAuth, async (req, res) => {
   try {
     const post = await Post.findById(req.params.id);
     if (!post) return res.status(404).json({ message: 'Post not found' });
-    if (post.author !== req.username)
+    if (post.author !== res.locals.username)
       return res.status(403).json({
         message: 'User is forbidden to edit a post created by another user ',
       });
@@ -306,7 +310,7 @@ router.delete('/:id', requireAuth, async (req, res) => {
   try {
     const post = await Post.findById(req.params.id);
     if (!post) return res.status(404).json({ message: 'Post not found' });
-    if (post.author !== req.username)
+    if (post.author !== res.locals.username)
       return res.status(403).json({
         message: 'User is forbidden to delete a post created by another user ',
       });

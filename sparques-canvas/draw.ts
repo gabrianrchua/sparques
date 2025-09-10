@@ -164,15 +164,14 @@ export function text(
  * Flood (bucket) fill at a section of the canvas
  * @param ctx Canvas context 2d
  */
-export function fill(
+export const fill = (
   ctx: CanvasRenderingContext2D,
   { color, coordinates }: FillStroke
-) {
+) => {
   if (!color || !coordinates || !coordinates.x || !coordinates.y)
     throw new Error('Invalid arguments');
 
-  const x = coordinates.x;
-  const y = coordinates.y;
+  const { x, y } = coordinates;
   const intColor = parseInt('0xFF' + color.replace('#', ''), 16);
 
   // read the pixels in the canvas
@@ -191,19 +190,27 @@ export function fill(
 
   // check we are actually filling a different color
   if (targetColor !== intColor) {
-    const spansToCheck = [];
+    const spansToCheck: Span[] = [];
 
-    // @ts-expect-error
-    function addSpan(left, right, y, direction) {
+    const addSpan = (
+      left: number,
+      right: number,
+      y: number,
+      direction: number
+    ) => {
       spansToCheck.push({ left, right, y, direction });
-    }
+    };
 
-    // @ts-expect-error
-    function checkSpan(left, right, y, direction) {
-      let inSpan = false;
-      let start;
-      let x;
-      for (x = left; x < right; ++x) {
+    const checkSpan = (
+      left: number,
+      right: number,
+      y: number,
+      direction: number
+    ) => {
+      let inSpan: boolean = false;
+      let start: number = 0;
+
+      for (let x = left; x < right; ++x) {
         const color = getPixel(pixelData, x, y);
         if (color === targetColor) {
           if (!inSpan) {
@@ -221,12 +228,12 @@ export function fill(
         inSpan = false;
         addSpan(start, x - 1, y, direction);
       }
-    }
+    };
 
     addSpan(x, x, y, 0);
 
     while (spansToCheck.length > 0) {
-      const { left, right, y, direction } = spansToCheck.pop();
+      const { left, right, y, direction } = spansToCheck.pop()!;
 
       // do left until we hit something, while we do this check above and below and add
       let l = left;
@@ -268,12 +275,25 @@ export function fill(
     // put the data back
     ctx.putImageData(imageData, 0, 0);
   }
+};
+
+interface PixelData {
+  width: number;
+  height: number;
+  data: Uint32Array;
 }
 
-export function getPixel(pixelData, x, y) {
+interface Span {
+  left: number;
+  right: number;
+  y: number;
+  direction: number;
+}
+
+export const getPixel = (pixelData: PixelData, x: number, y: number) => {
   if (x < 0 || y < 0 || x >= pixelData.width || y >= pixelData.height) {
     return -1; // impossible color
   } else {
     return pixelData.data[y * pixelData.width + x];
   }
-}
+};

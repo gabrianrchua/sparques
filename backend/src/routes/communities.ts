@@ -1,5 +1,6 @@
 import express from 'express';
 import Community from '../models/Community';
+import { mongo } from 'mongoose';
 
 const router = express.Router();
 
@@ -57,7 +58,8 @@ router.post('/', async (req, res) => {
     const savedCommunity = await newCommunity.save();
     res.status(201).json(savedCommunity);
   } catch (error) {
-    if (error.code == 11000) {
+    // intentionally using `==` instead of `===` because error.code may be a string
+    if (error instanceof mongo.MongoError && error.code == 11000) {
       res.status(409).json({ message: 'Community already exists' });
     } else {
       console.error(error);

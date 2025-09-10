@@ -4,6 +4,7 @@ import NetworkService from "../services/Network";
 import CanvasDetails from "../interfaces/CanvasDetails";
 import { Skeleton } from "@mui/material";
 import { brush, circle, rectangle, polygon, text, fill } from "sparques-canvas/draw";
+import { CanvasRenderingContext2D, Image } from 'canvas';
 
 async function drawStrokes(ctx: CanvasRenderingContext2D, strokes: any[], baseImage: string) {
   if (!ctx || !strokes) throw new Error("Invalid arguments");
@@ -11,7 +12,7 @@ async function drawStrokes(ctx: CanvasRenderingContext2D, strokes: any[], baseIm
   const img = new Image();
   img.src = `data:image/png;base64,${baseImage}`;
   img.onload = function() {
-    ctx.drawImage(img, 0, 0, 512, 512);
+    ctx.drawImage(img as Image, 0, 0, 512, 512);
 
     // draw the rest of the strokes
     for (let i = 0; i < strokes.length; i++) {
@@ -59,7 +60,8 @@ export default function Canvas() {
 
     if (!canvasDetails || !ctx) return;
 
-    drawStrokes(ctx, canvasDetails.strokes, canvasDetails.baseImage);
+    // HACK: to get types to "match"
+    drawStrokes(ctx as unknown as CanvasRenderingContext2D, canvasDetails.strokes, canvasDetails.baseImage);
   }, [canvasDetails])
 
   useEffect(() => {
@@ -69,7 +71,6 @@ export default function Canvas() {
     if (location.pathname === "/c/" + community + "/canvas") {
       NetworkService.getCanvas(community).then(canvasDetails => setCanvasDetails(canvasDetails));
     }
-    // eslint-disable-next-line
   }, [location.pathname]);
 
   return canvasDetails ? (

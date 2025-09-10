@@ -4,6 +4,7 @@ import jwt from 'jsonwebtoken';
 import User from '../models/User';
 import { requireAuth } from '../middleware/require-auth';
 import { JWT_SECRET } from '../config/env';
+import { mongo } from 'mongoose';
 
 const router = express.Router();
 
@@ -20,7 +21,8 @@ router.post('/register', async (req: Request, res: Response) => {
     await user.save();
     res.status(201).json({ message: 'Register success' });
   } catch (error) {
-    if (error.code === 11000) {
+    // intentionally left as `==` and not `===` because error.code may be a string
+    if (error instanceof mongo.MongoError && error.code == 11000) {
       // user already exists
       res.status(409).json({ message: 'User already exists' });
     } else {
