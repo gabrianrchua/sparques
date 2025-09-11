@@ -1,6 +1,5 @@
 import { z } from 'zod';
-
-const objectId = z.stringFormat('ObjectId', /^[a-fA-F0-9]{24}$/);
+import { objectId } from './mongo';
 
 export const GetPostsQuery = z.object({
   community: z.string().optional(),
@@ -25,8 +24,4 @@ export const CreateVoteBody = z.object({
 export const UpdatePostBody = z.object({
   title: z.string(),
   content: z.string(),
-});
-
-export const IdOnlyParams = z.object({
-  id: objectId,
 });

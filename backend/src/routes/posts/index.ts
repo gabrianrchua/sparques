@@ -7,7 +7,6 @@ import {
   CreatePostBody,
   CreateVoteBody,
   GetPostsQuery,
-  IdOnlyParams,
   UpdatePostBody,
 } from '../../schemas/posts';
 import { createPost } from './create-post';
@@ -17,6 +16,7 @@ import { createVote } from './create-vote';
 import { getPost } from './get-post';
 import { updatePost } from './update-post';
 import { deletePost } from './delete-post';
+import { IdOnlyParams } from '../../schemas/mongo';
 
 const router = express.Router();
 
