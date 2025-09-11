@@ -1,5 +1,4 @@
-import express from 'express';
-import { requireAuth } from '../middleware/require-auth';
+import { Request, Response } from 'express';
 import {
   Brush,
   Circle,
@@ -7,46 +6,14 @@ import {
   Polygon,
   Text,
   Fill,
-} from '../models/Stroke';
-import { render } from '../canvas/canvas';
-import Canvas from '../models/Canvas';
-import Community from '../models/Community';
+} from '../../models/Stroke';
+import { render } from '../../canvas/canvas';
+import Canvas from '../../models/Canvas';
+import Community from '../../models/Community';
 
-const router = express.Router();
 const MAX_STROKES = 5; // how many strokes before flushing to base image
 
-// @route   GET /api/canvas/
-// @desc    Get list of the names of all canvases
-router.get('/', async (_, res) => {
-  try {
-    const titles = await Canvas.find().select('title');
-    res.json(titles);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server error', error: error });
-  }
-});
-
-// @route   GET /api/canvas/:canvas
-// @desc    Get all strokes and base image for canvas
-router.get('/:canvas', async (req, res) => {
-  const canvas = req.params.canvas;
-  if (!canvas) return res.status(400).json({ message: 'Invalid canvas name' });
-
-  try {
-    const fetchedCanvas = await Canvas.findOne({ title: canvas });
-    if (!fetchedCanvas)
-      return res.status(404).json({ message: 'Canvas not found' });
-    res.json(fetchedCanvas);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server error', error: error });
-  }
-});
-
-// @route   POST /api/canvas/:canvas
-// @desc    Add a stroke to a canvas
-router.post('/:canvas', requireAuth, async (req, res) => {
+export const addStroke = async (req: Request, res: Response) => {
   const canvas = req.params.canvas;
   const { type, ...toolData } = req.body;
 
@@ -236,6 +203,4 @@ router.post('/:canvas', requireAuth, async (req, res) => {
     console.error(error);
     res.status(500).json({ message: 'Server error', error: error });
   }
-});
-
-export default router;
+};
