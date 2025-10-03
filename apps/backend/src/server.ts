@@ -4,14 +4,13 @@ import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import { connectDB } from './config/db.js';
+import { PORT } from './config/env.js';
 
 // import routes
 import postsRoutes from './routes/posts/index.js';
 import authRoutes from './routes/auth/index.js';
 import communitiesRoutes from './routes/communities/index.js';
 import canvasRoutes from './routes/canvas/index.js';
-
-const PORT = process.env.PORT || 5000;
 
 const app = express();
 app.listen(PORT, () => {

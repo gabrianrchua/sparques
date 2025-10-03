@@ -2,7 +2,7 @@ import axios from 'axios';
 import { Post, Community, CanvasDetails } from '@sparques/types';
 
 // TODO: get real base_url for prod via env
-const BASE_URL: string = 'http://localhost:5000/api';
+const BASE_URL: string = 'http://localhost:8080/api';
 
 const NetworkService = {
   postRegister: async (username: string, password: string) => {
