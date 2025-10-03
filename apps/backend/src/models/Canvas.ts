@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { strokeSchema } from './Stroke';
+import { strokeSchema } from './Stroke.js';
 
 const canvasSchema = new mongoose.Schema({
   title: { type: String, required: true, unique: true },

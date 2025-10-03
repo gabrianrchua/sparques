@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
-import Post from '../../models/Post';
-import Comment from '../../models/Comment';
-import Vote from '../../models/Vote';
+import Post from '../../models/Post.js';
+import Comment from '../../models/Comment.js';
+import Vote from '../../models/Vote.js';
 
 export const getPost = async (req: Request, res: Response) => {
   try {

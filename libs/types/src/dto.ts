@@ -1,4 +1,4 @@
-import { AnyStroke } from './interfaces';
+import { AnyStroke } from './interfaces.js';
 
 export interface Vote {
   author: string;

@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
-import { JWT_SECRET } from '../config/env';
-import { SparquesJwtPayload } from '../types/sparques-jwt-payload';
+import { JWT_SECRET } from '../config/env.js';
+import { SparquesJwtPayload } from '../types/sparques-jwt-payload.js';
 
 export const optionalAuth = (
   req: Request,

@@ -6,10 +6,10 @@ import {
   Polygon,
   Text,
   Fill,
-} from '../../models/Stroke';
-import { render } from '../../canvas/canvas';
-import Canvas from '../../models/Canvas';
-import Community from '../../models/Community';
+} from '../../models/Stroke.js';
+import { render } from '../../canvas/canvas.js';
+import Canvas from '../../models/Canvas.js';
+import Community from '../../models/Community.js';
 
 const MAX_STROKES = 5; // how many strokes before flushing to base image
 

@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import Community from '../../models/Community';
+import Community from '../../models/Community.js';
 
 export const updateCommunity = async (req: Request, res: Response) => {
   // title cannot be modified later

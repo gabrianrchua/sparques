@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
-import Post from '../../models/Post';
-import Vote from '../../models/Vote';
+import Post from '../../models/Post.js';
+import Vote from '../../models/Vote.js';
 
 export const createVote = async (req: Request, res: Response) => {
   const { isUpvote } = req.body;

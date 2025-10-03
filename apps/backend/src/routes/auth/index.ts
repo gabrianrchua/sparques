@@ -1,10 +1,10 @@
 import express from 'express';
-import { registerUser } from './register-user';
-import { validateRequest } from '../../middleware/validate';
-import { LogInBody, RegisterUserBody } from '../../schemas/auth';
-import { logIn } from './log-in';
-import { checkToken } from './check-token';
-import { requireAuth } from '../../middleware/require-auth';
+import { registerUser } from './register-user.js';
+import { validateRequest } from '../../middleware/validate.js';
+import { LogInBody, RegisterUserBody } from '../../schemas/auth.js';
+import { logIn } from './log-in.js';
+import { checkToken } from './check-token.js';
+import { requireAuth } from '../../middleware/require-auth.js';
 
 const router = express.Router();
 

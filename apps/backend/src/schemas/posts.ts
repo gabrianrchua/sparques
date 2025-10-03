@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { objectId } from './mongo';
+import { objectId } from './mongo.js';
 
 export const GetPostsQuery = z.object({
   community: z.string().optional(),

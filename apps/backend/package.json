@@ -8,10 +8,12 @@
     "dev": "nodemon src/server.ts",
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint .",
-    "lint:fix": "eslint . --fix"
+    "lint:fix": "eslint . --fix",
+    "build": "rm -r dist && tsc -b"
   },
   "author": "CGIXE",
   "license": "MIT",
+  "type": "module",
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.1",
     "@eslint/js": "^9.35.0",

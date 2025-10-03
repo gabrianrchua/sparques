@@ -1,4 +1,4 @@
-import Post from '../../models/Post';
+import Post from '../../models/Post.js';
 import { Request, Response } from 'express';
 
 export const getPosts = async (req: Request, res: Response) => {

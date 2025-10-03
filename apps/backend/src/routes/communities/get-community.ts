@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import Community from '../../models/Community';
+import Community from '../../models/Community.js';
 
 export const getCommunity = async (req: Request, res: Response) => {
   try {

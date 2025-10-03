@@ -3,13 +3,13 @@ import bodyParser from 'body-parser';
 import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
-import { connectDB } from './config/db';
+import { connectDB } from './config/db.js';
 
 // import routes
-import postsRoutes from './routes/posts';
-import authRoutes from './routes/auth';
-import communitiesRoutes from './routes/communities';
-import canvasRoutes from './routes/canvas';
+import postsRoutes from './routes/posts/index.js';
+import authRoutes from './routes/auth/index.js';
+import communitiesRoutes from './routes/communities/index.js';
+import canvasRoutes from './routes/canvas/index.js';
 
 const PORT = process.env.PORT || 5000;
 
@@ -42,4 +42,4 @@ app.use('/api/auth', authRoutes);
 app.use('/api/community', communitiesRoutes);
 app.use('/api/canvas', canvasRoutes);
 
-module.exports = app;
+export default app;

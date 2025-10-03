@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
-import User from '../../models/User';
+import User from '../../models/User.js';
 import jwt from 'jsonwebtoken';
-import { JWT_SECRET } from '../../config/env';
+import { JWT_SECRET } from '../../config/env.js';
 
 export const logIn = async (req: Request, res: Response) => {
   const { username, password } = req.body;

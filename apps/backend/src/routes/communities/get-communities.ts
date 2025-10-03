@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import Community from '../../models/Community';
+import Community from '../../models/Community.js';
 
 export const getCommunities = async (req: Request, res: Response) => {
   const title = req.query.title; // alternative to GET /api/community/:id

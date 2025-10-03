@@ -1,22 +1,22 @@
 import express from 'express';
-import { optionalAuth } from '../../middleware/optional-auth';
-import { getPosts } from './get-posts';
-import { validateRequest } from '../../middleware/validate';
+import { optionalAuth } from '../../middleware/optional-auth.js';
+import { getPosts } from './get-posts.js';
+import { validateRequest } from '../../middleware/validate.js';
 import {
   CreateCommentBody,
   CreatePostBody,
   CreateVoteBody,
   GetPostsQuery,
   UpdatePostBody,
-} from '../../schemas/posts';
-import { createPost } from './create-post';
-import { requireAuth } from '../../middleware/require-auth';
-import { createComment } from './create-comment';
-import { createVote } from './create-vote';
-import { getPost } from './get-post';
-import { updatePost } from './update-post';
-import { deletePost } from './delete-post';
-import { IdOnlyParams } from '../../schemas/mongo';
+} from '../../schemas/posts.js';
+import { createPost } from './create-post.js';
+import { requireAuth } from '../../middleware/require-auth.js';
+import { createComment } from './create-comment.js';
+import { createVote } from './create-vote.js';
+import { getPost } from './get-post.js';
+import { updatePost } from './update-post.js';
+import { deletePost } from './delete-post.js';
+import { IdOnlyParams } from '../../schemas/mongo.js';
 
 const router = express.Router();
 

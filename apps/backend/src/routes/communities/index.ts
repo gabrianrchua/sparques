@@ -1,15 +1,15 @@
 import express from 'express';
-import { getCommunities } from './get-communities';
-import { validateRequest } from '../../middleware/validate';
+import { getCommunities } from './get-communities.js';
+import { validateRequest } from '../../middleware/validate.js';
 import {
   CreateCommunityBody,
   GetCommunitiesQuery,
   UpdateCommunityBody,
-} from '../../schemas/communities';
-import { IdOnlyParams } from '../../schemas/mongo';
-import { getCommunity } from './get-community';
-import { createCommunity } from './create-community';
-import { updateCommunity } from './update-community';
+} from '../../schemas/communities.js';
+import { IdOnlyParams } from '../../schemas/mongo.js';
+import { getCommunity } from './get-community.js';
+import { createCommunity } from './create-community.js';
+import { updateCommunity } from './update-community.js';
 
 const router = express.Router();
 

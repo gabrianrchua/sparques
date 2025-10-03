@@ -4,7 +4,7 @@
   "description": "Omniforum app to connect communities worldwide",
   "scripts": {
     "start": "concurrently \"cd backend && npm start\" \"cd frontend && npm start\"",
-    "dev": "concurrently -c red,blue,green --names database,backend,frontend \"cd database && docker compose up\" \"cd backend && npm run dev\" \"cd frontend && npm start\"",
+    "dev": "concurrently -c red,blue,green --names database,backend,frontend \"cd database && docker compose up\" \"cd apps/backend && npm run dev\" \"cd apps/frontend && npm start\"",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "rm -r dist && tsc -b"
   },

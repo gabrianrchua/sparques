@@ -1,10 +1,10 @@
 import express from 'express';
-import { getCanvases } from './get-canvases';
-import { validateRequest } from '../../middleware/validate';
-import { CanvasNameOnlyParams } from '../../schemas/canvas';
-import { getCanvas } from './get-canvas';
-import { addStroke } from './add-stroke';
-import { requireAuth } from '../../middleware/require-auth';
+import { getCanvases } from './get-canvases.js';
+import { validateRequest } from '../../middleware/validate.js';
+import { CanvasNameOnlyParams } from '../../schemas/canvas.js';
+import { getCanvas } from './get-canvas.js';
+import { addStroke } from './add-stroke.js';
+import { requireAuth } from '../../middleware/require-auth.js';
 
 const router = express.Router();
 

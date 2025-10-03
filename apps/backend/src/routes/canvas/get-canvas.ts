@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import Canvas from '../../models/Canvas';
+import Canvas from '../../models/Canvas.js';
 
 export const getCanvas = async (req: Request, res: Response) => {
   const canvas = req.params.canvas;
