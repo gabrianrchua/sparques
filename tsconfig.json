@@ -1,0 +1,13 @@
+{
+  "files": [],
+  "references": [
+    { "path": "libs/types" },
+    { "path": "libs/sparques-canvas" },
+    { "path": "apps/backend" },
+    { "path": "apps/frontend" }
+  ],
+  "compilerOptions": {
+    "esModuleInterop": true
+  },
+  "include": ["eslint.config.mts"]
+}

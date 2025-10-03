@@ -1,4 +1,5 @@
 {
+  "extends": "../../tsconfig.json",
   "compilerOptions": {
     "module": "es2022",
     "moduleResolution": "bundler",
@@ -8,7 +9,13 @@
     "strictFunctionTypes": true,
     "sourceMap": true,
     "allowSyntheticDefaultImports": true,
+    "composite": true,
+    "outDir": "./dist"
   },
   "exclude": ["node_modules", "**/node_modules/*"],
-  "include": ["src/**/*.ts"]
+  "include": ["src/**/*.ts"],
+  "references": [
+    { "path": "../../libs/types" },
+    { "path": "../../libs/sparques-canvas" }
+  ]
 }

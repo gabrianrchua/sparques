@@ -6,12 +6,25 @@ import eslintConfigPrettier from 'eslint-config-prettier/flat';
 
 export default defineConfig([
   // shared ignores
-  {},
   {
-    files: ['**/*.{js,mjs,cjs,ts,mts,cts}'],
+    ignores: ['**/dist/**', '**/node_modules/**'],
+    languageOptions: {
+      parserOptions: {
+        tsconfigRootDir: __dirname,
+      },
+    },
+  },
+  // shared ts rules
+  {
+    files: ['**/*.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
     plugins: { js },
     extends: ['js/recommended'],
-    languageOptions: { globals: globals.node },
+    languageOptions: {
+      globals: globals.node,
+      parserOptions: {
+        project: './tsconfig.json',
+      },
+    },
     rules: {
       'no-var': 'error',
       'prefer-arrow-callback': 'error',
