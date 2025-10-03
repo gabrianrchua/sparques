@@ -43,10 +43,11 @@ export interface FillStroke {
   coordinates: Coordinate;
 }
 
-export type AnyStroke =
+export type AnyStroke = (
   | BrushStroke
   | CircleStroke
   | RectangleStroke
   | PolygonStroke
   | TextStroke
-  | FillStroke;
+  | FillStroke
+) & { type: string };

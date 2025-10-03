@@ -1,11 +1,11 @@
 import { Box, Button, TextField } from '@mui/material';
 
-export default function CommentEditor(props: {
+const CommentEditor = (props: {
   value: string;
-  setValue: Function;
-  onSubmit: Function;
+  setValue: (value: string) => void;
+  onSubmit: (value: string) => void;
   submitText?: string;
-}) {
+}) => {
   return (
     <Box sx={{ display: 'flex' }}>
       <TextField
@@ -29,4 +29,6 @@ export default function CommentEditor(props: {
       </Button>
     </Box>
   );
-}
+};
+
+export default CommentEditor;

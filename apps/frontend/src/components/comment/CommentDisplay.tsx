@@ -16,16 +16,16 @@ import { useParams } from 'react-router';
 import { enqueueSnackbar } from 'notistack';
 import NetworkService from '../../services/Network';
 
-export default function CommentDisplay(props: {
+const CommentDisplay = (props: {
   comment: CommentDetail;
   depth: number;
-  refreshParentPost: Function;
-}) {
+  refreshParentPost: () => void;
+}) => {
   const [isCommentBoxShown, setIsCommentBoxShown] = useState(false);
   const [commentValue, setCommentValue] = useState('');
   const { postid } = useParams();
 
-  function onCommentSubmit(value: string) {
+  const onCommentSubmit = (value: string) => {
     if (!postid) return;
 
     NetworkService.postComment(postid, value, props.comment._id)
@@ -41,7 +41,7 @@ export default function CommentDisplay(props: {
           { variant: 'error' }
         );
       });
-  }
+  };
 
   return (
     <Box sx={{ display: 'flex', flexWrap: 'wrap' }}>
@@ -108,4 +108,6 @@ export default function CommentDisplay(props: {
       )}
     </Box>
   );
-}
+};
+
+export default CommentDisplay;

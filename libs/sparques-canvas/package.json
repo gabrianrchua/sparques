@@ -2,10 +2,10 @@
   "name": "@sparques/sparques-canvas",
   "version": "1.0.0",
   "description": "Canvas / draw functions for Sparques",
-  "main": "dist/draw.js",
+  "main": "dist/src/draw.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "tsc -b"
+    "build": "rm -r dist && tsc -b"
   },
   "author": "CGIXE",
   "license": "MIT",

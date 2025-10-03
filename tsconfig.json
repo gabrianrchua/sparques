@@ -7,7 +7,12 @@
     { "path": "apps/frontend" }
   ],
   "compilerOptions": {
-    "esModuleInterop": true
+    "module": "es2022",
+    "moduleResolution": "bundler",
+    "target": "es2024",
+    "strict": true,
+    "esModuleInterop": true,
+    "outDir": "./dist"
   },
-  "include": ["eslint.config.mts"]
+  "include": ["eslint.config.mts", "**/*.ts", "**/*.tsx"]
 }

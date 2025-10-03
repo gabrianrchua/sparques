@@ -12,10 +12,10 @@ import { CanvasRenderingContext2D } from 'canvas';
  * Draw a brush stroke with an array of coordinates
  * @param ctx Canvas context 2d
  */
-export function brush(
+export const brush = (
   ctx: CanvasRenderingContext2D,
   { color, width, coordinates }: BrushStroke
-) {
+) => {
   if (!ctx || !color || !width || !coordinates || coordinates.length == 0) {
     throw new Error('Invalid arguments');
   }
@@ -34,16 +34,16 @@ export function brush(
   }
 
   ctx.stroke();
-}
+};
 
 /**
  * Draw a circle
  * @param ctx Canvas context 2d
  */
-export function circle(
+export const circle = (
   ctx: CanvasRenderingContext2D,
   { color, width, center, radius }: CircleStroke
-) {
+) => {
   if (!ctx || !color || !width || !center || !center.x || !center.y || !radius)
     throw new Error('Invalid arguments');
 
@@ -53,16 +53,16 @@ export function circle(
   ctx.beginPath();
   ctx.arc(center.x, center.y, radius, 0, 2 * Math.PI);
   ctx.stroke();
-}
+};
 
 /**
  * Draw a rectangle
  * @param ctx Canvas context 2d
  */
-export function rectangle(
+export const rectangle = (
   ctx: CanvasRenderingContext2D,
   { color, width, topLeftCoordinates, bottomRightCoordinates }: RectangleStroke
-) {
+) => {
   if (
     !ctx ||
     !color ||
@@ -85,16 +85,16 @@ export function rectangle(
     Math.abs(topLeftCoordinates.x - bottomRightCoordinates.x),
     Math.abs(topLeftCoordinates.y - bottomRightCoordinates.y)
   );
-}
+};
 
 /**
  * Draw an n-sided regular polygon
  * @param ctx Canvas context 2d
  */
-export function polygon(
+export const polygon = (
   ctx: CanvasRenderingContext2D,
   { color, width, numSides, center, sideLength }: PolygonStroke
-) {
+) => {
   if (
     !color ||
     !width ||
@@ -125,16 +125,16 @@ export function polygon(
   }
 
   ctx.stroke();
-}
+};
 
 /**
  * Write text
  * @param ctx Canvas context 2d
  */
-export function text(
+export const text = (
   ctx: CanvasRenderingContext2D,
   { color, fontSize, topLeftCoordinates, text }: TextStroke
-) {
+) => {
   if (
     !color ||
     !fontSize ||
@@ -154,7 +154,7 @@ export function text(
     topLeftCoordinates.y,
     Math.abs(topLeftCoordinates.x - 512)
   );
-}
+};
 
 /*
   Flood fill code below courtesy of https://stackoverflow.com/a/56221940

@@ -1,14 +1,17 @@
-import axios from "axios";
-import Post from "../interfaces/Post";
-import Community from "../interfaces/Community";
-import CanvasDetails from "../interfaces/CanvasDetails";
+import axios from 'axios';
+import { Post, Community, CanvasDetails } from '@sparques/types';
 
-const BASE_URL: string = "http://localhost:5000/api";
+// TODO: get real base_url for prod via env
+const BASE_URL: string = 'http://localhost:5000/api';
 
 const NetworkService = {
-  postRegister: async function (username: string, password: string) {
+  postRegister: async (username: string, password: string) => {
     try {
-      const result = await axios.post(BASE_URL + "/auth/register", { username, password }, { withCredentials: true });
+      const result = await axios.post(
+        BASE_URL + '/auth/register',
+        { username, password },
+        { withCredentials: true }
+      );
       return result.data;
     } catch (error) {
       console.error(error);
@@ -16,9 +19,13 @@ const NetworkService = {
     }
   },
 
-  postLogin: async function (username: string, password: string) {
+  postLogin: async (username: string, password: string) => {
     try {
-      const result = await axios.post(BASE_URL + "/auth", { username, password }, { withCredentials: true });
+      const result = await axios.post(
+        BASE_URL + '/auth',
+        { username, password },
+        { withCredentials: true }
+      );
       return result.data;
     } catch (error) {
       console.error(error);
@@ -26,9 +33,11 @@ const NetworkService = {
     }
   },
 
-  getPosts: async function (): Promise<Post[]> {
+  getPosts: async (): Promise<Post[]> => {
     try {
-      const result = await axios.get(BASE_URL + "/posts", { withCredentials: true });
+      const result = await axios.get(BASE_URL + '/posts', {
+        withCredentials: true,
+      });
       return result.data;
     } catch (error) {
       console.error(error);
@@ -36,9 +45,12 @@ const NetworkService = {
     }
   },
 
-  getCommunityPosts: async function (community: string): Promise<Post[]> {
+  getCommunityPosts: async (community: string): Promise<Post[]> => {
     try {
-      const result = await axios.get(BASE_URL + "/posts?community=" + community, { withCredentials: true });
+      const result = await axios.get(
+        BASE_URL + '/posts?community=' + community,
+        { withCredentials: true }
+      );
       return result.data;
     } catch (error) {
       console.error(error);
@@ -46,9 +58,11 @@ const NetworkService = {
     }
   },
 
-  getPostDetail: async function (postid: string): Promise<Post> {
+  getPostDetail: async (postid: string): Promise<Post> => {
     try {
-      const result = await axios.get(BASE_URL + "/posts/" + postid, { withCredentials: true });
+      const result = await axios.get(BASE_URL + '/posts/' + postid, {
+        withCredentials: true,
+      });
       return result.data;
     } catch (error) {
       console.error(error);
@@ -56,9 +70,14 @@ const NetworkService = {
     }
   },
 
-  postComment: async function (postId: string, content: string, parentId: string | undefined) {
+  postComment: async (
+    postId: string,
+    content: string,
+    parentId: string | undefined
+  ) => {
     try {
-      const result = await axios.post(BASE_URL + "/posts/" + postId + "/comment",
+      const result = await axios.post(
+        BASE_URL + '/posts/' + postId + '/comment',
         parentId ? { content, parentId } : { content },
         { withCredentials: true }
       );
@@ -69,9 +88,10 @@ const NetworkService = {
     }
   },
 
-  postVotePost: async function (postId: string, isUpvote: boolean) {
+  postVotePost: async (postId: string, isUpvote: boolean) => {
     try {
-      const result = await axios.post(BASE_URL + "/posts/" + postId + "/vote",
+      const result = await axios.post(
+        BASE_URL + '/posts/' + postId + '/vote',
         { isUpvote },
         { withCredentials: true }
       );
@@ -82,9 +102,10 @@ const NetworkService = {
     }
   },
 
-  postNewPost: async function (title: string, content: string, community: string) {
+  postNewPost: async (title: string, content: string, community: string) => {
     try {
-      const result = await axios.post(BASE_URL + "/posts",
+      const result = await axios.post(
+        BASE_URL + '/posts',
         { title, content, community },
         { withCredentials: true }
       );
@@ -95,9 +116,9 @@ const NetworkService = {
     }
   },
 
-  getCommunities: async function (): Promise<Community[]> {
+  getCommunities: async (): Promise<Community[]> => {
     try {
-      const result = await axios.get(BASE_URL + "/community");
+      const result = await axios.get(BASE_URL + '/community');
       return result.data;
     } catch (error) {
       console.error(error);
@@ -105,9 +126,9 @@ const NetworkService = {
     }
   },
 
-  getCommunityInfo: async function (title: string): Promise<Community> {
+  getCommunityInfo: async (title: string): Promise<Community> => {
     try {
-      const result = await axios.get(BASE_URL + "/community?title=" + title);
+      const result = await axios.get(BASE_URL + '/community?title=' + title);
       return result.data;
     } catch (error) {
       console.error(error);
@@ -115,17 +136,17 @@ const NetworkService = {
     }
   },
 
-  //postNewCommunity: async function (title: string) // TODO: allow creation of new community
+  //postNewCommunity: async (title: string) // TODO: allow creation of new community
 
-  getCanvas: async function (community: string): Promise<CanvasDetails> {
+  getCanvas: async (community: string): Promise<CanvasDetails> => {
     try {
-      const result = await axios.get(BASE_URL + "/canvas/" + community);
+      const result = await axios.get(BASE_URL + '/canvas/' + community);
       return result.data;
     } catch (error) {
       console.error(error);
       throw error;
     }
-  }
-}
+  },
+};
 
 export default NetworkService;
