@@ -1,0 +1,24 @@
+{
+  "name": "@sparques/sparques-canvas",
+  "version": "1.0.0",
+  "description": "Canvas / draw functions for Sparques",
+  "main": "dist/draw.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc -b"
+  },
+  "author": "CGIXE",
+  "license": "MIT",
+  "devDependencies": {
+    "typescript": "^5.7.3"
+  },
+  "type": "module",
+  "volta": {
+    "node": "24.3.0",
+    "npm": "11.4.2"
+  },
+  "dependencies": {
+    "@sparques/types": "^1.0.0",
+    "canvas": "^3.2.0"
+  }
+}

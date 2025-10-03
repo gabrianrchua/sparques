@@ -1,0 +1,17 @@
+{
+  "name": "@sparques/types",
+  "version": "1.0.0",
+  "description": "Types for Sparques",
+  "license": "MIT",
+  "author": "CGIXE",
+  "type": "module",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc -b"
+  },
+  "volta": {
+    "node": "24.3.0",
+    "npm": "11.4.2"
+  }
+}

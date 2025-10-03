@@ -1,5 +1,5 @@
 {
-  "name": "sparques",
+  "name": "@sparques/sparques",
   "version": "0.1.0",
   "description": "Omniforum app to connect communities worldwide",
   "scripts": {
@@ -16,5 +16,14 @@
   "bugs": {
     "url": "https://github.com/gabrianrchua/sparques/issues"
   },
-  "homepage": "https://github.com/gabrianrchua/sparques#readme"
+  "homepage": "https://github.com/gabrianrchua/sparques#readme",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "libs/*"
+  ],
+  "volta": {
+    "node": "24.3.0",
+    "npm": "11.4.2"
+  }
 }
