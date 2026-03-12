@@ -20,19 +20,20 @@ import {
   text,
   fill,
 } from '@sparques/sparques-canvas';
-import { CanvasRenderingContext2D, Image } from 'canvas';
+import { CanvasRenderingContext2D, Image as CanvasImage } from 'canvas';
 
 const drawStrokes = async (
   ctx: CanvasRenderingContext2D,
   strokes: AnyStroke[],
   baseImage: string
-) => {
+): Promise<void> => {
   if (!ctx || !strokes) throw new Error('Invalid arguments');
 
   const img = new Image();
   img.src = `data:image/png;base64,${baseImage}`;
   img.onload = () => {
-    ctx.drawImage(img as Image, 0, 0, 512, 512);
+    // HACK: to get types to "match"
+    ctx.drawImage(img as unknown as CanvasImage, 0, 0, 512, 512);
 
     // draw the rest of the strokes
     for (let i = 0; i < strokes.length; i++) {
