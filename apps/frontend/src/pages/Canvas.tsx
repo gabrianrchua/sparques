@@ -21,6 +21,7 @@ import {
   fill,
 } from '@sparques/sparques-canvas';
 import { CanvasRenderingContext2D, Image as CanvasImage } from 'canvas';
+import ToolPanel from '../components/canvas/ToolPanel';
 
 const drawStrokes = async (
   ctx: CanvasRenderingContext2D,
@@ -112,6 +113,7 @@ const Canvas = () => {
   return canvasDetails ? (
     <>
       <h3>{`c/${community} Canvas`}</h3>
+      <ToolPanel />
       <canvas
         ref={canvasRef}
         width={512}
