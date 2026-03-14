@@ -9,6 +9,7 @@ import {
   FillStroke,
   PolygonStroke,
   RectangleStroke,
+  StrokeType,
   TextStroke,
 } from '@sparques/types';
 import { Skeleton } from '@mui/material';
@@ -84,6 +85,7 @@ const Canvas = () => {
     undefined
   );
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [selectedStroke, setSelectedStroke] = useState<StrokeType | null>(null);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -113,7 +115,10 @@ const Canvas = () => {
   return canvasDetails ? (
     <>
       <h3>{`c/${community} Canvas`}</h3>
-      <ToolPanel />
+      <ToolPanel
+        selectedStroke={selectedStroke}
+        setSelectedStroke={setSelectedStroke}
+      />
       <canvas
         ref={canvasRef}
         width={512}

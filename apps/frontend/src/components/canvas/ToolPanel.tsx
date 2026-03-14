@@ -8,11 +8,13 @@ import {
 } from '@mui/icons-material';
 import { Box, Button } from '@mui/material';
 import { StrokeType } from '@sparques/types';
-import { useState } from 'react';
 
-const ToolPanel = () => {
-  const [selectedStroke, setSelectedStroke] = useState<StrokeType | null>(null);
+interface ToolPanelProps {
+  selectedStroke: StrokeType | null;
+  setSelectedStroke: (value: StrokeType | null) => void;
+}
 
+const ToolPanel = ({ selectedStroke, setSelectedStroke }: ToolPanelProps) => {
   return (
     <Box paddingBottom='12px' gap='6px' display='flex'>
       <Button
