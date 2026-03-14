@@ -87,6 +87,32 @@ const Canvas = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [selectedStroke, setSelectedStroke] = useState<StrokeType | null>(null);
 
+  const handleCanvasClick = (event: React.MouseEvent<HTMLCanvasElement>) => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const rect = canvas.getBoundingClientRect();
+    // x,y position within the element
+    const x = event.clientX - rect.left;
+    const y = event.clientY - rect.top;
+
+    // TODO: remove logs and do something with this
+    console.log(`Clicked at: (${x}, ${y})`);
+  };
+
+  const handleCanvasHover = (event: React.MouseEvent<HTMLCanvasElement>) => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const rect = canvas.getBoundingClientRect();
+    // x,y position with the element
+    const x = event.clientX - rect.left;
+    const y = event.clientY - rect.top;
+
+    // TODO: remove logs and do something with this
+    console.log(`Hovered at: (${x}, ${y})`);
+  };
+
   useEffect(() => {
     const canvas = canvasRef.current;
     const ctx = canvas ? canvas.getContext('2d') : undefined;
@@ -124,6 +150,8 @@ const Canvas = () => {
         width={512}
         height={512}
         style={{ backgroundColor: 'white' }}
+        onClick={handleCanvasClick}
+        onMouseMove={handleCanvasHover}
       />
     </>
   ) : (
