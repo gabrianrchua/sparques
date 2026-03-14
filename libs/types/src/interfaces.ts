@@ -3,6 +3,14 @@ interface Coordinate {
   y: number;
 }
 
+export type StrokeType =
+  | 'Brush'
+  | 'Circle'
+  | 'Rectangle'
+  | 'Polygon'
+  | 'Text'
+  | 'Fill';
+
 export interface BrushStroke {
   color: string;
   width: number;
@@ -50,4 +58,4 @@ export type AnyStroke = (
   | PolygonStroke
   | TextStroke
   | FillStroke
-) & { type: string };
+) & { type: StrokeType };
