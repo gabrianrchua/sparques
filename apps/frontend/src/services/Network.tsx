@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { Post, Community, CanvasDetails } from '@sparques/types';
+import { Post, Community, CanvasDetails, AnyStroke } from '@sparques/types';
 
 // TODO: get real base_url for prod via env
 const BASE_URL: string = 'http://localhost:8080/api';
@@ -141,6 +141,23 @@ const NetworkService = {
   getCanvas: async (community: string): Promise<CanvasDetails> => {
     try {
       const result = await axios.get(BASE_URL + '/canvas/' + community);
+      return result.data;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  },
+
+  postStroke: async (
+    community: string,
+    strokeData: AnyStroke
+  ): Promise<AnyStroke> => {
+    try {
+      const result = await axios.post(
+        BASE_URL + '/canvas/' + community,
+        strokeData,
+        { withCredentials: true }
+      );
       return result.data;
     } catch (error) {
       console.error(error);
