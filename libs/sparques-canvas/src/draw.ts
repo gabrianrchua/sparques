@@ -14,7 +14,7 @@ import { CanvasRenderingContext2D } from 'canvas';
  */
 export const brush = (
   ctx: CanvasRenderingContext2D,
-  { color, width, coordinates }: BrushStroke
+  { color, width, coordinates }: BrushStroke,
 ) => {
   if (!ctx || !color || !width || !coordinates || coordinates.length == 0) {
     throw new Error('Invalid arguments');
@@ -42,7 +42,7 @@ export const brush = (
  */
 export const circle = (
   ctx: CanvasRenderingContext2D,
-  { color, width, center, radius }: CircleStroke
+  { color, width, center, radius }: CircleStroke,
 ) => {
   if (!ctx || !color || !width || !center || !center.x || !center.y || !radius)
     throw new Error('Invalid arguments');
@@ -61,7 +61,7 @@ export const circle = (
  */
 export const rectangle = (
   ctx: CanvasRenderingContext2D,
-  { color, width, topLeftCoordinates, bottomRightCoordinates }: RectangleStroke
+  { color, width, topLeftCoordinates, bottomRightCoordinates }: RectangleStroke,
 ) => {
   if (
     !ctx ||
@@ -83,7 +83,7 @@ export const rectangle = (
     topLeftCoordinates.x,
     topLeftCoordinates.y,
     Math.abs(topLeftCoordinates.x - bottomRightCoordinates.x),
-    Math.abs(topLeftCoordinates.y - bottomRightCoordinates.y)
+    Math.abs(topLeftCoordinates.y - bottomRightCoordinates.y),
   );
 };
 
@@ -93,7 +93,7 @@ export const rectangle = (
  */
 export const polygon = (
   ctx: CanvasRenderingContext2D,
-  { color, width, numSides, center, sideLength }: PolygonStroke
+  { color, width, numSides, center, sideLength }: PolygonStroke,
 ) => {
   if (
     !color ||
@@ -114,13 +114,13 @@ export const polygon = (
   ctx.beginPath();
   ctx.moveTo(
     center.x + sideLength * Math.cos(0),
-    center.y + sideLength * Math.sin(0)
+    center.y + sideLength * Math.sin(0),
   );
 
   for (let i = 1; i <= numSides; i++) {
     ctx.lineTo(
       center.x + sideLength * Math.cos((i * 2 * Math.PI) / numSides),
-      center.y + sideLength * Math.sin((i * 2 * Math.PI) / numSides)
+      center.y + sideLength * Math.sin((i * 2 * Math.PI) / numSides),
     );
   }
 
@@ -133,7 +133,7 @@ export const polygon = (
  */
 export const text = (
   ctx: CanvasRenderingContext2D,
-  { color, fontSize, topLeftCoordinates, text }: TextStroke
+  { color, fontSize, topLeftCoordinates, text }: TextStroke,
 ) => {
   if (
     !color ||
@@ -152,7 +152,7 @@ export const text = (
     text,
     topLeftCoordinates.x,
     topLeftCoordinates.y,
-    Math.abs(topLeftCoordinates.x - 512)
+    Math.abs(topLeftCoordinates.x - 512),
   );
 };
 
@@ -160,13 +160,14 @@ export const text = (
   Flood fill code below courtesy of https://stackoverflow.com/a/56221940
 */
 
+// TODO: fill causes backend and frontend to hang
 /**
  * Flood (bucket) fill at a section of the canvas
  * @param ctx Canvas context 2d
  */
 export const fill = (
   ctx: CanvasRenderingContext2D,
-  { color, coordinates }: FillStroke
+  { color, coordinates }: FillStroke,
 ) => {
   if (!color || !coordinates || !coordinates.x || !coordinates.y)
     throw new Error('Invalid arguments');
@@ -196,7 +197,7 @@ export const fill = (
       left: number,
       right: number,
       y: number,
-      direction: number
+      direction: number,
     ) => {
       spansToCheck.push({ left, right, y, direction });
     };
@@ -205,7 +206,7 @@ export const fill = (
       left: number,
       right: number,
       y: number,
-      direction: number
+      direction: number,
     ) => {
       let inSpan: boolean = false;
       let start: number = 0;

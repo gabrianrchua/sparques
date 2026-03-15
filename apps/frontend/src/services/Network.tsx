@@ -150,7 +150,7 @@ const NetworkService = {
 
   postStroke: async (
     community: string,
-    strokeData: AnyStroke
+    strokeData: Partial<AnyStroke>
   ): Promise<AnyStroke> => {
     try {
       const result = await axios.post(

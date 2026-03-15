@@ -6,6 +6,7 @@ import {
   BrushStroke,
   CanvasDetails,
   CircleStroke,
+  Coordinate,
   FillStroke,
   PolygonStroke,
   RectangleStroke,
@@ -87,30 +88,265 @@ const Canvas = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [selectedStroke, setSelectedStroke] = useState<StrokeType | null>(null);
 
-  const handleCanvasClick = (event: React.MouseEvent<HTMLCanvasElement>) => {
+  // stroke drawing state for click-to-draw
+  const [isDrawing, setIsDrawing] = useState<boolean>(false);
+  const [lastPoint, setLastPoint] = useState<Coordinate | null>(null);
+  const [brushPoints, setBrushPoints] = useState<Coordinate[]>([]);
+
+  const getCanvasCoordinates = (
+    event: React.MouseEvent<HTMLCanvasElement>
+  ): Coordinate => {
     const canvas = canvasRef.current;
-    if (!canvas) return;
+    if (!canvas) return { x: 0, y: 0 };
 
     const rect = canvas.getBoundingClientRect();
-    // x,y position within the element
-    const x = event.clientX - rect.left;
-    const y = event.clientY - rect.top;
-
-    // TODO: remove logs and do something with this
-    console.log(`Clicked at: (${x}, ${y})`);
+    return {
+      x: event.clientX - rect.left,
+      y: event.clientY - rect.top,
+    };
   };
 
-  const handleCanvasHover = (event: React.MouseEvent<HTMLCanvasElement>) => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
+  // handle mouse down - start drawing a stroke (Brush) or set first point for shapes
+  const handleMouseDown = (event: React.MouseEvent<HTMLCanvasElement>) => {
+    if (!selectedStroke || !community) return;
 
-    const rect = canvas.getBoundingClientRect();
-    // x,y position with the element
-    const x = event.clientX - rect.left;
-    const y = event.clientY - rect.top;
+    const coords = getCanvasCoordinates(event);
+    setIsDrawing(true);
+    setLastPoint(coords);
+    console.log(
+      'Mouse down at:',
+      coords.x,
+      coords.y,
+      'for stroke:',
+      selectedStroke
+    );
+  };
 
-    // TODO: remove logs and do something with this
-    console.log(`Hovered at: (${x}, ${y})`);
+  // handle mouse move - update last point for brush strokes and accumulate coordinates
+  const handleMouseMove = (event: React.MouseEvent<HTMLCanvasElement>) => {
+    if (!isDrawing || !selectedStroke || !community) return;
+
+    const coords = getCanvasCoordinates(event);
+
+    // accumulate coordinates for brush stroke
+    setBrushPoints((prev) => [...prev, coords]);
+
+    // update last point to track the stroke path
+    setLastPoint({
+      x: Math.max(0, Math.min(512, coords.x)),
+      y: Math.max(0, Math.min(512, coords.y)),
+    });
+  };
+
+  // handle mouse up - complete the stroke and submit to backend
+  const handleMouseUp = async (event: React.MouseEvent<HTMLCanvasElement>) => {
+    if (!isDrawing || !selectedStroke || !community) return;
+    setIsDrawing(false);
+
+    // Clear last point to start fresh next time
+    setLastPoint(null);
+
+    // Prepare stroke data based on selected type
+    let result: Omit<AnyStroke, 'type'> | null = null;
+
+    switch (selectedStroke) {
+      case 'Brush':
+        if (brushPoints.length > 0) {
+          const brushData: BrushStroke = {
+            width: 5,
+            color: '#000000',
+            coordinates: brushPoints,
+          };
+          result = brushData;
+        } else {
+          // single click for brush = just one point
+          const coords = getCanvasCoordinates(event);
+          const brushData: BrushStroke = {
+            width: 5,
+            color: '#000000',
+            coordinates: [coords],
+          };
+          result = brushData;
+        }
+        break;
+      case 'Circle':
+        if (lastPoint) {
+          const coords = getCanvasCoordinates(event);
+          const circleData: CircleStroke = {
+            width: 5,
+            color: '#000000',
+            center: { x: lastPoint.x, y: lastPoint.y },
+            radius: Math.sqrt(
+              Math.pow(coords.x - lastPoint.x, 2) +
+                Math.pow(coords.y - lastPoint.y, 2)
+            ),
+          };
+          result = circleData;
+        } else {
+          const coords = getCanvasCoordinates(event);
+          const circleData: CircleStroke = {
+            width: 5,
+            color: '#000000',
+            center: { x: coords.x, y: coords.y },
+            radius: 50, // default radius for single click
+          };
+          result = circleData;
+        }
+        break;
+      case 'Rectangle':
+        if (lastPoint) {
+          const endCoords = getCanvasCoordinates(event);
+          const rectData: RectangleStroke = {
+            width: 5,
+            color: '#000000',
+            topLeftCoordinates: {
+              x: Math.min(lastPoint.x, endCoords.x),
+              y: Math.min(lastPoint.y, endCoords.y),
+            },
+            bottomRightCoordinates: {
+              x: Math.max(lastPoint.x, endCoords.x),
+              y: Math.max(lastPoint.y, endCoords.y),
+            },
+          };
+          result = rectData;
+        } else {
+          const coords = getCanvasCoordinates(event);
+          const rectData: RectangleStroke = {
+            width: 5,
+            color: '#000000',
+            topLeftCoordinates: coords,
+            bottomRightCoordinates: coords,
+          };
+          result = rectData;
+        }
+        break;
+      case 'Polygon': {
+        const polygonData: PolygonStroke = {
+          width: 5,
+          color: '#000000',
+          center: lastPoint
+            ? { x: lastPoint.x, y: lastPoint.y }
+            : {
+                x: getCanvasCoordinates(event).x,
+                y: getCanvasCoordinates(event).y,
+              },
+          sideLength: 50,
+          numSides: 4,
+        };
+        result = polygonData;
+        break;
+      }
+      case 'Text': {
+        const textData: TextStroke = {
+          color: '#000000',
+          fontSize: 24,
+          topLeftCoordinates: {
+            x: getCanvasCoordinates(event).x,
+            y: getCanvasCoordinates(event).y,
+          },
+          text: '',
+        };
+        result = textData;
+        break;
+      }
+      case 'Fill': {
+        const fillData: FillStroke = {
+          color: '#000000',
+          coordinates: getCanvasCoordinates(event),
+        };
+        result = fillData;
+        break;
+      }
+    }
+
+    // reset drawing state
+    setBrushPoints([]);
+    setLastPoint(null);
+
+    // submit to backend if we have valid data
+    if (result) {
+      await submitStroke({ type: selectedStroke, ...result });
+    }
+  };
+
+  const submitStroke = async (
+    strokeData: Partial<AnyStroke>
+  ): Promise<AnyStroke | null> => {
+    if (!community) return null;
+
+    try {
+      const result = await NetworkService.postStroke(community, strokeData);
+      console.log('Stroke submitted successfully:', selectedStroke, result);
+
+      // refresh canvas
+      fetchCanvas();
+
+      return result;
+    } catch (error) {
+      console.error('Error submitting stroke:', error);
+      throw error;
+    }
+  };
+
+  const handleCanvasClick = async (
+    event: React.MouseEvent<HTMLCanvasElement>
+  ) => {
+    // handle click-to-complete for shapes with two-click behavior (Rectangle and Circle)
+    if (!isDrawing && selectedStroke) {
+      const coords = getCanvasCoordinates(event);
+
+      let result: Omit<AnyStroke, 'type'> | null = null;
+
+      if (selectedStroke === 'Rectangle') {
+        // 2-click rectangle: first click sets top-left, second click sets bottom-right
+        const rectData: RectangleStroke = {
+          width: 5,
+          color: '#000000',
+          topLeftCoordinates: coords,
+          bottomRightCoordinates: coords,
+        };
+        result = rectData;
+      } else if (selectedStroke === 'Circle') {
+        // circle: single click defines center and radius based on last point or default radius
+        const circleData: CircleStroke = {
+          width: 5,
+          color: '#000000',
+          center: { x: coords.x, y: coords.y },
+          radius: lastPoint
+            ? Math.sqrt(
+                Math.pow(coords.x - lastPoint.x, 2) +
+                  Math.pow(coords.y - lastPoint.y, 2)
+              )
+            : 50,
+        };
+        result = circleData;
+      } else {
+        return;
+      }
+
+      // submit immediately for shapes with click-to-complete
+      await submitStroke({ type: selectedStroke, ...result });
+    }
+  };
+
+  // const handleCanvasHover = (event: React.MouseEvent<HTMLCanvasElement>) => {
+  //   const canvas = canvasRef.current;
+  //   if (!canvas) return;
+
+  //   const rect = canvas.getBoundingClientRect();
+  //   // x,y position with the element
+  //   const x = event.clientX - rect.left;
+  //   const y = event.clientY - rect.top;
+
+  //   // TODO: remove logs and do something with this
+  //   console.log(`Hovered at: (${x}, ${y})`);
+  // };
+
+  const fetchCanvas = () => {
+    if (!community) return;
+    NetworkService.getCanvas(community).then((canvasDetails) =>
+      setCanvasDetails(canvasDetails)
+    );
   };
 
   useEffect(() => {
@@ -130,11 +366,8 @@ const Canvas = () => {
   useEffect(() => {
     // only if this page became active
     if (!community) return;
-
     if (location.pathname === '/c/' + community + '/canvas') {
-      NetworkService.getCanvas(community).then((canvasDetails) =>
-        setCanvasDetails(canvasDetails)
-      );
+      fetchCanvas();
     }
   }, [location.pathname]);
 
@@ -151,7 +384,9 @@ const Canvas = () => {
         height={512}
         style={{ backgroundColor: 'white' }}
         onClick={handleCanvasClick}
-        onMouseMove={handleCanvasHover}
+        onMouseDown={handleMouseDown}
+        onMouseMove={handleMouseMove}
+        onMouseUp={handleMouseUp}
       />
     </>
   ) : (
