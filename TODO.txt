@@ -1,0 +1,2 @@
+[ ] backend?: use openAPI spec and generated types + handlers + input validation
+[ ] backend: refactor add stroke route to one per tool + better validation

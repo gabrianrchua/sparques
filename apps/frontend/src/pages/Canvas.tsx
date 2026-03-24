@@ -23,7 +23,7 @@ import {
   fill,
 } from '@sparques/sparques-canvas';
 import { CanvasRenderingContext2D, Image as CanvasImage } from 'canvas';
-import ToolPanel from '../components/canvas/ToolPanel';
+import ToolPanel, { type ToolPanelProps } from '../components/canvas/ToolPanel';
 
 const drawStrokes = async (
   ctx: CanvasRenderingContext2D,
@@ -87,6 +87,10 @@ const Canvas = () => {
   );
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [selectedStroke, setSelectedStroke] = useState<StrokeType | null>(null);
+
+  // stroke configuration state for tool options panel
+  const [color, setColor] = useState<string>('#000000');
+  const [width, setWidth] = useState<number>(5);
 
   // stroke drawing state for click-to-draw
   const [isDrawing, setIsDrawing] = useState<boolean>(false);
@@ -153,8 +157,8 @@ const Canvas = () => {
       case 'Brush':
         if (brushPoints.length > 0) {
           const brushData: BrushStroke = {
-            width: 5,
-            color: '#000000',
+            width,
+            color,
             coordinates: brushPoints,
           };
           result = brushData;
@@ -162,8 +166,8 @@ const Canvas = () => {
           // single click for brush = just one point
           const coords = getCanvasCoordinates(event);
           const brushData: BrushStroke = {
-            width: 5,
-            color: '#000000',
+            width,
+            color,
             coordinates: [coords],
           };
           result = brushData;
@@ -173,8 +177,8 @@ const Canvas = () => {
         if (lastPoint) {
           const coords = getCanvasCoordinates(event);
           const circleData: CircleStroke = {
-            width: 5,
-            color: '#000000',
+            width,
+            color,
             center: { x: lastPoint.x, y: lastPoint.y },
             radius: Math.sqrt(
               Math.pow(coords.x - lastPoint.x, 2) +
@@ -185,8 +189,8 @@ const Canvas = () => {
         } else {
           const coords = getCanvasCoordinates(event);
           const circleData: CircleStroke = {
-            width: 5,
-            color: '#000000',
+            width,
+            color,
             center: { x: coords.x, y: coords.y },
             radius: 50, // default radius for single click
           };
@@ -197,8 +201,8 @@ const Canvas = () => {
         if (lastPoint) {
           const endCoords = getCanvasCoordinates(event);
           const rectData: RectangleStroke = {
-            width: 5,
-            color: '#000000',
+            width,
+            color,
             topLeftCoordinates: {
               x: Math.min(lastPoint.x, endCoords.x),
               y: Math.min(lastPoint.y, endCoords.y),
@@ -212,8 +216,8 @@ const Canvas = () => {
         } else {
           const coords = getCanvasCoordinates(event);
           const rectData: RectangleStroke = {
-            width: 5,
-            color: '#000000',
+            width,
+            color,
             topLeftCoordinates: coords,
             bottomRightCoordinates: coords,
           };
@@ -222,8 +226,8 @@ const Canvas = () => {
         break;
       case 'Polygon': {
         const polygonData: PolygonStroke = {
-          width: 5,
-          color: '#000000',
+          width,
+          color,
           center: lastPoint
             ? { x: lastPoint.x, y: lastPoint.y }
             : {
@@ -238,7 +242,7 @@ const Canvas = () => {
       }
       case 'Text': {
         const textData: TextStroke = {
-          color: '#000000',
+          color,
           fontSize: 24,
           topLeftCoordinates: {
             x: getCanvasCoordinates(event).x,
@@ -251,7 +255,7 @@ const Canvas = () => {
       }
       case 'Fill': {
         const fillData: FillStroke = {
-          color: '#000000',
+          color,
           coordinates: getCanvasCoordinates(event),
         };
         result = fillData;
@@ -300,8 +304,8 @@ const Canvas = () => {
       if (selectedStroke === 'Rectangle') {
         // 2-click rectangle: first click sets top-left, second click sets bottom-right
         const rectData: RectangleStroke = {
-          width: 5,
-          color: '#000000',
+          width,
+          color,
           topLeftCoordinates: coords,
           bottomRightCoordinates: coords,
         };
@@ -309,8 +313,8 @@ const Canvas = () => {
       } else if (selectedStroke === 'Circle') {
         // circle: single click defines center and radius based on last point or default radius
         const circleData: CircleStroke = {
-          width: 5,
-          color: '#000000',
+          width,
+          color,
           center: { x: coords.x, y: coords.y },
           radius: lastPoint
             ? Math.sqrt(
@@ -377,6 +381,10 @@ const Canvas = () => {
       <ToolPanel
         selectedStroke={selectedStroke}
         setSelectedStroke={setSelectedStroke}
+        color={color}
+        setColor={setColor}
+        width={width}
+        setWidth={setWidth}
       />
       <canvas
         ref={canvasRef}
