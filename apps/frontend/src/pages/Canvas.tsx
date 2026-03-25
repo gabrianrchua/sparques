@@ -23,7 +23,7 @@ import {
   fill,
 } from '@sparques/sparques-canvas';
 import { CanvasRenderingContext2D, Image as CanvasImage } from 'canvas';
-import ToolPanel, { type ToolPanelProps } from '../components/canvas/ToolPanel';
+import ToolPanel from '../components/canvas/ToolPanel';
 
 const drawStrokes = async (
   ctx: CanvasRenderingContext2D,

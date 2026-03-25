@@ -1,7 +1,12 @@
 import { Request, Response, NextFunction } from 'express';
 import { z } from 'zod';
 
-// middleware to validate schema using zod
+/**
+ * Function to generate middleware which validates a request using zod.
+ * 
+ * @param schema A zod schema to validate against
+ * @param target Whether to validate the request body, query, or params
+ */
 export const validateRequest =
   (schema: z.ZodObject, target: 'body' | 'query' | 'params') =>
   (req: Request, res: Response, next: NextFunction) => {

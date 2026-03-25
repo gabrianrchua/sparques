@@ -3,7 +3,7 @@ import bodyParser from 'body-parser';
 import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
-import { connectDB } from './config/db.js';
+import { connectDB, seedDBData } from './config/db.js';
 import { PORT } from './config/env.js';
 
 // import routes
@@ -28,8 +28,10 @@ app.use(
   }),
 );
 
-// connect to mongo
-connectDB();
+// connect to mongo and seed data if first launch
+connectDB().then(() => {
+  seedDBData();
+});
 
 // register routes
 app.get('/', (_, res) => {
