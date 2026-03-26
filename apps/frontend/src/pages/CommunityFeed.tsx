@@ -4,6 +4,7 @@ import { useLocation, useParams } from 'react-router';
 import { useEffect, useState } from 'react';
 import NetworkService from '../services/Network';
 import { Box, Skeleton, Typography } from '@mui/material';
+import NothingFound from '../components/nothing-found/NothingFound';
 
 const CommunityFeed = () => {
   const location = useLocation();
@@ -13,25 +14,34 @@ const CommunityFeed = () => {
   const [communityInfo, setCommunityInfo] = useState<Community | undefined>(
     undefined
   );
+  const [isLoaded, setIsLoaded] = useState<boolean>(false);
 
   useEffect(() => {
     // only if this page became active
     if (!community) return;
 
     if (location.pathname === '/c/' + community) {
-      NetworkService.getCommunityPosts(community).then((posts) => {
-        setPosts(posts);
-        console.log(posts);
-      });
-
-      NetworkService.getCommunityInfo(community).then((info) => {
-        setCommunityInfo(info);
-        console.log(info);
-      });
+      const postsPromise: Promise<Post[]> =
+        NetworkService.getCommunityPosts(community);
+      const communityPromise: Promise<Community> =
+        NetworkService.getCommunityInfo(community);
+      Promise.all([postsPromise, communityPromise])
+        .then(([postsResponse, communityResponse]) => {
+          setPosts(postsResponse);
+          setCommunityInfo(communityResponse);
+          setIsLoaded(true);
+        })
+        .catch((error) => {
+          console.error('Failed to load posts or community info:', error);
+        });
     }
   }, [location.pathname]);
 
-  return posts.length > 0 && communityInfo ? (
+  if (isLoaded && (!posts.length || !communityInfo)) {
+    return <NothingFound />;
+  }
+
+  return isLoaded && communityInfo ? (
     <>
       {communityInfo.bannerImage && (
         <img
