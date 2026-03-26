@@ -1,2 +1,4 @@
 [ ] backend?: use openAPI spec and generated types + handlers + input validation
 [ ] backend: refactor add stroke route to one per tool + better validation
+[ ] backend: add actual types to request object after zod validation so
+              params aren't implicit typed as `any`
