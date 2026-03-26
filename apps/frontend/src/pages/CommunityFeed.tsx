@@ -1,14 +1,16 @@
 import { Post, Community } from '@sparques/types';
 import FeedPost from '../components/feedpost/FeedPost';
-import { useLocation, useParams } from 'react-router';
+import { useLocation, useNavigate, useParams } from 'react-router';
 import { useEffect, useState } from 'react';
 import NetworkService from '../services/Network';
-import { Box, Skeleton, Typography } from '@mui/material';
+import { Box, Button, Skeleton, Typography } from '@mui/material';
 import NothingFound from '../components/nothing-found/NothingFound';
+import { Brush } from '@mui/icons-material';
 
 const CommunityFeed = () => {
   const location = useLocation();
   const { community } = useParams();
+  const navigate = useNavigate();
 
   const [posts, setPosts] = useState<Post[]>([]);
   const [communityInfo, setCommunityInfo] = useState<Community | undefined>(
@@ -62,7 +64,18 @@ const CommunityFeed = () => {
             alt={`${communityInfo.title} community icon`}
           />
         )}
-        <Typography variant='h4'>c/{communityInfo.title}</Typography>
+        <Typography variant='h4' flexGrow={1}>
+          c/{communityInfo.title}
+        </Typography>
+        <Box sx={{ float: 'right' }}>
+          <Button
+            variant='contained'
+            startIcon={<Brush />}
+            onClick={() => navigate(`/c/${communityInfo.title}/canvas`)}
+          >
+            Go to Canvas
+          </Button>
+        </Box>
       </Box>
       {posts.map((post, index) => (
         <FeedPost key={index} post={post} />
