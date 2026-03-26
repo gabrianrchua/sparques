@@ -1,0 +1,20 @@
+meta {
+  name: Get Canvas
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{schema}}{{host}}/api/canvas/:canvas
+  body: none
+  auth: inherit
+}
+
+params:path {
+  canvas: main
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
