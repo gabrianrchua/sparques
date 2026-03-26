@@ -1,13 +1,11 @@
 import { Request, Response } from 'express';
-import Canvas from '../../models/Canvas.js';
+import fetchCanvas from '../../canvas/fetch-canvas.js';
 
 export const getCanvas = async (req: Request, res: Response) => {
   const canvas = req.params.canvas;
 
   try {
-    const fetchedCanvas = await Canvas.findOne({ title: canvas });
-    if (!fetchedCanvas)
-      return res.status(404).json({ message: 'Canvas not found' });
+    const fetchedCanvas = await fetchCanvas(canvas);
     res.json(fetchedCanvas);
   } catch (error) {
     console.error(error);
