@@ -69,7 +69,7 @@ const polygonSchema = new mongoose.Schema({
 const textSchema = new mongoose.Schema({
   color: { type: String, required: true },
   fontSize: { type: Number, required: true },
-  topLeftCoordindates: { type: coordinateSchema, required: true },
+  topLeftCoordinates: { type: coordinateSchema, required: true },
   text: { type: String, required: true },
 });
 
