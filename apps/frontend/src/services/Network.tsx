@@ -1,5 +1,11 @@
 import axios from 'axios';
-import { Post, Community, CanvasDetails, AnyStroke } from '@sparques/types';
+import {
+  Post,
+  Community,
+  CanvasDetails,
+  AnyStroke,
+  StrokeType,
+} from '@sparques/types';
 
 // TODO: get real base_url for prod via env
 const BASE_URL: string = 'http://localhost:8080/api';
@@ -153,9 +159,14 @@ const NetworkService = {
     strokeData: Partial<AnyStroke>
   ): Promise<AnyStroke> => {
     try {
+      const { type, ...strokeBody } = strokeData;
+      if (!type) {
+        throw new Error('Stroke type must be specified!');
+      }
+      const route = type.toLowerCase() as Lowercase<StrokeType>;
       const result = await axios.post(
-        BASE_URL + '/canvas/' + community,
-        strokeData,
+        BASE_URL + '/canvas/' + community + '/' + route,
+        strokeBody,
         { withCredentials: true }
       );
       return result.data;
