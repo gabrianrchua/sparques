@@ -1,25 +1,33 @@
-import { Request, Response } from 'express';
-import {
-  Brush,
-  Circle,
-  Rectangle,
-  Polygon,
-  Text,
-  Fill,
-} from '../../models/Stroke.js';
+import { Response } from 'express';
+import type {
+  BrushStroke,
+  CircleStroke,
+  FillStroke,
+  PolygonStroke,
+  RectangleStroke,
+  TextStroke,
+} from '@sparques/types';
 import { render } from '../../canvas/canvas.js';
 import Canvas from '../../models/Canvas.js';
 import fetchCanvas from '../../canvas/fetch-canvas.js';
 
 const MAX_STROKES = 5; // how many strokes before flushing to base image
 
-export const addStroke = async (req: Request, res: Response) => {
-  const canvas = req.params.canvas;
-  const { type, ...toolData } = req.body;
+type StrokeModelConstructor = new (parameters: unknown) => unknown;
 
+export const persistStroke = async (
+  canvas: string,
+  StrokeModel: StrokeModelConstructor,
+  parameters:
+    | ({ type: 'Brush' } & BrushStroke)
+    | ({ type: 'Circle' } & CircleStroke)
+    | ({ type: 'Rectangle' } & RectangleStroke)
+    | ({ type: 'Polygon' } & PolygonStroke)
+    | ({ type: 'Text' } & TextStroke)
+    | ({ type: 'Fill' } & FillStroke),
+  res: Response,
+) => {
   if (!canvas) return res.status(400).json({ message: 'Invalid canvas name' });
-  if (!type)
-    return res.status(400).json({ message: "Missing required field 'type'" });
 
   try {
     let fetchedCanvas;
@@ -29,140 +37,7 @@ export const addStroke = async (req: Request, res: Response) => {
       return res.status(404).json({ message: (error as Error).message });
     }
 
-    // determine which stroke is being used and assign parameters
-    let strokeModel;
-    let parameters;
-
-    switch (type.trim().toLowerCase()) {
-      case 'brush':
-        strokeModel = Brush;
-        if (!toolData.color || !toolData.width || !toolData.coordinates)
-          return res.status(400).json({
-            message:
-              "Missing one or more of required fields 'color', 'width', 'coordinates'",
-          });
-        parameters = {
-          type: 'Brush',
-          color: toolData.color,
-          width: toolData.width,
-          coordinates: toolData.coordinates,
-        };
-        break;
-      case 'circle':
-        strokeModel = Circle;
-        if (
-          !toolData.color ||
-          !toolData.width ||
-          !toolData.center ||
-          !toolData.center.x ||
-          !toolData.center.y ||
-          !toolData.radius
-        )
-          return res.status(400).json({
-            message:
-              "Missing one or more of required fields 'color', 'width', 'center', 'radius'",
-          });
-        parameters = {
-          type: 'Circle',
-          color: toolData.color,
-          width: toolData.width,
-          center: toolData.center,
-          radius: toolData.radius,
-        };
-        break;
-      case 'rectangle':
-        strokeModel = Rectangle;
-        if (
-          !toolData.color ||
-          !toolData.width ||
-          !toolData.topLeftCoordinates ||
-          !toolData.topLeftCoordinates.x ||
-          !toolData.topLeftCoordinates.y ||
-          !toolData.bottomRightCoordinates ||
-          !toolData.bottomRightCoordinates.x ||
-          !toolData.bottomRightCoordinates.y
-        )
-          return res.status(400).json({
-            message:
-              "Missing one or more of required fields 'color', 'width', 'topLeftCoordinates', 'bottomRightCoordinates'",
-          });
-        parameters = {
-          type: 'Rectangle',
-          color: toolData.color,
-          width: toolData.width,
-          topLeftCoordinates: toolData.topLeftCoordinates,
-          bottomRightCoordinates: toolData.bottomRightCoordinates,
-        };
-        break;
-      case 'polygon':
-        strokeModel = Polygon;
-        if (
-          !toolData.color ||
-          !toolData.width ||
-          !toolData.numSides ||
-          !toolData.center ||
-          !toolData.center.x ||
-          !toolData.center.y ||
-          !toolData.sideLength
-        )
-          return res.status(400).json({
-            message:
-              "Missing one or more of required fields 'color', 'width', 'numSides', 'center', 'sideLength'",
-          });
-        parameters = {
-          type: 'Polygon',
-          color: toolData.color,
-          width: toolData.width,
-          numSides: toolData.numSides,
-          center: toolData.center,
-          sideLength: toolData.sideLength,
-        };
-        break;
-      case 'text':
-        strokeModel = Text;
-        if (
-          !toolData.color ||
-          !toolData.fontSize ||
-          !toolData.topLeftCoordinates ||
-          !toolData.topLeftCoordinates.x ||
-          !toolData.topLeftCoordinates.y ||
-          !toolData.text
-        )
-          return res.status(400).json({
-            message:
-              "Missing one or more of required fields 'color', 'fontSize', 'topLeftCoordinates', 'text'",
-          });
-        parameters = {
-          type: 'Text',
-          color: toolData.color,
-          fontSize: toolData.fontSize,
-          topLeftCoordinates: toolData.topLeftCoordinates,
-          text: toolData.text,
-        };
-        break;
-      case 'fill':
-        strokeModel = Fill;
-        if (
-          !toolData.color ||
-          !toolData.coordinates ||
-          !toolData.coordinates.x ||
-          !toolData.coordinates.y
-        )
-          return res.status(400).json({
-            message:
-              "Missing one or more of required fields 'color', 'coordinates'",
-          });
-        parameters = {
-          type: 'Fill',
-          color: toolData.color,
-          coordinates: toolData.coordinates,
-        };
-        break;
-      default:
-        return res.status(400).json({ message: 'Invalid stroke type' });
-    }
-
-    const newStroke = new strokeModel(parameters);
+    const newStroke = new StrokeModel(parameters);
     //const savedStroke = await newStroke.save();
     await Canvas.findByIdAndUpdate(fetchedCanvas._id, {
       $push: { strokes: newStroke },
