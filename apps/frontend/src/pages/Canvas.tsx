@@ -91,6 +91,10 @@ const Canvas = () => {
   // stroke configuration state for tool options panel
   const [color, setColor] = useState<string>('#000000');
   const [width, setWidth] = useState<number>(5);
+  const [textValue, setTextValue] = useState<string>('');
+  const [numSides, setNumSides] = useState<number>(4);
+  const [sideLength, setSideLength] = useState<number>(50);
+  const [fontSize, setFontSize] = useState<number>(24);
 
   // stroke drawing state for click-to-draw
   const [isDrawing, setIsDrawing] = useState<boolean>(false);
@@ -234,8 +238,8 @@ const Canvas = () => {
                 x: getCanvasCoordinates(event).x,
                 y: getCanvasCoordinates(event).y,
               },
-          sideLength: 50,
-          numSides: 4,
+          sideLength,
+          numSides,
         };
         result = polygonData;
         break;
@@ -243,12 +247,12 @@ const Canvas = () => {
       case 'Text': {
         const textData: TextStroke = {
           color,
-          fontSize: 24,
+          fontSize,
           topLeftCoordinates: {
             x: getCanvasCoordinates(event).x,
             y: getCanvasCoordinates(event).y,
           },
-          text: '',
+          text: textValue,
         };
         result = textData;
         break;
@@ -385,6 +389,14 @@ const Canvas = () => {
         setColor={setColor}
         width={width}
         setWidth={setWidth}
+        text={textValue}
+        setText={setTextValue}
+        numSides={numSides}
+        setNumSides={setNumSides}
+        sideLength={sideLength}
+        setSideLength={setSideLength}
+        fontSize={fontSize}
+        setFontSize={setFontSize}
       />
       <canvas
         ref={canvasRef}

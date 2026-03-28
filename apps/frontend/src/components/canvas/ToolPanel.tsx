@@ -17,6 +17,14 @@ interface ToolPanelProps {
   setColor?: (c: string) => void;
   width?: number;
   setWidth?: (w: number) => void;
+  text?: string;
+  setText?: (t: string) => void;
+  numSides?: number;
+  setNumSides?: (n: number) => void;
+  sideLength?: number;
+  setSideLength?: (l: number) => void;
+  fontSize?: number;
+  setFontSize?: (f: number) => void;
 }
 
 const ToolPanel = ({
@@ -26,6 +34,14 @@ const ToolPanel = ({
   setColor,
   width,
   setWidth,
+  text,
+  setText,
+  numSides,
+  setNumSides,
+  sideLength,
+  setSideLength,
+  fontSize,
+  setFontSize,
 }: ToolPanelProps) => {
   const toolOptionsProps: ToolOptionsProps = {
     selectedStroke,
@@ -33,14 +49,14 @@ const ToolPanel = ({
     setColor: setColor ?? ((c) => c),
     width: width ?? 5,
     setWidth: setWidth ?? ((w) => w),
-    text: undefined,
-    setText: undefined,
-    numSides: undefined,
-    setNumSides: undefined,
-    sideLength: undefined,
-    setSideLength: undefined,
-    fontSize: undefined,
-    setFontSize: undefined,
+    text,
+    setText,
+    numSides,
+    setNumSides,
+    sideLength,
+    setSideLength,
+    fontSize,
+    setFontSize,
   };
 
   return (

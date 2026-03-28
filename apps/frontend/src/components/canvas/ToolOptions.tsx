@@ -1,7 +1,8 @@
-import { Box, Slider, TextField } from '@mui/material';
+import { Box, Slider, TextField, Typography } from '@mui/material';
+import { StrokeType } from '@sparques/types';
 
 export type ToolOptionsProps = {
-  selectedStroke?: string | null;
+  selectedStroke?: StrokeType | null;
   color: string;
   setColor: (c: string) => void;
   width: number;
@@ -32,64 +33,77 @@ const ToolOptions = ({
   setFontSize,
 }: ToolOptionsProps) => {
   const activeTool = selectedStroke;
+  const showsColor = activeTool !== null && activeTool !== undefined;
+  const showsWidth =
+    activeTool === 'Brush' ||
+    activeTool === 'Circle' ||
+    activeTool === 'Rectangle' ||
+    activeTool === 'Polygon';
+  const showsPolygonOptions = activeTool === 'Polygon';
+  const showsTextOptions = activeTool === 'Text';
 
   return (
     <Box display='flex' flexDirection='column' gap='4px' p='2'>
-      {/* Color picker for all tools */}
-      <TextField
-        label='Color'
-        type='text'
-        variant='outlined'
-        value={color}
-        onChange={(event) => setColor(event.target.value)}
-        sx={{ width: '100%', textTransform: 'uppercase' }}
-      />
-
-      {/* Width slider for most tools (not Fill) */}
-      {activeTool !== 'Fill' && (
-        <Slider
-          min={1}
-          max={50}
-          step={1}
-          value={width}
-          onChange={(event, newValue) => setWidth(newValue as number)}
-          aria-label='stroke width'
-          valueLabelDisplay='auto'
+      {showsColor && (
+        <TextField
+          label='Color'
+          type='text'
+          variant='outlined'
+          value={color}
+          onChange={(event) => setColor(event.target.value)}
+          sx={{ width: '100%', textTransform: 'uppercase' }}
         />
       )}
 
-      {/* Tool-specific options */}
-      {activeTool === 'Polygon' && (
+      {showsWidth && (
         <>
+          <Typography variant='body2'>Stroke width</Typography>
+          <Slider
+            min={1}
+            max={50}
+            step={1}
+            value={width}
+            onChange={(_, newValue) => setWidth(newValue as number)}
+            aria-label='stroke width'
+            valueLabelDisplay='auto'
+          />
+        </>
+      )}
+
+      {showsPolygonOptions && (
+        <>
+          <Typography variant='body2'>Number of sides</Typography>
           <Slider
             min={3}
             max={20}
             step={1}
             value={numSides || 4}
-            onChange={(event, newValue) => setNumSides(newValue as number)}
+            onChange={(_, newValue) => setNumSides?.(newValue as number)}
             aria-label='number of sides'
             valueLabelDisplay='auto'
           />
+          <Typography variant='body2'>Side length</Typography>
           <Slider
             min={10}
             max={200}
             step={1}
             value={sideLength || 50}
-            onChange={(event, newValue) => setSideLength(newValue as number)}
+            onChange={(_, newValue) => setSideLength?.(newValue as number)}
             aria-label='side length'
             valueLabelDisplay='auto'
           />
         </>
       )}
 
-      {activeTool === 'Text' && (
+      {showsTextOptions && (
         <>
+          <Typography variant='body2'>Font size</Typography>
           <Slider
             min={12}
             max={72}
             step={1}
             value={fontSize || 24}
-            onChange={(event, newValue) => setFontSize(newValue as number)}
+            onChange={(_, newValue) => setFontSize?.(newValue as number)}
             aria-label='font size'
             valueLabelDisplay='auto'
           />
@@ -99,18 +113,11 @@ const ToolOptions = ({
             multiline
             maxRows={2}
             value={text || ''}
-            onChange={(event) => setText(event.target.value)}
+            onChange={(event) => setText?.(event.target.value)}
             sx={{ width: '100%' }}
           />
         </>
       )}
-
-      {/* Hidden but always rendered to satisfy parent props */}
-      <TextField
-        type='hidden'
-        value={String(selectedStroke)}
-        onChange={() => {}}
-      />
     </Box>
   );
 };
