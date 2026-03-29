@@ -1,4 +1,4 @@
-[ ] full: session + refresh token so don't need to re-login every day
+[/] full: session + refresh token so don't need to re-login every day
 [ ] full: user page and preview popover
 
 [ ] backend?: use openAPI spec and generated types + handlers + input validation

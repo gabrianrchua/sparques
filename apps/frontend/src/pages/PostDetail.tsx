@@ -25,10 +25,12 @@ import NetworkService from '../services/Network';
 import CommentDisplay from '../components/comment/CommentDisplay';
 import CommentEditor from '../components/comment/CommentEditor';
 import { enqueueSnackbar } from 'notistack';
+import ShareModal from '../components/share-modal/ShareModal';
 
-const FeedPost = () => {
+const PostDetail = () => {
   const { postid } = useParams();
   const [post, setPost] = useState<Post | undefined>(undefined);
+  const [isShareModalOpen, setIsShareModalOpen] = useState<boolean>(false);
   const location = useLocation();
   const [isCommentBoxShown, setIsCommentBoxShown] = useState(false);
   const [commentValue, setCommentValue] = useState('');
@@ -223,7 +225,7 @@ const FeedPost = () => {
               variant='outlined'
               startIcon={<Share />}
               onClick={() => {
-                console.log('share');
+                setIsShareModalOpen(true);
               }}
             >
               <Typography variant='body2'>Share</Typography>
@@ -231,6 +233,11 @@ const FeedPost = () => {
           </Box>
         </CardActions>
       </Card>
+      <ShareModal
+        link='https://www.google.com'
+        open={isShareModalOpen}
+        setOpen={setIsShareModalOpen}
+      />
       <PillButton
         variant='outlined'
         startIcon={<Add />}
@@ -253,4 +260,4 @@ const FeedPost = () => {
   );
 };
 
-export default FeedPost;
+export default PostDetail;
