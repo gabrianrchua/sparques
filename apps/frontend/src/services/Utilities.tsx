@@ -32,16 +32,18 @@ const UtilitiesService = {
     return formatter.format(num).toLowerCase();
   },
 
-  saveUserInfo: (username: string, expireDate: Date) => {
-    localStorage.setItem('userInfo', JSON.stringify({ username, expireDate }));
+  saveUserInfo: (username: string) => {
+    localStorage.setItem('userInfo', JSON.stringify({ username }));
   },
 
-  getUserInfo: (): { username: string; expireDate: Date } | undefined => {
+  getUserInfo: (): { username: string } | undefined => {
     const userInfo = localStorage.getItem('userInfo');
     if (!userInfo) return undefined;
-    const info = JSON.parse(userInfo);
-    info.expireDate = new Date(info.expireDate);
-    return info;
+    return JSON.parse(userInfo);
+  },
+
+  clearUserInfo: () => {
+    localStorage.removeItem('userInfo');
   },
 
   isLoggedIn: (): boolean => {
@@ -49,9 +51,7 @@ const UtilitiesService = {
 
     if (!info) return false;
 
-    if (info.expireDate && info.expireDate > new Date()) return true;
-
-    return false;
+    return Boolean(info.username);
   },
 };
 

@@ -24,7 +24,7 @@ describe('requireAuth', () => {
   });
 
   it('stores the username and calls next for a valid token', () => {
-    const req = createRequest({ cookies: { token: 'valid-token' } });
+    const req = createRequest({ cookies: { access_token: 'valid-token' } });
     const res = createResponse();
     const next = createNext();
     vi.spyOn(jwt, 'verify').mockReturnValueOnce({ username: 'alice' } as never);
@@ -36,7 +36,7 @@ describe('requireAuth', () => {
   });
 
   it('returns 401 when the token is expired', () => {
-    const req = createRequest({ cookies: { token: 'expired' } });
+    const req = createRequest({ cookies: { access_token: 'expired' } });
     const res = createResponse();
     const next = createNext();
     vi.spyOn(jwt, 'verify').mockImplementationOnce(() => {
@@ -51,7 +51,7 @@ describe('requireAuth', () => {
   });
 
   it('returns 401 when the token is invalid', () => {
-    const req = createRequest({ cookies: { token: 'invalid' } });
+    const req = createRequest({ cookies: { access_token: 'invalid' } });
     const res = createResponse();
     const next = createNext();
     vi.spyOn(jwt, 'verify').mockImplementationOnce(() => {
@@ -66,7 +66,7 @@ describe('requireAuth', () => {
   });
 
   it('returns 500 on unexpected verification errors', () => {
-    const req = createRequest({ cookies: { token: 'boom' } });
+    const req = createRequest({ cookies: { access_token: 'boom' } });
     const res = createResponse();
     const next = createNext();
     vi.spyOn(jwt, 'verify').mockImplementationOnce(() => {

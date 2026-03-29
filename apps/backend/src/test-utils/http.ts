@@ -7,6 +7,7 @@ export const createRequest = <T extends Partial<Request>>(overrides?: T) =>
     params: {},
     query: {},
     cookies: {},
+    get: vi.fn(),
     ...overrides,
   }) as Request;
 
@@ -25,4 +26,4 @@ export const createResponse = () => {
   return res;
 };
 
-export const createNext = () => vi.fn<NextFunction>();
+export const createNext = () => vi.fn() as unknown as NextFunction;

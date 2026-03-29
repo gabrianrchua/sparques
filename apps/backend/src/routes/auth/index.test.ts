@@ -9,7 +9,7 @@ const Router = vi.fn(() => router);
 const registerUser = vi.fn();
 const logIn = vi.fn();
 const checkToken = vi.fn();
-const requireAuth = vi.fn();
+const refreshSession = vi.fn();
 
 const validateRequest = vi.fn((schema, target) => ({ schema, target }));
 
@@ -34,12 +34,12 @@ vi.mock('./check-token.js', () => ({
   checkToken,
 }));
 
-vi.mock('../../middleware/validate.js', () => ({
-  validateRequest,
+vi.mock('./refresh.js', () => ({
+  refreshSession,
 }));
 
-vi.mock('../../middleware/require-auth.js', () => ({
-  requireAuth,
+vi.mock('../../middleware/validate.js', () => ({
+  validateRequest,
 }));
 
 vi.mock('../../schemas/auth.js', () => ({
@@ -68,10 +68,7 @@ describe('routes/auth/index', () => {
       { schema: LogInBody, target: 'body' },
       logIn,
     );
-    expect(router.get).toHaveBeenCalledWith(
-      '/checkToken',
-      requireAuth,
-      checkToken,
-    );
+    expect(router.post).toHaveBeenNthCalledWith(3, '/refresh', refreshSession);
+    expect(router.get).toHaveBeenCalledWith('/checkToken', checkToken);
   });
 });

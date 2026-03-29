@@ -1,8 +1,11 @@
+[ ] full: session + refresh token so don't need to re-login every day
+[ ] full: user page and preview popover
+
 [ ] backend?: use openAPI spec and generated types + handlers + input validation
-[ ] backend: refactor add stroke route to one per tool + better validation
+[/] backend: refactor add stroke route to one per tool + better validation
 [ ] backend: add actual types to request object after zod validation so
     params aren't implicit typed as `any`
-[ ] backend: session + refresh token so don't need to re-login every day
 
 [ ] frontend: profile picture icon in nav
 [ ] frontend: share button
+[ ] frontend: links to community and user pages

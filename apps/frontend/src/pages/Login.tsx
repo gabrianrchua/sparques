@@ -16,10 +16,7 @@ const Login = () => {
     NetworkService.postLogin(username, password)
       .then((result) => {
         enqueueSnackbar('Successfully logged in!');
-        UtilitiesService.saveUserInfo(
-          result.username,
-          new Date(result.expireDate)
-        );
+        UtilitiesService.saveUserInfo(result.username);
         navigate('/');
       })
       .catch((err) => {

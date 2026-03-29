@@ -34,6 +34,7 @@ import CommunityFeed from './pages/CommunityFeed';
 import { Community } from '@sparques/types';
 import NetworkService from './services/Network';
 import Canvas from './pages/Canvas';
+import UtilitiesService from './services/Utilities';
 
 const drawerWidth: number = 300;
 
@@ -41,12 +42,27 @@ const App = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
   const [communities, setCommunities] = useState<Community[]>([]);
+  const [authUsername, setAuthUsername] = useState<string | null>(
+    UtilitiesService.getUserInfo()?.username || null
+  );
 
   useEffect(() => {
     NetworkService.getCommunities().then((result) => {
       setCommunities(result);
       console.log('Get community list', result);
     });
+  }, []);
+
+  useEffect(() => {
+    NetworkService.checkAuth()
+      .then((result) => {
+        UtilitiesService.saveUserInfo(result.username);
+        setAuthUsername(result.username);
+      })
+      .catch(() => {
+        UtilitiesService.clearUserInfo();
+        setAuthUsername(null);
+      });
   }, []);
 
   const handleDrawerClose = () => {
@@ -85,7 +101,7 @@ const App = () => {
               <ListItemIcon>
                 <LoginRounded />
               </ListItemIcon>
-              <ListItemText primary='Log in' />
+              <ListItemText primary={authUsername || 'Log in'} />
             </ListItemButton>
           </Link>
         </ListItem>

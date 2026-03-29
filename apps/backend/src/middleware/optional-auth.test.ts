@@ -22,7 +22,7 @@ describe('optionalAuth', () => {
   });
 
   it('stores the username when token verification succeeds', () => {
-    const req = createRequest({ cookies: { token: 'valid-token' } });
+    const req = createRequest({ cookies: { access_token: 'valid-token' } });
     const res = createResponse();
     const next = createNext();
     vi.spyOn(jwt, 'verify').mockReturnValueOnce({ username: 'alice' } as never);
@@ -34,7 +34,7 @@ describe('optionalAuth', () => {
   });
 
   it('falls through when token verification throws', () => {
-    const req = createRequest({ cookies: { token: 'bad-token' } });
+    const req = createRequest({ cookies: { access_token: 'bad-token' } });
     const res = createResponse();
     const next = createNext();
     vi.spyOn(jwt, 'verify').mockImplementationOnce(() => {

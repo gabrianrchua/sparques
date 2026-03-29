@@ -4,7 +4,7 @@ import { validateRequest } from '../../middleware/validate.js';
 import { LogInBody, RegisterUserBody } from '../../schemas/auth.js';
 import { logIn } from './log-in.js';
 import { checkToken } from './check-token.js';
-import { requireAuth } from '../../middleware/require-auth.js';
+import { refreshSession } from './refresh.js';
 
 const router = express.Router();
 
@@ -20,8 +20,12 @@ router.post(
 // @desc    Log in as existing user
 router.post('/', validateRequest(LogInBody, 'body'), logIn);
 
-// @route   GET /api/auth/validate
-// @desc    Check if user's token is still valid
-router.get('/checkToken', requireAuth, checkToken);
+// @route   POST /api/auth/refresh
+// @desc    Refresh an expired access token using a persisted session
+router.post('/refresh', refreshSession);
+
+// @route   GET /api/auth/checkToken
+// @desc    Check if the user has an active authenticated session
+router.get('/checkToken', checkToken);
 
 export default router;

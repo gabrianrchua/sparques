@@ -1,7 +1,6 @@
 import { Request, Response } from 'express';
 import User from '../../models/User.js';
-import jwt from 'jsonwebtoken';
-import { JWT_SECRET } from '../../config/env.js';
+import { issueAuthCookies } from '../../auth/session.js';
 
 export const logIn = async (req: Request, res: Response) => {
   const { username, password } = req.body;
@@ -18,18 +17,20 @@ export const logIn = async (req: Request, res: Response) => {
         } else if (!same) {
           res.status(401).json({ message: 'Incorrect email or password' });
         } else {
-          // Issue token
-          const payload = { username };
-          const token = jwt.sign(payload, JWT_SECRET, {
-            expiresIn: '24h',
-          });
-          res.cookie('token', token, { httpOnly: true }).json({
-            message: 'Sign in successful',
-            username,
-            expireDate: new Date(
-              ((jwt.decode(token) as jwt.JwtPayload)?.exp as number) * 1000,
-            ),
-          });
+          issueAuthCookies(res, username, req.get('user-agent'))
+            .then(() => {
+              res.json({
+                message: 'Sign in successful',
+                username,
+                authenticated: true,
+              });
+            })
+            .catch((sessionError) => {
+              res.status(500).json({
+                message: 'Server error',
+                error: sessionError,
+              });
+            });
         }
       });
     } else {

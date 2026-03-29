@@ -1,4 +1,8 @@
-import axios from 'axios';
+import axios, {
+  AxiosError,
+  AxiosInstance,
+  InternalAxiosRequestConfig,
+} from 'axios';
 import {
   Post,
   Community,
@@ -10,14 +14,54 @@ import {
 // TODO: get real base_url for prod via env
 const BASE_URL: string = 'http://localhost:8080/api';
 
+type RetryableRequestConfig = InternalAxiosRequestConfig & {
+  _retry?: boolean;
+};
+
+const createApiClient = (): AxiosInstance =>
+  axios.create({
+    baseURL: BASE_URL,
+    withCredentials: true,
+  });
+
+const apiClient = createApiClient();
+const refreshClient = createApiClient();
+
+let refreshPromise: Promise<void> | null = null;
+
+apiClient.interceptors.response.use(
+  (response) => response,
+  async (error: AxiosError) => {
+    const originalRequest = error.config as RetryableRequestConfig | undefined;
+
+    if (
+      error.response?.status !== 401 ||
+      !originalRequest ||
+      originalRequest._retry
+    ) {
+      throw error;
+    }
+
+    originalRequest._retry = true;
+
+    if (!refreshPromise) {
+      refreshPromise = refreshClient
+        .post('/auth/refresh')
+        .then(() => undefined)
+        .finally(() => {
+          refreshPromise = null;
+        });
+    }
+
+    await refreshPromise;
+    return apiClient(originalRequest);
+  }
+);
+
 const NetworkService = {
   postRegister: async (username: string, password: string) => {
     try {
-      const result = await axios.post(
-        BASE_URL + '/auth/register',
-        { username, password },
-        { withCredentials: true }
-      );
+      const result = await apiClient.post('/auth/register', { username, password });
       return result.data;
     } catch (error) {
       console.error(error);
@@ -27,11 +71,17 @@ const NetworkService = {
 
   postLogin: async (username: string, password: string) => {
     try {
-      const result = await axios.post(
-        BASE_URL + '/auth',
-        { username, password },
-        { withCredentials: true }
-      );
+      const result = await apiClient.post('/auth', { username, password });
+      return result.data;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  },
+
+  checkAuth: async (): Promise<{ authenticated: boolean; username: string }> => {
+    try {
+      const result = await refreshClient.get('/auth/checkToken');
       return result.data;
     } catch (error) {
       console.error(error);
@@ -41,9 +91,7 @@ const NetworkService = {
 
   getPosts: async (): Promise<Post[]> => {
     try {
-      const result = await axios.get(BASE_URL + '/posts', {
-        withCredentials: true,
-      });
+      const result = await apiClient.get('/posts');
       return result.data;
     } catch (error) {
       console.error(error);
@@ -53,10 +101,7 @@ const NetworkService = {
 
   getCommunityPosts: async (community: string): Promise<Post[]> => {
     try {
-      const result = await axios.get(
-        BASE_URL + '/posts?community=' + community,
-        { withCredentials: true }
-      );
+      const result = await apiClient.get('/posts?community=' + community);
       return result.data;
     } catch (error) {
       console.error(error);
@@ -66,9 +111,7 @@ const NetworkService = {
 
   getPostDetail: async (postid: string): Promise<Post> => {
     try {
-      const result = await axios.get(BASE_URL + '/posts/' + postid, {
-        withCredentials: true,
-      });
+      const result = await apiClient.get('/posts/' + postid);
       return result.data;
     } catch (error) {
       console.error(error);
@@ -82,10 +125,9 @@ const NetworkService = {
     parentId: string | undefined
   ) => {
     try {
-      const result = await axios.post(
-        BASE_URL + '/posts/' + postId + '/comment',
+      const result = await apiClient.post(
+        '/posts/' + postId + '/comment',
         parentId ? { content, parentId } : { content },
-        { withCredentials: true }
       );
       return result.data;
     } catch (error) {
@@ -96,11 +138,9 @@ const NetworkService = {
 
   postVotePost: async (postId: string, isUpvote: boolean) => {
     try {
-      const result = await axios.post(
-        BASE_URL + '/posts/' + postId + '/vote',
-        { isUpvote },
-        { withCredentials: true }
-      );
+      const result = await apiClient.post('/posts/' + postId + '/vote', {
+        isUpvote,
+      });
       return result.data;
     } catch (error) {
       console.error(error);
@@ -110,10 +150,9 @@ const NetworkService = {
 
   postNewPost: async (title: string, content: string, community: string) => {
     try {
-      const result = await axios.post(
-        BASE_URL + '/posts',
+      const result = await apiClient.post(
+        '/posts',
         { title, content, community },
-        { withCredentials: true }
       );
       return result.data;
     } catch (error) {
@@ -124,7 +163,7 @@ const NetworkService = {
 
   getCommunities: async (): Promise<Community[]> => {
     try {
-      const result = await axios.get(BASE_URL + '/community');
+      const result = await apiClient.get('/community');
       return result.data;
     } catch (error) {
       console.error(error);
@@ -134,7 +173,7 @@ const NetworkService = {
 
   getCommunityInfo: async (title: string): Promise<Community> => {
     try {
-      const result = await axios.get(BASE_URL + '/community?title=' + title);
+      const result = await apiClient.get('/community?title=' + title);
       return result.data;
     } catch (error) {
       console.error(error);
@@ -146,7 +185,7 @@ const NetworkService = {
 
   getCanvas: async (community: string): Promise<CanvasDetails> => {
     try {
-      const result = await axios.get(BASE_URL + '/canvas/' + community);
+      const result = await apiClient.get('/canvas/' + community);
       return result.data;
     } catch (error) {
       console.error(error);
@@ -164,10 +203,9 @@ const NetworkService = {
         throw new Error('Stroke type must be specified!');
       }
       const route = type.toLowerCase() as Lowercase<StrokeType>;
-      const result = await axios.post(
-        BASE_URL + '/canvas/' + community + '/' + route,
+      const result = await apiClient.post(
+        '/canvas/' + community + '/' + route,
         strokeBody,
-        { withCredentials: true }
       );
       return result.data;
     } catch (error) {

@@ -11,9 +11,19 @@ describe('config/env', () => {
   it('uses default values when env vars are absent', async () => {
     vi.unstubAllEnvs();
 
-    const { JWT_SECRET, MONGO_URI, PORT } = await loadEnvModule();
+    const {
+      ACCESS_TOKEN_SECRET,
+      ACCESS_TOKEN_TTL_MINUTES,
+      REFRESH_SESSION_TTL_DAYS,
+      COOKIE_SECURE,
+      MONGO_URI,
+      PORT,
+    } = await loadEnvModule();
 
-    expect(JWT_SECRET).toBe('mysecretdontuse');
+    expect(ACCESS_TOKEN_SECRET).toBe('mysecretdontuse');
+    expect(ACCESS_TOKEN_TTL_MINUTES).toBe(15);
+    expect(REFRESH_SESSION_TTL_DAYS).toBe(90);
+    expect(COOKIE_SECURE).toBe(false);
     expect(MONGO_URI).toBe(
       'mongodb://mongoadmin:secret@localhost:27017/sparquesdb?authSource=admin',
     );
@@ -21,13 +31,26 @@ describe('config/env', () => {
   });
 
   it('prefers explicit environment variables', async () => {
-    vi.stubEnv('JWT_SECRET', 'test-secret');
+    vi.stubEnv('ACCESS_TOKEN_SECRET', 'test-secret');
+    vi.stubEnv('ACCESS_TOKEN_TTL_MINUTES', '5');
+    vi.stubEnv('REFRESH_SESSION_TTL_DAYS', '30');
+    vi.stubEnv('NODE_ENV', 'production');
     vi.stubEnv('MONGO_URI', 'mongodb://example/db');
     vi.stubEnv('PORT', '9999');
 
-    const { JWT_SECRET, MONGO_URI, PORT } = await loadEnvModule();
+    const {
+      ACCESS_TOKEN_SECRET,
+      ACCESS_TOKEN_TTL_MINUTES,
+      REFRESH_SESSION_TTL_DAYS,
+      COOKIE_SECURE,
+      MONGO_URI,
+      PORT,
+    } = await loadEnvModule();
 
-    expect(JWT_SECRET).toBe('test-secret');
+    expect(ACCESS_TOKEN_SECRET).toBe('test-secret');
+    expect(ACCESS_TOKEN_TTL_MINUTES).toBe(5);
+    expect(REFRESH_SESSION_TTL_DAYS).toBe(30);
+    expect(COOKIE_SECURE).toBe(true);
     expect(MONGO_URI).toBe('mongodb://example/db');
     expect(PORT).toBe('9999');
   });

@@ -13,7 +13,7 @@
     "composite": true,
     "outDir": "./dist"
   },
-  "exclude": ["**/node_modules/*"],
+  "exclude": ["**/node_modules/*", "src/**/*.test.ts"],
   "include": ["src", "src/**/*.ts"],
   "references": [
     { "path": "../../libs/types" },
