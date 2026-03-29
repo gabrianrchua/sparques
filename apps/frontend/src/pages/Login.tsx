@@ -52,6 +52,11 @@ const Login = () => {
         value={password}
         onChange={(event) => setPassword(event.target.value)}
         sx={{ marginBottom: '12px ' }}
+        onKeyDown={(event) => {
+          if (event.key === 'Enter' && username && password) {
+            login();
+          }
+        }}
       />
       <br />
       <Button

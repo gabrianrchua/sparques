@@ -77,6 +77,16 @@ const Register = () => {
         value={confirmPassword}
         onChange={(event) => setConfirmPassword(event.target.value)}
         error={password.length > 0 && validatePassword()[0]}
+        onKeyDown={(event) => {
+          if (
+            event.key === 'Enter' &&
+            username &&
+            password &&
+            !validatePassword()[0]
+          ) {
+            register();
+          }
+        }}
       />
       <br />
       {password.length > 0 && (
