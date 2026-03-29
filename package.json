@@ -5,7 +5,8 @@
   "scripts": {
     "start": "concurrently -c red,blue,green --names database,backend,frontend \"cd database && docker compose up\" \"cd apps/backend && npm start\" \"cd apps/frontend && npm start\"",
     "dev": "concurrently -c red,blue,green --names database,backend,frontend \"cd database && docker compose up\" \"cd apps/backend && npm run dev\" \"cd apps/frontend && npm start\"",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "npm run test:backend",
+    "test:backend": "npm test --workspace @sparques/backend",
     "build": "rm -rf dist && tsc -b"
   },
   "repository": {
