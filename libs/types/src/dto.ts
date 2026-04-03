@@ -1,8 +1,14 @@
 import { AnyStroke } from './interfaces.js';
 
-export interface Vote {
+export interface PostVote {
   author: string;
   postId: string;
+  isUpvote: boolean;
+}
+
+export interface CommentVote {
+  author: string;
+  commentId: string;
   isUpvote: boolean;
 }
 
@@ -13,14 +19,27 @@ export interface CanvasDetails {
   baseImage: string;
 }
 
-export interface CommentDetail {
+export type ViewerVote = 'up' | 'down' | null;
+
+export interface CommentNode {
   _id: string;
-  postId: string | undefined;
+  postId: string;
+  rootId: string;
   author: string;
   content: string;
   creationDate: Date;
   editDate: Date;
   parentId: string | undefined;
+  depth: number;
+  replyCount: number;
+  numUpvotes: number;
+  numDownvotes: number;
+  viewerVote: ViewerVote;
+}
+
+export interface CommentPage {
+  items: CommentNode[];
+  nextCursor: string | null;
 }
 
 interface Image {
@@ -45,6 +64,5 @@ export interface Post {
   numComments: number;
   numUpvotes: number;
   numDownvotes: number;
-  comments: CommentDetail[] | undefined;
-  votes: Vote[] | undefined;
+  votes: PostVote[] | undefined;
 }

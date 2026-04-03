@@ -27,11 +27,9 @@ describe('schemas/posts', () => {
     expect(
       CreateCommentBody.parse({
         content: 'reply',
-        parentId: '507f191e810c19729de860ea',
       }),
     ).toEqual({
       content: 'reply',
-      parentId: '507f191e810c19729de860ea',
     });
     expect(CreateVoteBody.parse({ isUpvote: true })).toEqual({
       isUpvote: true,
@@ -43,9 +41,7 @@ describe('schemas/posts', () => {
   });
 
   it('rejects invalid object ids and vote payloads', () => {
-    expect(() =>
-      CreateCommentBody.parse({ content: 'reply', parentId: 'bad-id' }),
-    ).toThrow();
+    expect(() => CreateCommentBody.parse({})).toThrow();
     expect(() => CreateVoteBody.parse({ isUpvote: 'yes' })).toThrow();
   });
 });

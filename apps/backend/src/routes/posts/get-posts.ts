@@ -14,7 +14,7 @@ export const getPosts = async (req: Request, res: Response) => {
           { $match: { community } },
           {
             $lookup: {
-              from: 'votes',
+              from: 'postvotes',
               let: { postId: '$_id' },
               pipeline: [
                 {
@@ -38,7 +38,7 @@ export const getPosts = async (req: Request, res: Response) => {
         const posts = await Post.aggregate([
           {
             $lookup: {
-              from: 'votes',
+              from: 'postvotes',
               let: { postId: '$_id' },
               pipeline: [
                 {

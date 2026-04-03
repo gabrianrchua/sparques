@@ -3,6 +3,7 @@ import { optionalAuth } from '../../middleware/optional-auth.js';
 import { getPosts } from './get-posts.js';
 import { validateRequest } from '../../middleware/validate.js';
 import {
+  CommentListQuery,
   CreateCommentBody,
   CreatePostBody,
   CreateVoteBody,
@@ -14,6 +15,7 @@ import { requireAuth } from '../../middleware/require-auth.js';
 import { createComment } from './create-comment.js';
 import { createVote } from './create-vote.js';
 import { getPost } from './get-post.js';
+import { getPostComments } from './get-post-comments.js';
 import { updatePost } from './update-post.js';
 import { deletePost } from './delete-post.js';
 import { IdOnlyParams } from '../../schemas/mongo.js';
@@ -38,14 +40,24 @@ router.post(
   createPost,
 );
 
-// @route   POST /api/posts/:id/comment
-// @desc    Create a new comment under a post
+// @route   POST /api/posts/:id/comments
+// @desc    Create a new top-level comment under a post
 router.post(
-  '/:id/comment',
+  '/:id/comments',
   requireAuth,
   validateRequest(CreateCommentBody, 'body'),
   validateRequest(IdOnlyParams, 'params'),
   createComment,
+);
+
+// @route   GET /api/posts/:id/comments
+// @desc    Get top-level comments for a post
+router.get(
+  '/:id/comments',
+  optionalAuth,
+  validateRequest(CommentListQuery, 'query'),
+  validateRequest(IdOnlyParams, 'params'),
+  getPostComments,
 );
 
 // @route   POST /api/posts/:id/vote

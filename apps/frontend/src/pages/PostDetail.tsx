@@ -8,7 +8,7 @@ import {
   Typography,
   useTheme,
 } from '@mui/material';
-import { Post, CommentDetail } from '@sparques/types';
+import { Post, CommentNode } from '@sparques/types';
 import {
   Add,
   ArrowBack,
@@ -30,6 +30,11 @@ import ShareModal from '../components/share-modal/ShareModal';
 const PostDetail = () => {
   const { postid } = useParams();
   const [post, setPost] = useState<Post | undefined>(undefined);
+  const [comments, setComments] = useState<CommentNode[]>([]);
+  const [nextCommentsCursor, setNextCommentsCursor] = useState<string | null>(
+    null
+  );
+  const [isCommentsLoading, setIsCommentsLoading] = useState(false);
   const [isShareModalOpen, setIsShareModalOpen] = useState<boolean>(false);
   const location = useLocation();
   const [isCommentBoxShown, setIsCommentBoxShown] = useState(false);
@@ -40,62 +45,59 @@ const PostDetail = () => {
   useEffect(() => {
     // only if this page became active
     if (postid && location.pathname === '/post/' + postid) {
-      refreshPostDetails();
+      refreshPostDetails(true);
     }
   }, [location.pathname]);
 
-  const organizeComments = (comments: CommentDetail[]): JSX.Element[] => {
-    // map to group comments by parentId
-    const commentMap: Map<string | undefined, CommentDetail[]> = new Map();
-
-    // populate map with keys
-    for (const comment of comments) {
-      const parentId = comment.parentId;
-
-      if (!commentMap.has(parentId)) {
-        commentMap.set(parentId, []);
-      }
-      commentMap.get(parentId)!.push(comment);
-    }
-
-    // recursive function to organize comments
-    const buildCommentTree = (
-      parentId: string | undefined,
-      depth: number
-    ): JSX.Element[] => {
-      const childComments = commentMap.get(parentId) || [];
-      return childComments.flatMap((child) => [
-        <CommentDisplay
-          key={child._id}
-          comment={child}
-          depth={depth}
-          refreshParentPost={refreshPostDetails}
-        />,
-        ...buildCommentTree(child._id, depth + 1),
-      ]);
-    };
-
-    return buildCommentTree(undefined, 0);
-  };
-
-  const refreshPostDetails = () => {
+  const refreshPostDetails = (resetComments = false) => {
     if (!postid) return;
 
     NetworkService.getPostDetail(postid).then((post) => {
       setPost(post);
-      console.log(post);
     });
+
+    if (resetComments) {
+      refreshTopLevelComments();
+    }
+  };
+
+  const refreshTopLevelComments = () => {
+    if (!postid) return;
+
+    setIsCommentsLoading(true);
+    NetworkService.getPostComments(postid)
+      .then((page) => {
+        setComments(page.items);
+        setNextCommentsCursor(page.nextCursor);
+      })
+      .finally(() => {
+        setIsCommentsLoading(false);
+      });
+  };
+
+  const loadMoreTopLevelComments = () => {
+    if (!postid || !nextCommentsCursor) return;
+
+    setIsCommentsLoading(true);
+    NetworkService.getPostComments(postid, nextCommentsCursor)
+      .then((page) => {
+        setComments((currentComments) => [...currentComments, ...page.items]);
+        setNextCommentsCursor(page.nextCursor);
+      })
+      .finally(() => {
+        setIsCommentsLoading(false);
+      });
   };
 
   const onCommentSubmit = (value: string) => {
     if (!postid) return;
 
-    NetworkService.postComment(postid, value, undefined)
+    NetworkService.postComment(postid, value)
       .then((_) => {
         enqueueSnackbar('Comment posted!');
         setCommentValue('');
         setIsCommentBoxShown(false);
-        refreshPostDetails();
+        refreshPostDetails(true);
       })
       .catch((err) => {
         enqueueSnackbar(
@@ -110,7 +112,7 @@ const PostDetail = () => {
 
     NetworkService.postVotePost(postid, isUpvote)
       .then((_) => {
-        refreshPostDetails();
+        refreshPostDetails(false);
       })
       .catch((err) => {
         enqueueSnackbar('Failed to vote: ' + err.response.data.message, {
@@ -262,7 +264,19 @@ const PostDetail = () => {
           />
         </Box>
       )}
-      {post.comments && organizeComments(post.comments)}
+      {comments.map((comment) => (
+        <CommentDisplay
+          key={comment._id}
+          comment={comment}
+          refreshParentComments={refreshTopLevelComments}
+        />
+      ))}
+      {isCommentsLoading && <Skeleton variant='rounded' height={72} />}
+      {nextCommentsCursor && (
+        <PillButton variant='outlined' onClick={loadMoreTopLevelComments}>
+          <Typography variant='body2'>Load more comments</Typography>
+        </PillButton>
+      )}
     </>
   );
 };

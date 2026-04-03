@@ -9,6 +9,7 @@ import {
   CanvasDetails,
   AnyStroke,
   StrokeType,
+  CommentPage,
 } from '@sparques/types';
 
 // TODO: get real base_url for prod via env
@@ -119,16 +120,65 @@ const NetworkService = {
     }
   },
 
-  postComment: async (
-    postId: string,
-    content: string,
-    parentId: string | undefined
-  ) => {
+  postComment: async (postId: string, content: string) => {
     try {
-      const result = await apiClient.post(
-        '/posts/' + postId + '/comment',
-        parentId ? { content, parentId } : { content },
-      );
+      const result = await apiClient.post('/posts/' + postId + '/comments', {
+        content,
+      });
+      return result.data;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  },
+
+  getPostComments: async (
+    postId: string,
+    cursor?: string
+  ): Promise<CommentPage> => {
+    try {
+      const result = await apiClient.get('/posts/' + postId + '/comments', {
+        params: cursor ? { cursor } : undefined,
+      });
+      return result.data;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  },
+
+  getCommentReplies: async (
+    commentId: string,
+    cursor?: string
+  ): Promise<CommentPage> => {
+    try {
+      const result = await apiClient.get('/comments/' + commentId + '/replies', {
+        params: cursor ? { cursor } : undefined,
+      });
+      return result.data;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  },
+
+  postReply: async (commentId: string, content: string) => {
+    try {
+      const result = await apiClient.post('/comments/' + commentId + '/replies', {
+        content,
+      });
+      return result.data;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  },
+
+  postVoteComment: async (commentId: string, isUpvote: boolean) => {
+    try {
+      const result = await apiClient.post('/comments/' + commentId + '/vote', {
+        isUpvote,
+      });
       return result.data;
     } catch (error) {
       console.error(error);

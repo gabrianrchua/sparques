@@ -49,6 +49,10 @@ vi.mock('./routes/posts/index.js', () => ({
   default: 'posts-router',
 }));
 
+vi.mock('./routes/comments/index.js', () => ({
+  default: 'comments-router',
+}));
+
 vi.mock('./routes/auth/index.js', () => ({
   default: 'auth-router',
 }));
@@ -81,6 +85,7 @@ describe('server', () => {
     });
     expect(app.get).toHaveBeenCalledWith('/', expect.any(Function));
     expect(app.use).toHaveBeenCalledWith('/api/posts', 'posts-router');
+    expect(app.use).toHaveBeenCalledWith('/api/comments', 'comments-router');
     expect(app.use).toHaveBeenCalledWith('/api/auth', 'auth-router');
     expect(app.use).toHaveBeenCalledWith(
       '/api/community',

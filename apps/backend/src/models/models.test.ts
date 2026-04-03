@@ -7,7 +7,8 @@ import Community from './Community.js';
 import Post from './Post.js';
 import { Brush } from './Stroke.js';
 import User from './User.js';
-import Vote from './Vote.js';
+import CommentVote from './CommentVote.js';
+import PostVote from './PostVote.js';
 
 describe('models', () => {
   it('applies canvas defaults and requires a base image', () => {
@@ -35,18 +36,27 @@ describe('models', () => {
   it('validates community and vote required fields', () => {
     expect(new Community({}).validateSync()).toBeDefined();
     expect(
-      new Vote({ postId: '507f191e810c19729de860ea' }).validateSync(),
+      new PostVote({ postId: '507f191e810c19729de860ea' }).validateSync(),
+    ).toBeDefined();
+    expect(
+      new CommentVote({ commentId: '507f191e810c19729de860ea' }).validateSync(),
     ).toBeDefined();
   });
 
   it('keeps optional comment parent ids undefined by default', () => {
     const comment = new Comment({
       postId: '507f191e810c19729de860ea',
+      rootId: '507f191e810c19729de860ea',
       author: 'alice',
       content: 'reply',
+      depth: 0,
+      path: '507f191e810c19729de860ea',
     });
 
     expect(comment.parentId).toBeUndefined();
+    expect(comment.replyCount).toBe(0);
+    expect(comment.numUpvotes).toBe(0);
+    expect(comment.numDownvotes).toBe(0);
     expect(comment.validateSync()).toBeUndefined();
   });
 

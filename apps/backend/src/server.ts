@@ -8,6 +8,7 @@ import { PORT } from './config/env.js';
 
 // import routes
 import postsRoutes from './routes/posts/index.js';
+import commentsRoutes from './routes/comments/index.js';
 import authRoutes from './routes/auth/index.js';
 import communitiesRoutes from './routes/communities/index.js';
 import canvasRoutes from './routes/canvas/index.js';
@@ -39,6 +40,7 @@ app.get('/', (_, res) => {
 });
 
 app.use('/api/posts', postsRoutes);
+app.use('/api/comments', commentsRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/community', communitiesRoutes);
 app.use('/api/canvas', canvasRoutes);

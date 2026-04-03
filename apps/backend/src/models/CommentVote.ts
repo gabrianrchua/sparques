@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 
-const voteSchema = new mongoose.Schema({
-  postId: {
+const commentVoteSchema = new mongoose.Schema({
+  commentId: {
     type: mongoose.Types.ObjectId,
     required: true,
   },
@@ -15,4 +15,6 @@ const voteSchema = new mongoose.Schema({
   },
 });
 
-export default mongoose.model('Vote', voteSchema);
+commentVoteSchema.index({ commentId: 1, author: 1 }, { unique: true });
+
+export default mongoose.model('CommentVote', commentVoteSchema);

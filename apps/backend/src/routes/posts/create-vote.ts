@@ -1,12 +1,12 @@
 import { Request, Response } from 'express';
 import Post from '../../models/Post.js';
-import Vote from '../../models/Vote.js';
+import PostVote from '../../models/PostVote.js';
 
 export const createVote = async (req: Request, res: Response) => {
   const { isUpvote } = req.body;
 
   try {
-    const vote = await Vote.findOne({
+    const vote = await PostVote.findOne({
       postId: req.params.id,
       author: res.locals.username,
     });
@@ -23,7 +23,7 @@ export const createVote = async (req: Request, res: Response) => {
         if (!post) res.status(404).json({ message: 'Post not found' });
 
         // update vote
-        const newVote = await Vote.findByIdAndUpdate(
+        const newVote = await PostVote.findByIdAndUpdate(
           vote._id,
           { isUpvote },
           { new: true, runValidators: true },
@@ -39,7 +39,7 @@ export const createVote = async (req: Request, res: Response) => {
         if (!post) res.status(404).json({ message: 'Post not found' });
 
         // update vote
-        const newVote = await Vote.findByIdAndUpdate(
+        const newVote = await PostVote.findByIdAndUpdate(
           vote._id,
           { isUpvote },
           { new: true, runValidators: true },
@@ -55,7 +55,7 @@ export const createVote = async (req: Request, res: Response) => {
         if (!post) res.status(404).json({ message: 'Post not found' });
 
         // delete vote
-        const deletedVote = await Vote.findByIdAndDelete(vote._id);
+        const deletedVote = await PostVote.findByIdAndDelete(vote._id);
         return res.json(deletedVote);
       } else {
         // remove downvote
@@ -67,7 +67,7 @@ export const createVote = async (req: Request, res: Response) => {
         if (!post) res.status(404).json({ message: 'Post not found' });
 
         // delete vote
-        const deletedVote = await Vote.findByIdAndDelete(vote._id);
+        const deletedVote = await PostVote.findByIdAndDelete(vote._id);
         return res.json(deletedVote);
       }
     } else {
@@ -81,7 +81,7 @@ export const createVote = async (req: Request, res: Response) => {
       );
       if (!post) res.status(404).json({ message: 'Post not found' });
       // create vote
-      const newVote = new Vote({
+      const newVote = new PostVote({
         postId: req.params.id,
         author: res.locals.username,
         isUpvote,

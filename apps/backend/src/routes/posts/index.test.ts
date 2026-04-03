@@ -16,6 +16,7 @@ const createPost = vi.fn();
 const createComment = vi.fn();
 const createVote = vi.fn();
 const getPost = vi.fn();
+const getPostComments = vi.fn();
 const updatePost = vi.fn();
 const deletePost = vi.fn();
 
@@ -23,6 +24,7 @@ const GetPostsQuery = { name: 'GetPostsQuery' };
 const CreatePostBody = { name: 'CreatePostBody' };
 const CreateCommentBody = { name: 'CreateCommentBody' };
 const CreateVoteBody = { name: 'CreateVoteBody' };
+const CommentListQuery = { name: 'CommentListQuery' };
 const UpdatePostBody = { name: 'UpdatePostBody' };
 const IdOnlyParams = { name: 'IdOnlyParams' };
 
@@ -64,6 +66,10 @@ vi.mock('./get-post.js', () => ({
   getPost,
 }));
 
+vi.mock('./get-post-comments.js', () => ({
+  getPostComments,
+}));
+
 vi.mock('./update-post.js', () => ({
   updatePost,
 }));
@@ -77,6 +83,7 @@ vi.mock('../../schemas/posts.js', () => ({
   CreatePostBody,
   CreateCommentBody,
   CreateVoteBody,
+  CommentListQuery,
   UpdatePostBody,
 }));
 
@@ -108,11 +115,19 @@ describe('routes/posts/index', () => {
     );
     expect(router.post).toHaveBeenNthCalledWith(
       2,
-      '/:id/comment',
+      '/:id/comments',
       requireAuth,
       { schema: CreateCommentBody, target: 'body' },
       { schema: IdOnlyParams, target: 'params' },
       createComment,
+    );
+    expect(router.get).toHaveBeenNthCalledWith(
+      2,
+      '/:id/comments',
+      optionalAuth,
+      { schema: CommentListQuery, target: 'query' },
+      { schema: IdOnlyParams, target: 'params' },
+      getPostComments,
     );
     expect(router.post).toHaveBeenNthCalledWith(
       3,
@@ -123,7 +138,7 @@ describe('routes/posts/index', () => {
       createVote,
     );
     expect(router.get).toHaveBeenNthCalledWith(
-      2,
+      3,
       '/:id',
       optionalAuth,
       { schema: IdOnlyParams, target: 'params' },

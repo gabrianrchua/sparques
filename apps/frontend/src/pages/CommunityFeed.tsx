@@ -39,10 +39,6 @@ const CommunityFeed = () => {
     }
   }, [location.pathname]);
 
-  if (isLoaded && (!posts.length || !communityInfo)) {
-    return <NothingFound />;
-  }
-
   return isLoaded && communityInfo ? (
     <>
       {communityInfo.bannerImage && (
@@ -77,9 +73,11 @@ const CommunityFeed = () => {
           </Button>
         </Box>
       </Box>
-      {posts.map((post, index) => (
-        <FeedPost key={index} post={post} />
-      ))}
+      {isLoaded && (!posts.length || !communityInfo) ? (
+        <NothingFound />
+      ) : (
+        posts.map((post, index) => <FeedPost key={index} post={post} />)
+      )}
     </>
   ) : (
     <>

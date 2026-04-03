@@ -14,11 +14,15 @@ export const CreatePostBody = z.object({
 
 export const CreateCommentBody = z.object({
   content: z.string(),
-  parentId: objectId.optional(),
 });
 
 export const CreateVoteBody = z.object({
   isUpvote: z.boolean(),
+});
+
+export const CommentListQuery = z.object({
+  cursor: z.string().optional(),
+  limit: z.coerce.number().int().min(1).max(100).optional(),
 });
 
 export const UpdatePostBody = z.object({
