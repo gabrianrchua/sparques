@@ -5,6 +5,7 @@
 [/] backend: refactor add stroke route to one per tool + better validation
 [ ] backend: add actual types to request object after zod validation so
     params aren't implicit typed as `any`
+[ ] backend: make auth session expiry more seamless
 
 [ ] frontend: profile picture icon in nav
 [ ] frontend: finish share button
