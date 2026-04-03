@@ -6,10 +6,25 @@ import {
   commands,
   ICommand,
 } from '@uiw/react-md-editor';
-import { useEffect, useRef } from 'react';
+import { MouseEvent, useEffect, useRef, useState } from 'react';
 import styles from './MarkdownEditor.module.css';
-import { Box, IconButton } from '@mui/material';
-import { FormatBold, FormatItalic } from '@mui/icons-material';
+import { Box, IconButton, Menu, MenuItem, Tooltip } from '@mui/material';
+import {
+  CheckBox,
+  Code,
+  Comment,
+  DataObject,
+  FormatBold,
+  FormatItalic,
+  FormatListBulleted,
+  FormatListNumbered,
+  FormatQuote,
+  Image,
+  Link,
+  StrikethroughS,
+  TableChart,
+  Title,
+} from '@mui/icons-material';
 
 interface MarkdownEditorProps {
   value: string;
@@ -19,6 +34,8 @@ interface MarkdownEditorProps {
 const MarkdownEditor = ({ value, setValue }: MarkdownEditorProps) => {
   const textareaRef = useRef(null);
   const orchestratorRef = useRef<TextAreaCommandOrchestrator | null>(null);
+  const [headingMenuAnchor, setHeadingMenuAnchor] =
+    useState<HTMLElement | null>(null);
 
   useEffect(() => {
     if (textareaRef.current) {
@@ -45,18 +62,155 @@ const MarkdownEditor = ({ value, setValue }: MarkdownEditorProps) => {
     }
   };
 
+  const openHeadingMenu = (event: MouseEvent<HTMLElement>) => {
+    setHeadingMenuAnchor(event.currentTarget);
+  };
+
+  const closeHeadingMenu = () => {
+    setHeadingMenuAnchor(null);
+  };
+
+  const selectHeading = (command: ICommand<string>) => {
+    dispatchCommand(command);
+    closeHeadingMenu();
+  };
+
   return (
     <>
       <Box display='flex' flexDirection='row'>
-        <IconButton size='small' onClick={() => dispatchCommand(commands.bold)}>
-          <FormatBold />
-        </IconButton>
-        <IconButton
-          size='small'
-          onClick={() => dispatchCommand(commands.italic)}
+        <Tooltip title='Bold'>
+          <IconButton
+            size='small'
+            onClick={() => dispatchCommand(commands.bold)}
+          >
+            <FormatBold />
+          </IconButton>
+        </Tooltip>
+        <Tooltip title='Italics'>
+          <IconButton
+            size='small'
+            onClick={() => dispatchCommand(commands.italic)}
+          >
+            <FormatItalic />
+          </IconButton>
+        </Tooltip>
+        <Tooltip title='Strikethrough'>
+          <IconButton
+            size='small'
+            onClick={() => dispatchCommand(commands.strikethrough)}
+          >
+            <StrikethroughS />
+          </IconButton>
+        </Tooltip>
+        <Tooltip title='Headings'>
+          <IconButton size='small' onClick={openHeadingMenu}>
+            <Title />
+          </IconButton>
+        </Tooltip>
+        <Menu
+          anchorEl={headingMenuAnchor}
+          open={Boolean(headingMenuAnchor)}
+          onClose={closeHeadingMenu}
         >
-          <FormatItalic />
-        </IconButton>
+          <MenuItem onClick={() => selectHeading(commands.heading1)}>
+            Heading 1
+          </MenuItem>
+          <MenuItem onClick={() => selectHeading(commands.heading2)}>
+            Heading 2
+          </MenuItem>
+          <MenuItem onClick={() => selectHeading(commands.heading3)}>
+            Heading 3
+          </MenuItem>
+          <MenuItem onClick={() => selectHeading(commands.heading4)}>
+            Heading 4
+          </MenuItem>
+          <MenuItem onClick={() => selectHeading(commands.heading5)}>
+            Heading 5
+          </MenuItem>
+          <MenuItem onClick={() => selectHeading(commands.heading6)}>
+            Heading 6
+          </MenuItem>
+        </Menu>
+        <Tooltip title='Link'>
+          <IconButton
+            size='small'
+            onClick={() => dispatchCommand(commands.link)}
+          >
+            <Link />
+          </IconButton>
+        </Tooltip>
+        <Tooltip title='Quote'>
+          <IconButton
+            size='small'
+            onClick={() => dispatchCommand(commands.quote)}
+          >
+            <FormatQuote />
+          </IconButton>
+        </Tooltip>
+        <Tooltip title='Inline code'>
+          <IconButton
+            size='small'
+            onClick={() => dispatchCommand(commands.code)}
+          >
+            <Code />
+          </IconButton>
+        </Tooltip>
+        <Tooltip title='Code block'>
+          <IconButton
+            size='small'
+            onClick={() => dispatchCommand(commands.codeBlock)}
+          >
+            <DataObject />
+          </IconButton>
+        </Tooltip>
+        <Tooltip title='Comment out'>
+          <IconButton
+            size='small'
+            onClick={() => dispatchCommand(commands.comment)}
+          >
+            <Comment />
+          </IconButton>
+        </Tooltip>
+        <Tooltip title='Image'>
+          <IconButton
+            size='small'
+            onClick={() => dispatchCommand(commands.image)}
+          >
+            <Image />
+          </IconButton>
+        </Tooltip>
+        <Tooltip title='Table'>
+          <IconButton
+            size='small'
+            onClick={() => dispatchCommand(commands.table)}
+          >
+            <TableChart />
+          </IconButton>
+        </Tooltip>
+        <Tooltip title='Unordered list'>
+          <IconButton
+            size='small'
+            onClick={() => dispatchCommand(commands.unorderedListCommand)}
+          >
+            <FormatListBulleted />
+          </IconButton>
+        </Tooltip>
+        <Tooltip title='Ordered list'>
+          <IconButton
+            size='small'
+            onClick={() => dispatchCommand(commands.orderedListCommand)}
+          >
+            <FormatListNumbered />
+          </IconButton>
+        </Tooltip>
+        <Tooltip title='Check boxes'>
+          <IconButton
+            size='small'
+            onClick={() => dispatchCommand(commands.checkedListCommand)}
+          >
+            <CheckBox />
+          </IconButton>
+        </Tooltip>
       </Box>
       <textarea
         ref={textareaRef}
