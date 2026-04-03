@@ -7,5 +7,5 @@
     params aren't implicit typed as `any`
 
 [ ] frontend: profile picture icon in nav
-[ ] frontend: share button
+[ ] frontend: finish share button
 [ ] frontend: links to community and user pages
