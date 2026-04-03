@@ -101,7 +101,9 @@ const App = () => {
               <ListItemIcon>
                 <LoginRounded />
               </ListItemIcon>
-              <ListItemText primary={authUsername || 'Log in'} />
+              <ListItemText
+                primary={authUsername ? `p/${authUsername}` : 'Log in'}
+              />
             </ListItemButton>
           </Link>
         </ListItem>
