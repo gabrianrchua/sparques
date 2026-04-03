@@ -124,6 +124,12 @@ const PostDetail = () => {
     navigate('/');
   };
 
+  const shareLink =
+    typeof window === 'undefined'
+      ? `/post/${post?._id ?? postid ?? ''}`
+      : new URL(`/post/${post?._id ?? postid ?? ''}`, window.location.origin)
+          .href;
+
   // if post hasn't loaded yet
   if (!post) {
     return (
@@ -234,7 +240,8 @@ const PostDetail = () => {
         </CardActions>
       </Card>
       <ShareModal
-        link='https://www.google.com'
+        link={shareLink}
+        title={`Sparques - ${post.title}`}
         open={isShareModalOpen}
         setOpen={setIsShareModalOpen}
       />
