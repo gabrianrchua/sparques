@@ -1,4 +1,5 @@
 import {
+  Box,
   Button,
   FormControl,
   InputLabel,
@@ -13,12 +14,17 @@ import { useLocation, useNavigate } from 'react-router';
 import NetworkService from '../services/Network';
 import { enqueueSnackbar } from 'notistack';
 import { Community } from '@sparques/types';
+import Tabs from '@mui/material/Tabs';
+import Tab from '@mui/material/Tab';
+import Markdown from 'react-markdown';
+import MarkdownEditor from '../components/markdown-editor/MarkdownEditor';
 
 // create a new post
 const NewPost = () => {
-  const [community, setCommunity] = useState('main');
-  const [title, setTitle] = useState('');
-  const [content, setContent] = useState('');
+  const [community, setCommunity] = useState<string>('main');
+  const [title, setTitle] = useState<string>('');
+  const [content, setContent] = useState<string>('');
+  const [editorTab, setEditorTab] = useState<number>(0);
   const [communities, setCommunities] = useState<Community[]>([]);
   const navigate = useNavigate();
   const location = useLocation();
@@ -61,7 +67,7 @@ const NewPost = () => {
         >
           {communities.map((value) => (
             <MenuItem value={value.title} key={value.title}>
-              {value.title}
+              c/{value.title}
             </MenuItem>
           ))}
         </Select>
@@ -75,14 +81,49 @@ const NewPost = () => {
         fullWidth
       />
       <br />
-      <TextField
+      <Tabs
+        value={editorTab}
+        onChange={(_, newValue) => setEditorTab(newValue)}
+      >
+        <Tab label='Editor' id='0-editor' />
+        <Tab label='Both' id='1-sidebyside' />
+        <Tab label='Preview' id='2-preview' />
+      </Tabs>
+      <Box display='flex' flexDirection='row' width='100%'>
+        {editorTab !== 2 && (
+          /*<MDEditor
+            value={content}
+            onChange={(value) => setContent(value ?? '')}
+          />*/
+          <Box width={editorTab === 1 ? '50%' : '100%'}>
+            <MarkdownEditor
+              value={content}
+              setValue={(value) => setContent(value)}
+            />
+          </Box>
+        )}
+        {editorTab !== 0 && (
+          <Box
+            height={400}
+            border='1px solid grey'
+            borderRadius='4px'
+            padding='8px'
+            width={editorTab === 1 ? '50%' : '100%'}
+            marginTop={editorTab === 1 ? '34px' : 0}
+            overflow='scroll'
+          >
+            <Markdown>{content}</Markdown>
+          </Box>
+        )}
+      </Box>
+      {/*<TextField
         value={content}
         onChange={(event) => setContent(event.target.value)}
         multiline
         minRows={6}
         sx={{ marginBottom: '12px' }}
         fullWidth
-      />
+      />*/}
       <br />
       <Button
         variant='contained'
