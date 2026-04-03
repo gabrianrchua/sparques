@@ -10,3 +10,4 @@
 [ ] frontend: profile picture icon in nav
 [ ] frontend: finish share button
 [ ] frontend: links to community and user pages
+[ ] frontend: hover on up/down vote pill button proper colors
