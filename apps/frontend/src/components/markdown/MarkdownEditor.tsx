@@ -12,7 +12,6 @@ import { Box, IconButton, Menu, MenuItem, Tooltip } from '@mui/material';
 import {
   CheckBox,
   Code,
-  Comment,
   DataObject,
   FormatBold,
   FormatItalic,
@@ -163,14 +162,6 @@ const MarkdownEditor = ({ value, setValue }: MarkdownEditorProps) => {
             <DataObject />
           </IconButton>
         </Tooltip>
-        <Tooltip title='Comment out'>
-          <IconButton
-            size='small'
-            onClick={() => dispatchCommand(commands.comment)}
-          >
-            <Comment />
-          </IconButton>
-        </Tooltip>
         <Tooltip title='Image'>
           <IconButton
             size='small'
@@ -213,6 +204,7 @@ const MarkdownEditor = ({ value, setValue }: MarkdownEditorProps) => {
         </Tooltip>
       </Box>
       <textarea
+        name='Content editor'
         ref={textareaRef}
         value={value}
         onChange={(event) => setValue(event.target.value)}

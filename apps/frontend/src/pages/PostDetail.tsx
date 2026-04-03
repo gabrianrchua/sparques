@@ -26,6 +26,7 @@ import CommentDisplay from '../components/comment/CommentDisplay';
 import CommentEditor from '../components/comment/CommentEditor';
 import { enqueueSnackbar } from 'notistack';
 import ShareModal from '../components/share-modal/ShareModal';
+import MarkdownTypography from '../components/markdown/MarkdownTypography';
 
 const PostDetail = () => {
   const { postid } = useParams();
@@ -164,13 +165,15 @@ const PostDetail = () => {
             c/{post.community} &bull; p/{post.author} &bull;{' '}
             {UtilitiesService.timeSince(new Date(post.editDate))}
           </Typography>
+          <MarkdownTypography text={post.content} />
+          {/* TODO: remove this commented code
           <Typography
             variant='body2'
             component='pre'
             sx={{ whiteSpace: 'pre-wrap', wordWrap: 'break-word' }}
           >
             {post.content}
-          </Typography>
+          </Typography>*/}
         </CardContent>
         <CardActions>
           <Box sx={{ display: 'flex', width: '100%' }}>

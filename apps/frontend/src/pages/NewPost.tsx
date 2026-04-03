@@ -16,8 +16,8 @@ import { enqueueSnackbar } from 'notistack';
 import { Community } from '@sparques/types';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
-import Markdown from 'react-markdown';
-import MarkdownEditor from '../components/markdown-editor/MarkdownEditor';
+import MarkdownEditor from '../components/markdown/MarkdownEditor';
+import MarkdownTypography from '../components/markdown/MarkdownTypography';
 
 // create a new post
 const NewPost = () => {
@@ -112,11 +112,12 @@ const NewPost = () => {
             marginTop={editorTab === 1 ? '34px' : 0}
             overflow='scroll'
           >
-            <Markdown>{content}</Markdown>
+            <MarkdownTypography text={content} />
           </Box>
         )}
       </Box>
-      {/*<TextField
+      {/* TODO: remove this commented code
+      <TextField
         value={content}
         onChange={(event) => setContent(event.target.value)}
         multiline

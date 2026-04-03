@@ -21,6 +21,7 @@ import { useNavigate } from 'react-router';
 import NetworkService from '../../services/Network';
 import { enqueueSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
+import MarkdownTypography from '../markdown/MarkdownTypography';
 
 const FeedPost = (props: { post: Post }) => {
   const navigate = useNavigate();
@@ -70,13 +71,9 @@ const FeedPost = (props: { post: Post }) => {
             c/{post.community} &bull; p/{post.author} &bull;{' '}
             {UtilitiesService.timeSince(new Date(post.editDate))}
           </Typography>
-          <Typography
-            variant='body2'
-            component='pre'
-            className={styles.contentText}
-          >
-            {post.content}
-          </Typography>
+          <Box className={styles.contentText}>
+            <MarkdownTypography text={post.content} />
+          </Box>
         </CardContent>
       </CardActionArea>
       <CardActions>
