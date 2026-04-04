@@ -17,6 +17,7 @@ import {
 } from '@mui/material';
 import {
   AccountCircle,
+  Book,
   Home,
   LibraryAdd,
   LoginRounded,
@@ -123,6 +124,21 @@ const App = () => {
     </>
   );
 
+  const linksDrawerList = [
+    { title: 'About Sparques', link: '/about' },
+    { title: 'Sparques Rules', link: '/rules' },
+    { title: 'Privacy Policy', link: '/privacy-policy' },
+  ].map((item) => (
+    <ListItem key={item.title} disablePadding>
+      <ListItemButton>
+        <ListItemIcon>
+          <Book />
+        </ListItemIcon>
+        <ListItemText primary={item.title} />
+      </ListItemButton>
+    </ListItem>
+  ));
+
   const drawer = (
     <div>
       <Toolbar />
@@ -162,6 +178,8 @@ const App = () => {
         </ListItem>
         <Divider />
         {communities.length > 0 && communitiesDrawerList}
+        <Divider />
+        {linksDrawerList}
       </List>
     </div>
   );
