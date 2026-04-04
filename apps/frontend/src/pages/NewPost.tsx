@@ -34,7 +34,6 @@ const NewPost = () => {
     if (location.pathname === '/newpost') {
       NetworkService.getCommunities().then((result) => {
         setCommunities(result);
-        console.log('Get community list', result);
       });
     }
   }, [location.pathname]);
@@ -116,15 +115,6 @@ const NewPost = () => {
           </Box>
         )}
       </Box>
-      {/* TODO: remove this commented code
-      <TextField
-        value={content}
-        onChange={(event) => setContent(event.target.value)}
-        multiline
-        minRows={6}
-        sx={{ marginBottom: '12px' }}
-        fullWidth
-      />*/}
       <br />
       <Button
         variant='contained'

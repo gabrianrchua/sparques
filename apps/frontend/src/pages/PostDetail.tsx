@@ -166,14 +166,6 @@ const PostDetail = () => {
             {UtilitiesService.timeSince(new Date(post.editDate))}
           </Typography>
           <MarkdownTypography text={post.content} />
-          {/* TODO: remove this commented code
-          <Typography
-            variant='body2'
-            component='pre'
-            sx={{ whiteSpace: 'pre-wrap', wordWrap: 'break-word' }}
-          >
-            {post.content}
-          </Typography>*/}
         </CardContent>
         <CardActions>
           <Box sx={{ display: 'flex', width: '100%' }}>

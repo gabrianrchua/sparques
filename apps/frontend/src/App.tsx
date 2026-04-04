@@ -49,7 +49,6 @@ const App = () => {
   useEffect(() => {
     NetworkService.getCommunities().then((result) => {
       setCommunities(result);
-      console.log('Get community list', result);
     });
   }, []);
 
