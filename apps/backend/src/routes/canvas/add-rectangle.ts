@@ -4,7 +4,7 @@ import { Rectangle } from '../../models/Stroke.js';
 import { persistStroke } from './add-stroke.js';
 
 export const addRectangleStroke = async (
-  req: Request<{ canvas: string }, object, RectangleStroke>,
+  req: Request<{ canvas: string }, unknown, RectangleStroke, never>,
   res: Response,
 ) =>
   persistStroke(

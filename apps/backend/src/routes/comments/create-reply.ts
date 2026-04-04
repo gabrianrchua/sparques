@@ -1,8 +1,13 @@
 import { Request, Response } from 'express';
 import Comment from '../../models/Comment.js';
 import Post from '../../models/Post.js';
+import type { CreateReplyBody } from '../../schemas/comments.js';
+import type { IdOnlyParams } from '../../schemas/mongo.js';
 
-export const createReply = async (req: Request, res: Response) => {
+export const createReply = async (
+  req: Request<IdOnlyParams, unknown, CreateReplyBody, never>,
+  res: Response,
+) => {
   const { content } = req.body;
 
   try {

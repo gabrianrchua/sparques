@@ -4,7 +4,7 @@ import { Brush } from '../../models/Stroke.js';
 import { persistStroke } from './add-stroke.js';
 
 export const addBrushStroke = async (
-  req: Request<{ canvas: string }, object, BrushStroke>,
+  req: Request<{ canvas: string }, unknown, BrushStroke, never>,
   res: Response,
 ) =>
   persistStroke(req.params.canvas, Brush, { type: 'Brush', ...req.body }, res);

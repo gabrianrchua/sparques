@@ -1,7 +1,11 @@
 import Post from '../../models/Post.js';
 import { Request, Response } from 'express';
+import type { CreatePostBody } from '../../schemas/posts.js';
 
-export const createPost = async (req: Request, res: Response) => {
+export const createPost = async (
+  req: Request<never, unknown, CreatePostBody, never>,
+  res: Response,
+) => {
   const { title, content, community } = req.body;
 
   try {

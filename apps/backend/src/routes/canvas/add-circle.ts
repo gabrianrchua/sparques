@@ -4,7 +4,7 @@ import { Circle } from '../../models/Stroke.js';
 import { persistStroke } from './add-stroke.js';
 
 export const addCircleStroke = async (
-  req: Request<{ canvas: string }, object, CircleStroke>,
+  req: Request<{ canvas: string }, unknown, CircleStroke, never>,
   res: Response,
 ) =>
   persistStroke(req.params.canvas, Circle, { type: 'Circle', ...req.body }, res);

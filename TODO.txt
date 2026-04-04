@@ -1,12 +1,16 @@
 [/] full: session + refresh token so don't need to re-login every day
 [ ] full: user page and preview popover
 [ ] full: subscribe to communities, star / pin subscribed
+[ ] full: env passing (what base url etc)
+[ ] full: prod ready, docker configuration and build
+[ ] full: auto log in user after register
 
 [ ] backend?: use openAPI spec and generated types + handlers + input validation
 [/] backend: refactor add stroke route to one per tool + better validation
 [ ] backend: add actual types to request object after zod validation so
     params aren't implicit typed as `any`
 [ ] backend: make auth session expiry more seamless
+[ ] backend: more seed communities and don't hard code the base64
 
 [ ] frontend: profile picture icon in nav
 [ ] frontend: finish share button

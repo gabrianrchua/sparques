@@ -1,8 +1,13 @@
 import { Request, Response } from 'express';
 import Comment from '../../models/Comment.js';
 import CommentVote from '../../models/CommentVote.js';
+import type { CreateVoteBody } from '../../schemas/comments.js';
+import type { IdOnlyParams } from '../../schemas/mongo.js';
 
-export const createCommentVote = async (req: Request, res: Response) => {
+export const createCommentVote = async (
+  req: Request<IdOnlyParams, unknown, CreateVoteBody, never>,
+  res: Response,
+) => {
   const { isUpvote } = req.body;
 
   try {

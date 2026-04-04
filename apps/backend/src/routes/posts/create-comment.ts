@@ -2,8 +2,13 @@ import mongoose from 'mongoose';
 import Post from '../../models/Post.js';
 import Comment from '../../models/Comment.js';
 import { Request, Response } from 'express';
+import type { IdOnlyParams } from '../../schemas/mongo.js';
+import type { CreateCommentBody } from '../../schemas/posts.js';
 
-export const createComment = async (req: Request, res: Response) => {
+export const createComment = async (
+  req: Request<IdOnlyParams, unknown, CreateCommentBody, never>,
+  res: Response,
+) => {
   const { content } = req.body;
 
   try {

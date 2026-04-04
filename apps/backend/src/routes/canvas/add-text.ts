@@ -4,7 +4,7 @@ import { Text } from '../../models/Stroke.js';
 import { persistStroke } from './add-stroke.js';
 
 export const addTextStroke = async (
-  req: Request<{ canvas: string }, object, TextStroke>,
+  req: Request<{ canvas: string }, unknown, TextStroke, never>,
   res: Response,
 ) =>
   persistStroke(req.params.canvas, Text, { type: 'Text', ...req.body }, res);

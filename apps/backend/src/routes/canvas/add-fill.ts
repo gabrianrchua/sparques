@@ -4,7 +4,7 @@ import { Fill } from '../../models/Stroke.js';
 import { persistStroke } from './add-stroke.js';
 
 export const addFillStroke = async (
-  req: Request<{ canvas: string }, object, FillStroke>,
+  req: Request<{ canvas: string }, unknown, FillStroke, never>,
   res: Response,
 ) =>
   persistStroke(req.params.canvas, Fill, { type: 'Fill', ...req.body }, res);

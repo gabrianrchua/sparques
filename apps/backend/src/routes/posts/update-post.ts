@@ -1,7 +1,12 @@
 import { Request, Response } from 'express';
 import Post from '../../models/Post.js';
+import type { IdOnlyParams } from '../../schemas/mongo.js';
+import type { UpdatePostBody } from '../../schemas/posts.js';
 
-export const updatePost = async (req: Request, res: Response) => {
+export const updatePost = async (
+  req: Request<IdOnlyParams, unknown, UpdatePostBody, never>,
+  res: Response,
+) => {
   const { title, content } = req.body;
 
   try {

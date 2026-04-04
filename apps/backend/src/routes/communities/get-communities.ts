@@ -1,7 +1,11 @@
 import { Request, Response } from 'express';
 import Community from '../../models/Community.js';
+import type { GetCommunitiesQuery } from '../../schemas/communities.js';
 
-export const getCommunities = async (req: Request, res: Response) => {
+export const getCommunities = async (
+  req: Request<never, unknown, never, GetCommunitiesQuery>,
+  res: Response,
+) => {
   const title = req.query.title; // alternative to GET /api/community/:id
   if (title) {
     // get community info

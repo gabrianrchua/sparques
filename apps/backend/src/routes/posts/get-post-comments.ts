@@ -1,8 +1,13 @@
 import { Request, Response } from 'express';
 import Post from '../../models/Post.js';
 import { listComments } from '../comments/comment-listing.js';
+import type { IdOnlyParams } from '../../schemas/mongo.js';
+import type { CommentListQuery } from '../../schemas/posts.js';
 
-export const getPostComments = async (req: Request, res: Response) => {
+export const getPostComments = async (
+  req: Request<IdOnlyParams, unknown, never, CommentListQuery>,
+  res: Response,
+) => {
   try {
     const post = await Post.findById(req.params.id);
     if (!post) return res.status(404).json({ message: 'Post not found' });

@@ -4,7 +4,7 @@ import { Polygon } from '../../models/Stroke.js';
 import { persistStroke } from './add-stroke.js';
 
 export const addPolygonStroke = async (
-  req: Request<{ canvas: string }, object, PolygonStroke>,
+  req: Request<{ canvas: string }, unknown, PolygonStroke, never>,
   res: Response,
 ) =>
   persistStroke(

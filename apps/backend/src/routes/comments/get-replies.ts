@@ -1,8 +1,13 @@
 import { Request, Response } from 'express';
 import Comment from '../../models/Comment.js';
 import { listComments } from './comment-listing.js';
+import type { CommentListQuery } from '../../schemas/comments.js';
+import type { IdOnlyParams } from '../../schemas/mongo.js';
 
-export const getReplies = async (req: Request, res: Response) => {
+export const getReplies = async (
+  req: Request<IdOnlyParams, unknown, never, CommentListQuery>,
+  res: Response,
+) => {
   try {
     const parentComment = await Comment.findById(req.params.id);
     if (!parentComment) {
@@ -11,10 +16,8 @@ export const getReplies = async (req: Request, res: Response) => {
 
     const comments = await listComments({
       match: { parentId: parentComment._id },
-      cursor:
-        typeof req.query.cursor === 'string' ? req.query.cursor : undefined,
-      limit:
-        typeof req.query.limit === 'number' ? req.query.limit : undefined,
+      cursor: req.query.cursor,
+      limit: req.query.limit,
       username: res.locals.username,
     });
 

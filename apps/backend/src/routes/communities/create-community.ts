@@ -1,8 +1,12 @@
 import { Request, Response } from 'express';
 import Community from '../../models/Community.js';
 import { mongo } from 'mongoose';
+import type { CreateCommunityBody } from '../../schemas/communities.js';
 
-export const createCommunity = async (req: Request, res: Response) => {
+export const createCommunity = async (
+  req: Request<never, unknown, CreateCommunityBody, never>,
+  res: Response,
+) => {
   const { title, bannerImage, iconImage } = req.body;
 
   try {

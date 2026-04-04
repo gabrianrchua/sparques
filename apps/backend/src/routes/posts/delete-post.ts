@@ -1,7 +1,11 @@
 import { Request, Response } from 'express';
 import Post from '../../models/Post.js';
+import type { IdOnlyParams } from '../../schemas/mongo.js';
 
-export const deletePost = async (req: Request, res: Response) => {
+export const deletePost = async (
+  req: Request<IdOnlyParams, unknown, never, never>,
+  res: Response,
+) => {
   try {
     const post = await Post.findById(req.params.id);
     if (!post) return res.status(404).json({ message: 'Post not found' });
