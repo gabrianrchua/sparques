@@ -13,14 +13,17 @@ import {
   ListItemText,
   TextField,
   Toolbar,
+  Typography,
 } from '@mui/material';
 import {
   AccountCircle,
-  Add,
   Home,
+  LibraryAdd,
   LoginRounded,
   Menu,
+  PostAdd,
   Search,
+  StarOutline,
 } from '@mui/icons-material';
 import styles from './App.module.css';
 import { useEffect, useState } from 'react';
@@ -79,6 +82,47 @@ const App = () => {
     }
   };
 
+  const communitiesDrawerList = (
+    <>
+      <Typography variant='body2' padding='12px'>
+        Communities
+      </Typography>
+      {communities.map((community) => (
+        <ListItem
+          key={community.title}
+          disablePadding
+          secondaryAction={
+            <IconButton edge='end'>
+              <StarOutline />
+            </IconButton>
+          }
+        >
+          <Link to={`/c/${community.title}`} className={styles.navLink}>
+            <ListItemButton>
+              <ListItemIcon>
+                {community.iconImage ? (
+                  <img
+                    src={`data:${community.iconImage.mime};base64,${community.iconImage.data}`}
+                    className={styles.communityImage}
+                    alt={`${community.title} community icon`}
+                  />
+                ) : (
+                  <Box
+                    className={styles.communityImage}
+                    sx={{
+                      backgroundColor: '#808080',
+                    }}
+                  />
+                )}
+              </ListItemIcon>
+              <ListItemText primary={`c/${community.title}`} />
+            </ListItemButton>
+          </Link>
+        </ListItem>
+      ))}
+    </>
+  );
+
   const drawer = (
     <div>
       <Toolbar />
@@ -94,6 +138,8 @@ const App = () => {
             </ListItemButton>
           </Link>
         </ListItem>
+        {/* This log in nav item is temporary. ideal flow: log in button in app
+         bar, manage auth (log out) and profile using pfp icon in app bar */}
         <ListItem key={1} disablePadding>
           <Link to='/login' className={styles.navLink}>
             <ListItemButton>
@@ -106,35 +152,16 @@ const App = () => {
             </ListItemButton>
           </Link>
         </ListItem>
+        <ListItem key={2} disablePadding>
+          <ListItemButton>
+            <ListItemIcon>
+              <LibraryAdd />
+            </ListItemIcon>
+            <ListItemText primary='Start a community' />
+          </ListItemButton>
+        </ListItem>
         <Divider />
-        {communities.length > 0 &&
-          communities.map((community) => (
-            <ListItem key={community.title} disablePadding>
-              <Link to={`/c/${community.title}`} className={styles.navLink}>
-                <ListItemButton>
-                  <ListItemIcon>
-                    {community.iconImage ? (
-                      <img
-                        src={`data:${community.iconImage.mime};base64,${community.iconImage.data}`}
-                        style={{ width: '30px', borderRadius: '15px' }}
-                        alt={`${community.title} community icon`}
-                      />
-                    ) : (
-                      <Box
-                        sx={{
-                          width: '30px',
-                          height: '30px',
-                          borderRadius: '15px',
-                          backgroundColor: '#808080',
-                        }}
-                      />
-                    )}
-                  </ListItemIcon>
-                  <ListItemText primary={`c/${community.title}`} />
-                </ListItemButton>
-              </Link>
-            </ListItem>
-          ))}
+        {communities.length > 0 && communitiesDrawerList}
       </List>
     </div>
   );
@@ -166,7 +193,7 @@ const App = () => {
               </Link>
             </Box>
             <Link to='/newpost' style={{ marginRight: '12px' }}>
-              <Button startIcon={<Add />} variant='outlined' color='info'>
+              <Button startIcon={<PostAdd />} variant='outlined' color='info'>
                 Create
               </Button>
             </Link>

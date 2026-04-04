@@ -1,5 +1,6 @@
 [/] full: session + refresh token so don't need to re-login every day
 [ ] full: user page and preview popover
+[ ] full: subscribe to communities, star / pin subscribed
 
 [ ] backend?: use openAPI spec and generated types + handlers + input validation
 [/] backend: refactor add stroke route to one per tool + better validation
