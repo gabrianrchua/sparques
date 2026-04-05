@@ -10,6 +10,6 @@ export interface AuthRequiredLocals {
   username: string;
 }
 
-export type NoAuthResponse = Response<unknown, AuthNoneLocals>;
-export type OptionalAuthResponse = Response<unknown, AuthOptionalLocals>;
-export type RequiredAuthResponse = Response<unknown, AuthRequiredLocals>;
+export type NoAuthResponse<T = unknown> = Response<T, AuthNoneLocals>;
+export type OptionalAuthResponse<T = unknown> = Response<T, AuthOptionalLocals>;
+export type RequiredAuthResponse<T = unknown> = Response<T, AuthRequiredLocals>;
