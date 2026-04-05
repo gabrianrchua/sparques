@@ -1,12 +1,13 @@
-import { Request, Response } from 'express';
+import { Request } from 'express';
 import Post from '../../models/Post.js';
 import PostVote from '../../models/PostVote.js';
 import type { IdOnlyParams } from '../../schemas/mongo.js';
 import type { CreateVoteBody } from '../../schemas/posts.js';
+import type { RequiredAuthResponse } from '../../types/locals.js';
 
 export const createVote = async (
   req: Request<IdOnlyParams, unknown, CreateVoteBody, never>,
-  res: Response,
+  res: RequiredAuthResponse,
 ) => {
   const { isUpvote } = req.body;
 

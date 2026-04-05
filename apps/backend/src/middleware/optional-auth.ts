@@ -1,9 +1,10 @@
-import { NextFunction, Request, Response } from 'express';
+import { NextFunction, Request } from 'express';
 import { readAccessToken, verifyAccessToken } from '../auth/session.js';
+import type { OptionalAuthResponse } from '../types/locals.js';
 
 export const optionalAuth = (
   req: Request,
-  res: Response,
+  res: OptionalAuthResponse,
   next: NextFunction,
 ) => {
   const token = readAccessToken(req);

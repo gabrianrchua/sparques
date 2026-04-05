@@ -1,7 +1,8 @@
-import { Request, Response } from 'express';
+import { Request } from 'express';
 import Canvas from '../../models/Canvas.js';
+import type { NoAuthResponse } from '../../types/locals.js';
 
-export const getCanvases = async (_: Request, res: Response) => {
+export const getCanvases = async (_: Request, res: NoAuthResponse) => {
   try {
     const titles = await Canvas.find().select('title');
     res.json(titles);

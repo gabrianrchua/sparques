@@ -1,10 +1,11 @@
-import { NextFunction, Request, Response } from 'express';
+import { NextFunction, Request } from 'express';
 import jwt from 'jsonwebtoken';
 import { readAccessToken, verifyAccessToken } from '../auth/session.js';
+import type { RequiredAuthResponse } from '../types/locals.js';
 
 export const requireAuth = (
   req: Request,
-  res: Response,
+  res: RequiredAuthResponse,
   next: NextFunction,
 ) => {
   const token = readAccessToken(req);

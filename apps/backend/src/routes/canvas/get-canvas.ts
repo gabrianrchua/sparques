@@ -1,7 +1,8 @@
-import { Request, Response } from 'express';
+import { Request } from 'express';
 import fetchCanvas from '../../canvas/fetch-canvas.js';
+import type { NoAuthResponse } from '../../types/locals.js';
 
-export const getCanvas = async (req: Request, res: Response) => {
+export const getCanvas = async (req: Request, res: NoAuthResponse) => {
   const canvas = req.params.canvas;
 
   try {

@@ -1,8 +1,9 @@
-import { Request, Response } from 'express';
+import { Request } from 'express';
 import jwt from 'jsonwebtoken';
 import { readAccessToken, refreshAuthSession, verifyAccessToken } from '../../auth/session.js';
+import type { NoAuthResponse } from '../../types/locals.js';
 
-export const checkToken = async (req: Request, res: Response) => {
+export const checkToken = async (req: Request, res: NoAuthResponse) => {
   const accessToken = readAccessToken(req);
 
   if (accessToken) {

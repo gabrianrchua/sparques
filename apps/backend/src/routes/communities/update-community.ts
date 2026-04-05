@@ -1,11 +1,12 @@
-import { Request, Response } from 'express';
+import { Request } from 'express';
 import Community from '../../models/Community.js';
 import type { UpdateCommunityBody } from '../../schemas/communities.js';
 import type { IdOnlyParams } from '../../schemas/mongo.js';
+import type { NoAuthResponse } from '../../types/locals.js';
 
 export const updateCommunity = async (
   req: Request<IdOnlyParams, unknown, UpdateCommunityBody, never>,
-  res: Response,
+  res: NoAuthResponse,
 ) => {
   // title cannot be modified later
   const { bannerImage, iconImage } = req.body;

@@ -1,11 +1,12 @@
-import { Request, Response } from 'express';
+import { Request } from 'express';
 import Post from '../../models/Post.js';
 import PostVote from '../../models/PostVote.js';
 import type { IdOnlyParams } from '../../schemas/mongo.js';
+import type { OptionalAuthResponse } from '../../types/locals.js';
 
 export const getPost = async (
   req: Request<IdOnlyParams, unknown, never, never>,
-  res: Response,
+  res: OptionalAuthResponse,
 ) => {
   try {
     const post = await Post.findById(req.params.id);

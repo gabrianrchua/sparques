@@ -1,13 +1,14 @@
 import mongoose from 'mongoose';
 import Post from '../../models/Post.js';
 import Comment from '../../models/Comment.js';
-import { Request, Response } from 'express';
+import { Request } from 'express';
 import type { IdOnlyParams } from '../../schemas/mongo.js';
 import type { CreateCommentBody } from '../../schemas/posts.js';
+import type { RequiredAuthResponse } from '../../types/locals.js';
 
 export const createComment = async (
   req: Request<IdOnlyParams, unknown, CreateCommentBody, never>,
-  res: Response,
+  res: RequiredAuthResponse,
 ) => {
   const { content } = req.body;
 

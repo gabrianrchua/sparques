@@ -1,7 +1,8 @@
-import { Request, Response } from 'express';
+import { Request } from 'express';
 import { refreshAuthSession } from '../../auth/session.js';
+import type { NoAuthResponse } from '../../types/locals.js';
 
-export const refreshSession = async (req: Request, res: Response) => {
+export const refreshSession = async (req: Request, res: NoAuthResponse) => {
   try {
     const username = await refreshAuthSession(req, res);
 

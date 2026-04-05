@@ -1,10 +1,11 @@
-import { Request, Response } from 'express';
+import { Request } from 'express';
 import Community from '../../models/Community.js';
 import type { IdOnlyParams } from '../../schemas/mongo.js';
+import type { NoAuthResponse } from '../../types/locals.js';
 
 export const getCommunity = async (
   req: Request<IdOnlyParams, unknown, never, never>,
-  res: Response,
+  res: NoAuthResponse,
 ) => {
   try {
     const community = await Community.findById(req.params.id);

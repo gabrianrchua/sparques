@@ -1,10 +1,11 @@
 import Post from '../../models/Post.js';
-import { Request, Response } from 'express';
+import { Request } from 'express';
 import type { GetPostsQuery } from '../../schemas/posts.js';
+import type { OptionalAuthResponse } from '../../types/locals.js';
 
 export const getPosts = async (
   req: Request<never, unknown, never, GetPostsQuery>,
-  res: Response,
+  res: OptionalAuthResponse,
 ) => {
   // TODO: also filter by author
   const community = req.query.community; // optional filter by community

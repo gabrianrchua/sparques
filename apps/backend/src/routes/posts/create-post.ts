@@ -1,10 +1,11 @@
 import Post from '../../models/Post.js';
-import { Request, Response } from 'express';
+import { Request } from 'express';
 import type { CreatePostBody } from '../../schemas/posts.js';
+import type { RequiredAuthResponse } from '../../types/locals.js';
 
 export const createPost = async (
   req: Request<never, unknown, CreatePostBody, never>,
-  res: Response,
+  res: RequiredAuthResponse,
 ) => {
   const { title, content, community } = req.body;
 

@@ -1,11 +1,12 @@
-import { Request, Response } from 'express';
+import { Request } from 'express';
 import User from '../../models/User.js';
 import { issueAuthCookies } from '../../auth/session.js';
 import type { LogInBody } from '../../schemas/auth.js';
+import type { NoAuthResponse } from '../../types/locals.js';
 
 export const logIn = async (
   req: Request<never, unknown, LogInBody, never>,
-  res: Response,
+  res: NoAuthResponse,
 ) => {
   const { username, password } = req.body;
   if (!username || !password)

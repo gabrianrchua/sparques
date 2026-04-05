@@ -1,10 +1,11 @@
-import { Request, Response } from 'express';
+import { Request } from 'express';
 import Post from '../../models/Post.js';
 import type { IdOnlyParams } from '../../schemas/mongo.js';
+import type { RequiredAuthResponse } from '../../types/locals.js';
 
 export const deletePost = async (
   req: Request<IdOnlyParams, unknown, never, never>,
-  res: Response,
+  res: RequiredAuthResponse,
 ) => {
   try {
     const post = await Post.findById(req.params.id);

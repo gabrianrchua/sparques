@@ -1,4 +1,3 @@
-import { Response } from 'express';
 import type {
   BrushStroke,
   CircleStroke,
@@ -10,6 +9,7 @@ import type {
 import { render } from '../../canvas/canvas.js';
 import Canvas from '../../models/Canvas.js';
 import fetchCanvas from '../../canvas/fetch-canvas.js';
+import type { RequiredAuthResponse } from '../../types/locals.js';
 
 const MAX_STROKES = 5; // how many strokes before flushing to base image
 
@@ -25,7 +25,7 @@ export const persistStroke = async (
     | ({ type: 'Polygon' } & PolygonStroke)
     | ({ type: 'Text' } & TextStroke)
     | ({ type: 'Fill' } & FillStroke),
-  res: Response,
+  res: RequiredAuthResponse,
 ) => {
   if (!canvas) return res.status(400).json({ message: 'Invalid canvas name' });
 

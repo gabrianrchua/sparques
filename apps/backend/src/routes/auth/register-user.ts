@@ -1,11 +1,12 @@
-import { Request, Response } from 'express';
+import { Request } from 'express';
 import User from '../../models/User.js';
 import { mongo } from 'mongoose';
 import type { RegisterUserBody } from '../../schemas/auth.js';
+import type { NoAuthResponse } from '../../types/locals.js';
 
 export const registerUser = async (
   req: Request<never, unknown, RegisterUserBody, never>,
-  res: Response,
+  res: NoAuthResponse,
 ) => {
   const { username, password } = req.body;
 

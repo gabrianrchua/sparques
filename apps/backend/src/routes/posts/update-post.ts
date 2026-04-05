@@ -1,11 +1,12 @@
-import { Request, Response } from 'express';
+import { Request } from 'express';
 import Post from '../../models/Post.js';
 import type { IdOnlyParams } from '../../schemas/mongo.js';
 import type { UpdatePostBody } from '../../schemas/posts.js';
+import type { RequiredAuthResponse } from '../../types/locals.js';
 
 export const updatePost = async (
   req: Request<IdOnlyParams, unknown, UpdatePostBody, never>,
-  res: Response,
+  res: RequiredAuthResponse,
 ) => {
   const { title, content } = req.body;
 

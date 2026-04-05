@@ -1,12 +1,13 @@
-import { Request, Response } from 'express';
+import { Request } from 'express';
 import Comment from '../../models/Comment.js';
 import { listComments } from './comment-listing.js';
 import type { CommentListQuery } from '../../schemas/comments.js';
 import type { IdOnlyParams } from '../../schemas/mongo.js';
+import type { OptionalAuthResponse } from '../../types/locals.js';
 
 export const getReplies = async (
   req: Request<IdOnlyParams, unknown, never, CommentListQuery>,
-  res: Response,
+  res: OptionalAuthResponse,
 ) => {
   try {
     const parentComment = await Comment.findById(req.params.id);
